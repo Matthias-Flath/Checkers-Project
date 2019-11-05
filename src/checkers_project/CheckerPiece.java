@@ -1,4 +1,4 @@
-package checkers.project;
+package checkers_project;
 /*
 Abstract Data Type for the Checkers Piece.
 Descrives the set of actions that a checkers piece can make, and all of the

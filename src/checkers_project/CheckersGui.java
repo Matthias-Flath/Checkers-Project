@@ -1,4 +1,4 @@
-package checkers.project;
+package checkers_project;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;

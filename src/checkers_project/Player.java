@@ -1,4 +1,4 @@
-package checkers.project;
+package checkers_project;
 /*
 ADT for the human player.
 Has a series of methods to validate  moves and actually move based on user input. 

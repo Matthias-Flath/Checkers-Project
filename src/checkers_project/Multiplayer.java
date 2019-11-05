@@ -1,4 +1,4 @@
-package checkers.project;
+package checkers_project;
 // Creates a client side and server side Java Socket to enable multiplayer.
 
 // Classes and interfaces that control low-level communication.

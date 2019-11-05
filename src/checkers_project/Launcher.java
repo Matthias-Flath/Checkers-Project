@@ -1,4 +1,4 @@
-package checkers.project;
+package checkers_project;
 /*
 Includes the main method.  Starts the game of checkers. 
 

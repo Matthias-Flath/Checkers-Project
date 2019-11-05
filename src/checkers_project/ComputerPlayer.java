@@ -1,4 +1,4 @@
-package checkers.project;
+package checkers_project;
 /*
 Uses the checkers engine to actually make the computer's move in the game.
 

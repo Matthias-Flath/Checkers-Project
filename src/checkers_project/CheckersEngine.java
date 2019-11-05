@@ -1,4 +1,4 @@
-package checkers.project;
+package checkers_project;
 /*
 Algorithm to determine the moves for the computer player using minmax search. 
 */
