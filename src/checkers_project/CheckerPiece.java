@@ -8,6 +8,18 @@ various information it can hold.
 
 public class CheckerPiece {
 
+	private int team;
+	private boolean king;
+	private int xCoordinate;
+	private int yCoordinate;
+	
+	public CheckerPiece(int team, boolean king, int x, int y) {
+		this.team = team;
+		this.king = king;
+		xCoordinate = x;
+		yCoordinate = y;
+	}
+	
 	/*
 	 * private boardPosition
 	 * 			xCoordinate, yCoordinate

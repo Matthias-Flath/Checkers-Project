@@ -5,6 +5,25 @@ Has a series of methods to validate  moves and actually move based on user input
 
 */
 public class Player {
+	
+	
+	CheckerPiece[] pieces = new CheckerPiece[Game.PIECES_PER_PLAYER];
+	
+	/*
+	 * Initialize the pieces for the human player (White) (
+	 */
+	public Player() {
+		int counter = 0;
+		for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < Board.COLUMNS; x++) {
+				if (BoardPosition.checkPositionPlayability(x, y) == true) {
+					pieces[counter] = new CheckerPiece(1, false, x, y);
+				}
+			}
+		}
+	}
+	
+	
 /*
  * static int whoseTurnIsIt
  * int playerNumber

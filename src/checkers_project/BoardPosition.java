@@ -8,6 +8,7 @@ public class BoardPosition {
 	private final String xLetter;
 	private final String yString;
 	
+	
 	public BoardPosition(int x, int y) {
 		this.xIndex = x;
 		this.yIndex = y;
@@ -101,5 +102,13 @@ public class BoardPosition {
 		return this.playableSquare;
 		
 	}
+	
+	public static boolean checkPositionPlayability(int x, int y) {
+		if (((x+y)%2) == 0) {
+			return true;
+		}
+		return false;
+	}
+
 	
 }

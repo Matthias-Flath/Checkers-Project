@@ -13,12 +13,14 @@ public class Board {
 	BoardPosition positions[][] = new BoardPosition[8][8];
 	
 	public Board() {
-		 for (int x = 0; x < ROWS; x++) {
-			 for (int y = 0; y < COLUMNS; y++) {
+		 for (int x = 0; x < COLUMNS; x++) {
+			 for (int y = 0; y < ROWS; y++) {
 				 this.positions[x][y] = new BoardPosition(x, y);
 			 }
 		 }
 	}
+	
+	
 	
 	public String printGameState() {
 		
@@ -32,9 +34,15 @@ public class Board {
 			System.out.println();
 		}
 		
-		
-
 		return "";
+	}
+	
+	public boolean checkPositionPlayability(int x, int y) {
+		if (x < COLUMNS && x >= 0 && y < ROWS && y >= 0) {
+			return positions[x][y].getPlayability();
+		} else {
+			throw new IllegalArgumentException("You must have proper indexes for the board"); 
+		}
 	}
 	
 	
