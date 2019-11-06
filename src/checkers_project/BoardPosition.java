@@ -34,7 +34,7 @@ public class BoardPosition {
 	}
 	
 	public String getBoardPosition() {
-		return yString + xLetter;
+		return  xLetter + yString;
 	}
 	
 	public static String xString(int x) {
@@ -70,7 +70,7 @@ public class BoardPosition {
 	
 	public static String getBoardPositionString(int y, int x) {
 		
-		return yString(y) + xString(x);
+		return yString(x) + xString(y);
 		
 	}
 	

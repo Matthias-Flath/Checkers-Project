@@ -18,6 +18,7 @@ public class Player {
 			for (int x = 0; x < Board.COLUMNS; x++) {
 				if (BoardPosition.checkPositionPlayability(x, y) == true) {
 					pieces[counter] = new CheckerPiece(1, false, x, y);
+					counter++;
 				}
 			}
 		}

@@ -33,6 +33,8 @@ public class Game {
 		return turn;
 	}
 	
+	
+	
 	public void printBoardPositions() {
 		
 		// The 1X1 index is at the bottom left, so I need to start printing from the 
@@ -40,7 +42,26 @@ public class Game {
 		
 		for (int y = Board.COLUMNS - 1; y >= 0; y--) {
 			for (int x = 0; x < Board.ROWS; x++) {
-				 System.out.print(BoardPosition.getBoardPositionString(y, x) + " ");
+				 System.out.print(BoardPosition.getBoardPositionString(x, y) + " ");
+				 
+				 // Check for player piece at this position.
+				 boolean  pieceExists = false;
+				 if (player1.pieceAtLocation(x, y)) {
+					 System.out.print("W ");
+					 pieceExists = true;
+				 }
+				 
+				 if (pieceExists == false && computer.pieceAtLocation(x, y)) {
+					 
+					 
+					 System.out.print("B ");
+					 pieceExists = true;
+				 }
+				 
+				 if (pieceExists == false) {
+					 System.out.print("  ");
+				 }
+				 
 			}		
 			System.out.println();
 		}
@@ -53,7 +74,7 @@ public class Game {
 				
 				for (int y = Board.COLUMNS - 1; y >= 0; y--) {
 					for (int x = 0; x < Board.ROWS; x++) {
-						 System.out.print(BoardPosition.getBoardPositionString(y, x) + " ");
+						 System.out.print(BoardPosition.getBoardPositionString(x, y) + " ");
 					}		
 					System.out.println();
 				}
