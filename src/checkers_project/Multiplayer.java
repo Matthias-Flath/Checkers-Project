@@ -10,13 +10,13 @@ import java.io.*;
 // We need to figure out which port we are going to use for the server socket.
 
 public class Multiplayer {
-    private ServerSocket ServerSocket;
+    private ServerSocket serverSocket;
     private Socket clientSocket;
 
     private int Port;
     private String ipAddress;
 
-    public void start(int port) {
+    public void start(int port) throws IOException {
         // The server has to specify which port it is using.
         serverSocket = new ServerSocket(6666);
 

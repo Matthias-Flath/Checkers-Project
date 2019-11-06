@@ -1,4 +1,9 @@
 package checkers_project;
+
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
+
 /*
 Abstract Data Type for the Checkers Piece.
 Descrives the set of actions that a checkers piece can make, and all of the
@@ -6,8 +11,80 @@ various information it can hold.
 */
 
 
-public class CheckerPiece {
+public class CheckerPiece extends StackPane {
+	
+	//is it a red or black piece 
+	private PieceColor color;
+	private double mouseX, mouseY;//mouse coordinates for when you pick things up
+	private double oldXCoordinate, oldYCoordinate;//so it can remember where it used to be
+	
+	// a piece needs a color which also determines which direction it can move 
+	// it also needs starting coordinates
+	public CheckerPiece(PieceColor color, int xCoordinate, int yCoordinate) {
+		this.color = color;//set whether it is a black or red piece
+		
+		move(xCoordinate, yCoordinate);//move the piece to the starting coordinates
+		
+		Ellipse pieceSprite = new Ellipse(CheckersGui.SQUARE_SIZE* 0.35, CheckersGui.SQUARE_SIZE* 0.35);//need to draw the piece 
+		
+		if(color == PieceColor.Red) {//depending on if it is red or black fill it with that color
+			pieceSprite.setFill(Color.RED);
+		} else {
+			pieceSprite.setFill(Color.BLACK);
+		}
+		
+		pieceSprite.setStroke(Color.BLACK);
+		pieceSprite.setStrokeWidth(CheckersGui.SQUARE_SIZE * 0.03);
+		
+		pieceSprite.setTranslateX((CheckersGui.SQUARE_SIZE - (CheckersGui.SQUARE_SIZE * 0.35 * 2)) / 2);
+		pieceSprite.setTranslateY((CheckersGui.SQUARE_SIZE - (CheckersGui.SQUARE_SIZE * 0.35 * 2)) / 2);//make sure it is in middle of square
+		
+		getChildren().add(pieceSprite);
+		
+		setOnMousePressed(e -> {//need to know where the mouse is when clicked
+			mouseX = e.getSceneX();
+			mouseY = e.getSceneY();
+		});
+		
+		setOnMouseDragged(e -> {//move the piece with the mouse
+			relocate(e.getSceneX() - mouseX + oldXCoordinate, e.getSceneY() - mouseY + oldYCoordinate);
+		});
+	}
+	
+	
+	
+	public void move(int x, int y) {// make sure you remember the old coordinates then move the piece to the new ones
+		oldXCoordinate = x * CheckersGui.SQUARE_SIZE;
+		oldYCoordinate = y * CheckersGui.SQUARE_SIZE;
+		relocate(oldXCoordinate, oldYCoordinate);
+	}
 
+	public void cancelMove() {//returns the piece back to it's last known location
+		relocate(oldXCoordinate, oldYCoordinate);
+	}
+	
+	public PieceColor getColor() {
+		return color;
+	}
+	
+	public double getOldXCoordinate() {
+		return oldXCoordinate;
+	}
+
+	public void setOldXCoordinate(double oldXCoordinate) {
+		this.oldXCoordinate = oldXCoordinate;
+	}
+
+	public double getOldYCoordinate() {
+		return oldYCoordinate;
+	}
+
+	public void setOldYCoordinate(double oldYCoordinate) {
+		this.oldYCoordinate = oldYCoordinate;
+	}
+	
+	
+	
 	/*
 	 * private boardPosition
 	 * 			xCoordinate, yCoordinate
