@@ -7,7 +7,7 @@ Has a series of methods to validate  moves and actually move based on user input
 public class Player {
 	
 	
-	CheckerPiece[] pieces = new CheckerPiece[Game.PIECES_PER_PLAYER];
+	private CheckerPiece[] pieces = new CheckerPiece[Game.PIECES_PER_PLAYER];
 	
 	/*
 	 * Initialize the pieces for the human player (White) (
@@ -23,17 +23,24 @@ public class Player {
 		}
 	}
 	
+	public boolean pieceAtLocation(int x, int y) {
+		
+		for (CheckerPiece i : this.pieces) {
+			if (i != null) {
+				if (i.getX() == x && i.getY() == y) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+		
+	}
+	
+	
 	
 /*
- * static int whoseTurnIsIt
- * int playerNumber
- *
- *
- * public player(int playerNumber) {
- * 	this.playerNumber = playerNumber
- * whoseTurnIsIt = 1;
- * }
- *
+ 
  * public void attemptMove() {
  * 	if isTurn()
  * runs the selected pieces move() method
@@ -43,16 +50,6 @@ public class Player {
  * else
  * does nothing
  * }
- *
- * public boolean isTurn() {
- * is it your turn?
- * if yes return true
- * else return false
- *
- * }
- *
- *
- *
  *
  */
 }

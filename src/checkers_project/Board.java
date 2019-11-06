@@ -21,8 +21,8 @@ public class Board {
 	}
 	
 	
-	
-	public String printGameState() {
+	// For debugging
+	public void printBoardPositions() {
 		
 		// The 1X1 index is at the bottom left, so I need to start printing from the 
 		// top left.
@@ -33,10 +33,12 @@ public class Board {
 			}		
 			System.out.println();
 		}
-		
-		return "";
 	}
 	
+	/*
+	 * Check if the tile can have a checkers piece on it. 
+	 * 
+	 */
 	public boolean checkPositionPlayability(int x, int y) {
 		if (x < COLUMNS && x >= 0 && y < ROWS && y >= 0) {
 			return positions[x][y].getPlayability();

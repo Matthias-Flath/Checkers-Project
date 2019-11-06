@@ -13,71 +13,10 @@ public class BoardPosition {
 		this.xIndex = x;
 		this.yIndex = y;
 		
-		switch(x) {
-			case(0): 
-				xLetter = "a";
-				break;
-			case(1): 
-				xLetter = "b";
-				break;
-			case(2): 
-				xLetter = "c";
-				break;
-			case(3):
-				xLetter = "d";
-				break;
-			case(4): 
-				xLetter = "e";
-				break;
-			case(5):
-				xLetter = "f";
-				break;
-			case(6): 
-				xLetter = "g";
-				break;
-			case(7):
-				xLetter = "h";
-				break;
-			default:
-				xLetter = "Error: this should never be reached.";
-		}
+		this.xLetter = xString(x);
+		this.yString = yString(y);
 		
-		switch(y) {
-		case(0): 
-			yString = "1";
-			break;
-		case(1): 
-			yString = "2";
-			break;
-		case(2): 
-			yString = "3";
-			break;
-		case(3):
-			yString = "4";
-			break;
-		case(4): 
-			yString = "5";
-			break;
-		case(5):
-			yString = "6";
-			break;
-		case(6): 
-			yString = "7";
-			break;
-		case(7):
-			yString = "8";
-			break;
-		default:
-			yString = "Error:";
-		}
-		
-		
-		switch(y) {
-		
-		}
-		
-		
-		if (((x+y)%2) == 0) {
+		if (checkPositionPlayability(x, y)) {
 			playableSquare = true;
 			color = "black";
 		} else {
@@ -96,6 +35,43 @@ public class BoardPosition {
 	
 	public String getBoardPosition() {
 		return yString + xLetter;
+	}
+	
+	public static String xString(int x) {
+		
+		switch(x) {
+		case(0): 
+			return "a";
+		case(1): 
+			return "b";
+		case(2): 
+			return "c";
+		case(3):
+			return "d";
+		case(4): 
+			return "e";
+		case(5):
+			return "f";
+		case(6): 
+			return "g";
+		case(7):
+			return "h";
+		default:
+			return "Error:";
+		}	
+	}
+	
+	/*
+	 * Add a check here to make sure that the value of y is valid.
+	 */
+	public static String yString(int y) {
+		return String.valueOf(y + 1);
+	}
+	
+	public static String getBoardPositionString(int y, int x) {
+		
+		return yString(y) + xString(x);
+		
 	}
 	
 	public boolean getPlayability() {

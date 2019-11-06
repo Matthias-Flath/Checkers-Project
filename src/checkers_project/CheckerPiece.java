@@ -20,6 +20,14 @@ public class CheckerPiece {
 		yCoordinate = y;
 	}
 	
+	public int getX() {
+		return this.xCoordinate;
+	}
+	
+	public int getY() {
+		return this.yCoordinate;
+	}
+	
 	/*
 	 * private boardPosition
 	 * 			xCoordinate, yCoordinate
