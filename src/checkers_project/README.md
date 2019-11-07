@@ -1,6 +1,6 @@
 # 2082-Final-Project | Checkers Game
 
-###Features
+### Features
  - GUI in JavaFX to play Checkers
  - set of methods to verify moves are allowed.
     - A piece can only move diagonally one space into an open space towards the opposing side.
