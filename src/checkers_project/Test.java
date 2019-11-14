@@ -1,6 +1,7 @@
 package checkers_project;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Test {
 	
@@ -80,12 +81,14 @@ public class Test {
 		// Show the user the current state of the board
 		System.out.println();
 		board.printState();
-		// System.out.println("Player " + this.gameTurn + "'s turn.");
-		// System.out.println("Board State turn " + board.getTurn() + " turn");
 		
-		// Ask for the move of the player whose turn it is
+		// List all legal moves for the user
+		// Can later be added as a GUI hint.
 		
-		// I need to add the text for the can jump here
+		ArrayList<String> demo = board.allLegalMoves();
+		
+		board.displayAllLegalMoves();
+		
 		board.printJumpRequirementString();
 		String moveString = getUserMove();
 			
@@ -142,8 +145,12 @@ public class Test {
 		board.printState();
 
 		int[] intArray = TextConversions.convertStringToIntArray(moveString);
+		board.clearlegalMoves();
 		
 		byte secondJump = board.canJump(intArray[2], intArray[3]);
+		
+		board.displayAllLegalMovesSecondJump(moveString);
+		
 		
 		if (secondJump == 1) {
 			System.out.println("There is only 1 jump available.");

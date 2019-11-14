@@ -26,7 +26,8 @@ public class TextConversions {
 		return onBoard;
 	}
 	
-	public static int convertLetterToRowNumber(String letter) {
+	// This isn't a row
+	public static int convertLetterToColumnNumber(String letter) {
 		switch (letter) {
 		case "a":
 			return 0;
@@ -48,6 +49,43 @@ public class TextConversions {
 			return -1;
 		}		
 	}
+	
+	public static String convertColumnNumberToLetter(int y, int x) {
+		
+		if (y%2 == 1) { 
+			// Right leaning rows
+			return convertNumberToLetter(x * 2 + 1);
+			
+		} else {
+			// Left leaning rows
+			return convertNumberToLetter(x * 2);
+		}
+	}
+	
+	public static String convertNumberToLetter(int number) {
+		switch (number) {
+		case 0:
+			return "a";
+		case 1:
+			return "b";
+		case 2:
+			return "c";
+		case 3:
+			return "d";
+		case 4:
+			return "e";
+		case 5:
+			return "f";
+		case 6:
+			return "g";
+		case 7:
+			return "h";
+		default:
+			System.exit(0); 
+			return "";
+		}	
+	}
+	
 
 	public static int[] convertStringArrayToIntArray(String piece, String destination) {		
 				
@@ -75,13 +113,13 @@ public class TextConversions {
 			destinationY = Integer.parseInt(destinationYString);
 			
 		} catch (Exception e) {
-			pieceX = convertLetterToRowNumber(pieceXString);
+			pieceX = convertLetterToColumnNumber(pieceXString);
 			pieceY = Integer.parseInt(pieceYString);
 			
 			pieceX /= 2;
 			pieceY -= 1;
 			
-			destinationX = convertLetterToRowNumber(destinationXString);
+			destinationX = convertLetterToColumnNumber(destinationXString);
 			destinationY = Integer.parseInt(destinationYString);
 			
 			destinationX /= 2;
@@ -120,7 +158,7 @@ public class TextConversions {
 	
 	public static int[] convertChessNotation(String piece) {
 		int y = Integer.parseInt(piece.substring(0, 1)) - 1;
-		int x = convertLetterToRowNumber(piece.substring(1, 2));
+		int x = convertLetterToColumnNumber(piece.substring(1, 2));
 		x = x / 2;
 		
 		System.out.println(x);
@@ -153,6 +191,21 @@ public class TextConversions {
 		
 	}
 	
+	public static String convertIntArrayToString(int[] intArray) {
+		int py = intArray[0];
+		int px = intArray[1];
+		int dy = intArray[2];
+		int dx = intArray[3];
+			
+		String pyString = String.valueOf(py + 1);
+		String dyString = String.valueOf(dy + 1);
+		
+		String pxString = convertColumnNumberToLetter(py, px);
+		String dxString = convertColumnNumberToLetter(dy, dx);
+		
+		return pyString + pxString + " " + dyString + dxString;
+	}
+			
 	public static boolean isJump(String moveString) {
 		int[] intArray = convertStringToIntArray(moveString); 
 		return isJump(intArray[0], intArray[1], intArray[2], intArray[3]);
@@ -165,5 +218,7 @@ public class TextConversions {
 		}
 		return false;
 	}
+
+	
 	
 }

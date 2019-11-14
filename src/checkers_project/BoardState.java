@@ -1,10 +1,12 @@
 package checkers_project;
 
+import java.util.ArrayList;
+
 public class BoardState {
 	
 	private byte turn;
-	
-	byte[][] positions = new byte[Game2.ROWS][Game2.COLUMNS];
+	private byte[][] positions = new byte[Game2.ROWS][Game2.COLUMNS];
+	ArrayList<String> legalMoves = new ArrayList();
 	
 	public BoardState() {
 		// Create a board state for the beginning of the game.
@@ -155,6 +157,14 @@ public class BoardState {
 		
 	public boolean isLegalMove(int py, int px, int dy, int dx) {
 		
+		// Check to make sure all py and x are actually in the domain. 
+		
+		if (!TextConversions.isLegalY(py)) return false;
+		if (!TextConversions.isLegalY(dy)) return false;
+		if (!TextConversions.isLegalX(px)) return false;
+		if (!TextConversions.isLegalX(dx)) return false;
+		
+		
 		// System.out.println("Got to isLegalMove with coordinates.");
 		
 		// System.out.println(positions[py][px]);
@@ -162,8 +172,7 @@ public class BoardState {
 		
 		// Check to ensure a piece is actually there
 		if (positions[py][px] == 0) return false;
-		
-		// Check to make sure it is the appropriate turn (or turn with kings)
+ 		// Check to make sure it is the appropriate turn (or turn with kings)
 		if ((positions[py][px] != turn) && (positions[py][px] != turn + 2)) return false;
 		
 		// The piece is black
@@ -473,8 +482,6 @@ public class BoardState {
 		}
 	}
 
-	
-	
 	public byte getTurn() {
 		return this.turn;
 	}
@@ -488,6 +495,8 @@ public class BoardState {
 		} else {
 			this.turn = 1;
 		}
+		
+		legalMoves.clear();
 	}
 	
 	public byte canJump() {
@@ -646,8 +655,6 @@ public class BoardState {
 	public byte checkJumps(int y, int x, int direction) {
 		
 		// System.out.println(y + " " + x + " " + direction);
-		
-		
 		// System.out.println("Check jumps");
 		
 		byte jumpCount = 0;
@@ -683,6 +690,9 @@ public class BoardState {
 				// System.out.println("Check left");
 				if (isOpposingPieceAt(player, y + direction, leftXToJumpOver)) {
 					if (positions[y+(2 * direction)][x-1] == 0) {
+						int[] legalMoveToAdd = {y, x, y+ (2 * direction), x-1};
+						String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
+						legalMoves.add(legalMoveString);
 						jumpCount++;
 					}
 				}
@@ -694,6 +704,9 @@ public class BoardState {
 
 					if (TextConversions.isLegalX(rightXToJumpOver + 1)) {
 						if (positions[y+(2 * direction)][x + 1] == 0) {
+							int[] legalMoveToAdd = {y, x, y+ (2 * direction), x+1};
+							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
+							legalMoves.add(legalMoveString);
 							jumpCount++;
 						}
 					}
@@ -716,6 +729,10 @@ public class BoardState {
 
 				if (isOpposingPieceAt(player, y+ direction, leftXToJumpOver)) {
 					if (positions[y+(2 * direction)][x-1] == 0) {
+						
+						int[] legalMoveToAdd = {y, x, y+ (2 * direction), x-1};
+						String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
+						legalMoves.add(legalMoveString);
 						jumpCount++;
 					}
 				}
@@ -725,6 +742,9 @@ public class BoardState {
 				if (isOpposingPieceAt(player, y+ direction, rightXToJumpOver)) {
 					if (TextConversions.isLegalX(x+1)) {
 						if (positions[y+(2 * direction)][x + 1] == 0) {
+							int[] legalMoveToAdd = {y, x, y+ (2 * direction), x+1};
+							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
+							legalMoves.add(legalMoveString);
 							jumpCount++;
 						}
 					}
@@ -736,20 +756,96 @@ public class BoardState {
 		return jumpCount;
 	}
 	
-	public int[][] availableJumpMoves() {
-		return null;
+	public ArrayList<String> getAvailableJumpMoves() {
+		
+		return legalMoves;
 	}
 	
-	public int[][] availableNonJumpMoves() {
-		return null;
+	public void displayAllLegalMoves() {
+		this.canJump();
+		
+		// I need to add something here for the double jump or triple jump.
+		// Add something here for the regular moves. 
+		
+		legalMoves.forEach((n) -> System.out.println(n)); 
 	}
 	
-	public int[][] allLegalMoves() {
-		if (canJump() != 0) {
-			return availableJumpMoves();
-		} else {
-			return availableNonJumpMoves();
+	public void clearlegalMoves() {
+		this.legalMoves.clear();
+	}
+	
+	public void displayAllLegalMovesSecondJump(String moveString) {
+		// This method uses the string from the previous jump
+		// The destination must be the same as all the new starting points.
+		
+		String destinationString = moveString.substring(3, 5);
+		
+		// System.out.println(destinationString);
+		
+		legalMoves.forEach((n) -> checkSecondLegalMoves(destinationString, n)); 
+				
+		legalMoves.forEach((m) -> System.out.println(m));
+		
+	}
+		
+	private void checkSecondLegalMoves(String destinationString, String n) {
+		// System.out.println(n.substring(0, 2));
+		if (n.substring(0, 2) == destinationString) {
+			
 		}
+		
+		// I need a way to remove the wrong ones from the arraylist without a for each loop. 
+		
+	}	
+	
+	public void addAvailableNonJumpMoves() {
+		for (int y = 0; y < Game2.ROWS; y++) {
+			for (int x = 0; x < Game2.COLUMNS; x++) {
+				if (positions[y][x] == this.turn || positions[y][x] == this.turn + 2) {
+					// Check for a single move by brute force.  
+					
+					for (int i = -1; i < 2; i+= 2) {
+						if (isLegalMove(y, x, y + i, x + 1)) {
+							// System.out.println("We found a success.");
+							int[] legalMoveToAdd = {y, x, y + i, x + 1};
+							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
+							legalMoves.add(legalMoveString);
+							
+						}
+						
+						if (isLegalMove(y, x, y + i, x)) {
+							// System.out.println("We found a success.");
+
+							int[] legalMoveToAdd = {y, x, y + i, x};
+							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
+							legalMoves.add(legalMoveString);
+								
+						}
+						
+						if (isLegalMove(y, x, y + i, x - 1)) {
+							// System.out.println("We found a success.");
+
+							int[] legalMoveToAdd = {y, x, y + i, x - 1};
+							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
+							legalMoves.add(legalMoveString);
+							
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public ArrayList<String> allLegalMoves() {
+		
+		
+		if (canJump() != 0) {
+			return getAvailableJumpMoves();
+		} else {
+			addAvailableNonJumpMoves();
+		}
+		
+		return legalMoves;
 		
 		// iterate through the positions array and then run a method to determine each legal move for each piece of that player. 
 		
