@@ -1,19 +1,30 @@
 package checkers_project;
 /*
-Algorithm to determine the moves for the computer player using minmax search. 
+ * Takes a BoardState object and determines the optimal next move using the 
+ * minmax search algorithm. 
 */
 
+import java.util.Random;
 
 public class CheckersEngine {
 
-	/*
-	 *
-	 *
-	 * current position
-	 * depth first search
-	 * min max comparison to find best move
-	 * then do that move
-	 *
-	 */
+	public static final byte depth = 4;
+	
+	
+	public static int getRandomMove(int bound) {
+		Random random = new Random();
+		int move = random.nextInt(bound);
+		return move;
+		
+	}
+	
+	public static String getRandomMoveString(String[] allPossibleMoves) {
+		
+		int length = allPossibleMoves.length;  
+		
+		int randomIndex = getRandomMove(length);
+		
+		return allPossibleMoves[randomIndex];
+	}
 
 }

@@ -432,8 +432,8 @@ public class BoardState {
 		int player1Count = 0;
 		int player2Count = 0;
 		
-		for (int y = 0; 7 < 8; y++) {
-			for (int x = 0; x < 4; x++) {
+		for (int y = 0; y < Game2.ROWS; y++) {
+			for (int x = 0; x < Game2.COLUMNS; x++) {
 				if ((this.positions[y][x] == 1) || (this.positions[y][x] == 3)) {
 					player1Count++;
 				} 
@@ -442,15 +442,10 @@ public class BoardState {
 					player2Count++;
 				}
 			}
-			if (player1Count > 1 || player2Count > 1) return false;
 		}
 		
-		
-		// Seems to be a compiler bug.  
-		
-		// return true;
-		
-		
+		if (player1Count > 1 || player2Count > 1) return false;
+		else return true;
 			
 	}
 	
@@ -854,6 +849,15 @@ public class BoardState {
 		// Use this list to create the tree. 
 		
 	}
+
+	public String[] allLegalMovesArray() {
+		ArrayList<String> allLegalMoves = allLegalMoves();
+		
+		String[] allLegalMovesArray = allLegalMoves.toArray(new String[allLegalMoves.size()]);
+		
+		return allLegalMovesArray;
+	}
+	
 
 	public int[][] availableDestinations() {
 		// This should be used to highlight legal moves in the GUI.
