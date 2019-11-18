@@ -1,10 +1,16 @@
 package checkers_project;
 
-
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -14,40 +20,40 @@ Renders the GUI for the checkers game
 
 public class CheckersGui extends Application {
 
-	public static final int SQUARE_SIZE = 80;//tiles are 100 pixels  wide 
-	public static final int SQUARES_WIDE = 8;//8 tiles wide
+	public static final int SQUARE_SIZE = 80;// tiles are 100 pixels wide
+	public static final int SQUARES_WIDE = 8;// 8 tiles wide
 	public static final int SQUARES_HIGH = 8;// 8 tiles high
 
-	private Group squareGroup = new Group();//keep track of all our squares
-	private Group checkerPieceGroup = new Group();//keep track of all our pieces
+	private Group squareGroup = new Group();// keep track of all our squares
+	private Group checkerPieceGroup = new Group();// keep track of all our pieces
 
-	private Square[][] gameBoard = new Square[SQUARES_WIDE][SQUARES_HIGH];//keep track of where all our squares are
-	
-	//creates the game board
+	private Square[][] gameBoard = new Square[SQUARES_WIDE][SQUARES_HIGH];// keep track of where all our squares are
+
+	// creates the game board
 	private Parent createBoard() {
 		Pane board = new Pane();
-		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE, SQUARES_HIGH * SQUARE_SIZE);//8*8 squares 100 size each
+		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
 		board.getChildren().addAll(squareGroup, checkerPieceGroup);
 
-		for (int y = 0; y < SQUARES_HIGH; y++) {//creating the squares and pieces
+		for (int y = 0; y < SQUARES_HIGH; y++) {// creating the squares and pieces
 			for (int x = 0; x < SQUARES_WIDE; x++) {
-				
-				Square square = new Square((x + y) % 2 == 0, x, y);// only alternating squares matter 
-				gameBoard[x][y] = square;//add them to our board
+
+				Square square = new Square((x + y) % 2 == 0, x, y);// only alternating squares matter
+				gameBoard[x][y] = square;// add them to our board
 				squareGroup.getChildren().add(square);
 
 				CheckerPiece piece = null;
 
-				if (y <= 2 && (x + y) % 2 != 0) {//the top ones are black the bottom ones are red
+				if (y <= 2 && (x + y) % 2 != 0) {// the top ones are black the bottom ones are red
 					piece = createPiece(PieceColor.Black, x, y);
 				}
 				if (y >= 5 && (x + y) % 2 != 0) {
 					piece = createPiece(PieceColor.Red, x, y);
 				}
-				
-				if(piece != null) {
-				square.setPiece(piece);
-				checkerPieceGroup.getChildren().add(piece);
+
+				if (piece != null) {
+					square.setPiece(piece);
+					checkerPieceGroup.getChildren().add(piece);
 				}
 			}
 		}
@@ -59,85 +65,176 @@ public class CheckersGui extends Application {
 	 * x0, x1, y0, y1 are math terms for calculating differences usually
 	 */
 	private MoveResult tryMove(CheckerPiece piece, int newX, int newY) {
-		if(gameBoard[newX][newY].hasPiece() || (newX + newY) % 2 == 0) {//if the square you are moving to is occupied illegal
+		if (gameBoard[newX][newY].hasPiece() || (newX + newY) % 2 == 0) {// if the square you are moving to is occupied
+																			// illegal
 			return new MoveResult(MoveType.Illegal);
-		} 
-		
-		int x0 = toBoardCoordinates(piece.getOldXCoordinate());//starting positions
+		}
+
+		int x0 = toBoardCoordinates(piece.getOldXCoordinate());// starting positions
 		int y0 = toBoardCoordinates(piece.getOldYCoordinate());
-		
-		if(Math.abs(newX - x0) == 1 && newY - y0 == piece.getColor().moveDir) {//if it is the right direction for the piece normal move
+
+		if (Math.abs(newX - x0) == 1 && newY - y0 == piece.getColor().moveDir) {// if it is the right direction for the
+																				// piece normal move
 			return new MoveResult(MoveType.Normal);
-		} else if(Math.abs(newX - x0) == 2 && newY - y0 == piece.getColor().moveDir * 2) {//if it is a double move
+		} else if (Math.abs(newX - x0) == 2 && newY - y0 == piece.getColor().moveDir * 2) {// if it is a double move
 			int x1 = x0 + (newX - x0) / 2;
 			int y1 = y0 + (newY - y0) / 2;
-			
-			if(gameBoard[x1][y1].hasPiece() && gameBoard[x1][y1].getPiece().getColor() != piece.getColor()) {//check if it is jumping over a piece
-			return new MoveResult(MoveType.Jump, gameBoard[x1][y1].getPiece());//move and delete
+
+			if (gameBoard[x1][y1].hasPiece() && gameBoard[x1][y1].getPiece().getColor() != piece.getColor()) {// check
+																												// if it
+																												// is
+																												// jumping
+																												// over
+																												// a
+																												// piece
+				return new MoveResult(MoveType.Jump, gameBoard[x1][y1].getPiece());// move and delete
 			}
 		}
-		
-		return new MoveResult(MoveType.Illegal);//otherwise illegal move
+
+		return new MoveResult(MoveType.Illegal);// otherwise illegal move
 	}
-	
-	private int toBoardCoordinates(double pixel) {//helps translate pixel coordinates into our 8x8 grid
-		return (int)(pixel + SQUARE_SIZE / 2) / SQUARE_SIZE;
+
+	private int toBoardCoordinates(double pixel) {// helps translate pixel coordinates into our 8x8 grid
+		return (int) (pixel + SQUARE_SIZE / 2) / SQUARE_SIZE;
 	}
-	
-	//creates a checkers piece
+
+	// creates a checkers piece
 	private CheckerPiece createPiece(PieceColor color, int xCoordinate, int yCoordinate) {
 		CheckerPiece piece = new CheckerPiece(color, xCoordinate, yCoordinate);
 
-		piece.setOnMouseReleased(e->{//back in the piece we can pick up the piece by clicking now we need to set them down
+		piece.setOnMouseReleased(e -> {// back in the piece we can pick up the piece by clicking now we need to set
+										// them down
 			int newX = toBoardCoordinates(piece.getLayoutX());
 			int newY = toBoardCoordinates(piece.getLayoutY());
-			
-			MoveResult result = tryMove(piece, newX, newY);//find out what kind of move we are attempting to do
+
+			MoveResult result = tryMove(piece, newX, newY);// find out what kind of move we are attempting to do
 			int x0 = toBoardCoordinates(piece.getOldXCoordinate());
 			int y0 = toBoardCoordinates(piece.getOldYCoordinate());
-			
-			switch (result.getType()){//moves piece based on what we are attempting to do
+
+			switch (result.getType()) {// moves piece based on what we are attempting to do
 			case Illegal:
-				piece.cancelMove();//returns piece to old coordinates
+				piece.cancelMove();// returns piece to old coordinates
 				break;
 			case Normal:
-				piece.move(newX, newY);//moves piece
-				gameBoard[x0][y0].setPiece(null);//changes its location in our grid
+				piece.move(newX, newY);// moves piece
+				gameBoard[x0][y0].setPiece(null);// changes its location in our grid
 				gameBoard[newX][newY].setPiece(piece);
 				break;
 			case Jump:
-				piece.move(newX, newY);//moves piece
-				gameBoard[x0][y0].setPiece(null);//changes its location in our grid
+				piece.move(newX, newY);// moves piece
+				gameBoard[x0][y0].setPiece(null);// changes its location in our grid
 				gameBoard[newX][newY].setPiece(piece);
-				
-				CheckerPiece otherPiece = result.getPiece();//need to delete the piece we jumped over
-				gameBoard[toBoardCoordinates(otherPiece.getOldXCoordinate())][toBoardCoordinates(otherPiece.getOldYCoordinate())].setPiece(null);
+
+				CheckerPiece otherPiece = result.getPiece();// need to delete the piece we jumped over
+				gameBoard[toBoardCoordinates(otherPiece.getOldXCoordinate())][toBoardCoordinates(
+						otherPiece.getOldYCoordinate())].setPiece(null);
 				checkerPieceGroup.getChildren().remove(otherPiece);
 				break;
-			
+
 			default:
 				break;
-			
+
 			}
 		});
-		
+
 		return piece;
 
 	}
 
-	//used to launch
+	// used to launch
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Scene board = new Scene(createBoard());
-		primaryStage.setTitle("Checkers");
-		primaryStage.setScene(board);
 
+		Scene startScreen = new Scene(createStartScreen());
+		primaryStage.setTitle("Checkers");
+		primaryStage.setScene(startScreen);
 		primaryStage.show();
 
 	}
+	
+	private Parent createStartScreen() {
+		GridPane startScreen = new GridPane();
+		startScreen.setPrefSize(500,500);
+		Label title = new Label("\t\t    Checkers \n By James Lanka and Matthias Flath");
+		Button onePlayerButton = new Button("One Player V.S. AI");
+		Button twoPlayerButton = new Button("Two Player");
+		Label ipLabel = new Label("IP Address");
+		TextField ipTextField = new TextField();
+		
+		DropShadow shadow = new DropShadow();
+		 
+        // Adding the shadow when the mouse cursor is on
+        onePlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                onePlayerButton.setEffect(shadow);
+            }
+        });
+        
+        twoPlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                twoPlayerButton.setEffect(shadow);
+            }
+        });
+ 
+        // Removing the shadow when the mouse cursor is off
+        onePlayerButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                onePlayerButton.setEffect(null);
+            }
+        });
+        
+        twoPlayerButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                twoPlayerButton.setEffect(null);
+            }
+        });
+		
+		onePlayerButton.setOnAction(value ->  {
+			ipTextField.clear();
+			ipTextField.setText("You clicked one player");
+			
+			  Stage game = new Stage();
+			  Scene board = new Scene(createBoard());
+			  game.setTitle("Checkers");
+			  game.setScene(board);
+			  game.show();
+	        });
+		
+		twoPlayerButton.setOnAction(value ->  {
+			ipTextField.clear();
+			ipTextField.setText("You clicked two players but right now it's the same as one player");
+			Stage game = new Stage();
+			  Scene board = new Scene(createBoard());
+			  game.setTitle("Checkers");
+			  game.setScene(board);
+			  game.show();
+//	           
+			/* 
+			 * Multiplayer.setIpAdress(ipTextField.getText();
+			 * createGameBoard(twoPlayers);
+			 * show GameBoard
+			 * hide this
+			 */
+	        });
+		
+		startScreen.setVgap(15);
+		startScreen.add(title, 1, 1);
+		startScreen.add(onePlayerButton, 0, 2);
+		startScreen.add(twoPlayerButton, 2, 2);
+		startScreen.add(ipLabel, 0, 3);
+		startScreen.add(ipTextField, 1, 3);
+		
+		return startScreen;
+	}
+	
+	
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 }
+
+//--module-path "C:\Users\Matthias Laptop\Desktop\javafx-sdk-11.0.2\lib" --add-modules javafx.controls,javafx.fxml
