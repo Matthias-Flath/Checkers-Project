@@ -839,6 +839,7 @@ public class BoardState {
 	
 	public ArrayList<String> allLegalMoves() {
 		
+		legalMoves.clear();
 		
 		if (canJump() != 0) {
 			return getAvailableJumpMoves();
@@ -868,6 +869,70 @@ public class BoardState {
 		return allLegalMovesArray().length;
 	}
 	
+	public BoardState[] possibleChildStatesArray() {
+		
+		ArrayList<BoardState> childStates = possibleChildStates(this);
+		
+		BoardState[] allMovesOfMultipleLevels =  childStates.toArray(new BoardState[childStates.size()]);
+		
+		return allMovesOfMultipleLevels;
+	}
+	
+	public static ArrayList<BoardState> possibleChildStates(BoardState current) {
+		// Iterate through all the possible first moves
+		ArrayList<BoardState> childStates = new ArrayList();
+		String[] legalFirstMoves = current.allLegalMovesArray();
+		int firstMoves = current.numLegalMoves();
+		BoardState[] firstBoardStates = new BoardState[firstMoves];
+		
+		
+		
+		for (int i = 0; i < firstMoves; i++) {
+			firstBoardStates[i] = new BoardState(current, legalFirstMoves[i]);
+		}
+		
+		for (int j = 0; j < firstMoves; j++) {
+			if (firstBoardStates[j].getTurn() == current.getTurn()) {
+				childStates.add(firstBoardStates[j]);
+			} else {
+				ArrayList<BoardState> nextLevel = possibleChildStates(firstBoardStates[j]);
+				childStates.addAll(nextLevel);
+			}
+			
+			 
+			// check if move is the same a "this"
+			
+			// If not recursively call possibleChildStates
+			
+		}
+	
+		// Iterate through the array
+		// Check if there are possible next jumps
+		// If so call another method and add it to board state.
+		
+		
+		
+		
+		return null;
+	}
+	
+	public static int numPossibleChildren(BoardState current) {
+		int numChildren = current.possibleChildStatesArray().length;
+		
+		return numChildren;
+	}
+	
+
+	public ArrayList<BoardState> possibleSecondMoves(BoardState firstMove) {
+		ArrayList<BoardState> childStates = new ArrayList();
+		
+		
+		return null;
+	}
+	
+	// has second jump method
+	
+
 	public int[][] availableDestinations() {
 		// This should be used to highlight legal moves in the GUI.
 		// Then when the user clicks a specific piece, it shrinks to show only the destinations for that tile. 

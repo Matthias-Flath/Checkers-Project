@@ -5,7 +5,7 @@ public class TreeNode {
 	BoardState current;
 	TreeNode[] children;
 	int depth;
-	int boardPositionValue;
+	double boardPositionValue;
 	
 	
 	public TreeNode(BoardState current, int numChildren) {
@@ -25,7 +25,19 @@ public class TreeNode {
 	}
 	
 	public void setChild(int index, TreeNode newNode) {
-		children[index] = newNode;
+		this.children[index] = newNode;
+	}
+	
+	public int getNumChildren() {
+		return children.length;
+	}
+	
+	public void setPositionValue(double value) {
+		this.boardPositionValue = value;
+	}
+	
+	public double getPositionValue() {
+		return this.boardPositionValue;
 	}
 	
 	

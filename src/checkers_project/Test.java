@@ -48,7 +48,7 @@ public class Test {
 		this.end = false;
 
 		while (end == false) { 
-			userTurn(); 
+			nextTurn(); 
 			checkVictory();
 		} 		 
 	}
@@ -85,6 +85,18 @@ public class Test {
 		System.out.println("Player 2 Wins!");
 	}
 	
+	public void nextTurn() {
+		
+		if (this.gameTurn == 1) {
+			System.out.println("Reached nextTurn gameturn of 1");
+			userTurn();
+		} else {
+			computerTurn();
+		}
+		
+		
+	}
+	
 	public void userTurn() {
 		// Show the user the current state of the board
 		System.out.println();
@@ -99,16 +111,8 @@ public class Test {
 		
 		board.printJumpRequirementString();
 		
-		String moveString;
+		String moveString = getUserMove();
 		
-		if (this.gameTurn == 1) {
-			moveString = getUserMove();
-		} else {
-			moveString = getOpponentMove();
-		}
-		
-		
-			
 		// Check to make sure the move is legal
 		boolean result = board.isLegalMove(moveString);
 		
@@ -154,6 +158,12 @@ public class Test {
 		}
 		
 		// System.out.println(result);
+	}
+	
+	public void computerTurn() {
+		BoardState nextState = getOpponentMove();
+		this.board = nextState;
+		this.gameTurn = nextState.getTurn();
 	}
 	
 	public void secondTurn(String moveString) {
@@ -237,8 +247,6 @@ public class Test {
 		
 	}
 	
-	
-	
 	public String getUserMove() {
 		while (index < 0) {
 			index++;
@@ -271,11 +279,17 @@ public class Test {
 		return s;
 	}
 	
-	public String getOpponentMove() {
-		String move = "";
+	public BoardState getOpponentMove() {
+		BoardState move = null;
 		
 		if (!multiplayer) {
-			move = CheckersEngine.getRandomMoveString(getStringArrayOfPossibleMoves());
+			// Random Move
+			// move = CheckersEngine.getRandomMoveString(getStringArrayOfPossibleMoves());
+			
+			// Minmax move
+			move = CheckersEngine.minMaxMove(this.board);
+			
+			
 		} else {
 			// Call the methods from the sockets classes
 		}
