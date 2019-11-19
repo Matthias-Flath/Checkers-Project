@@ -48,7 +48,7 @@ public class Test {
 		this.end = false;
 
 		while (end == false) { 
-			nextTurn(); 
+			oneGameTurn(); 
 			checkVictory();
 		} 		 
 	}
@@ -85,12 +85,17 @@ public class Test {
 		System.out.println("Player 2 Wins!");
 	}
 	
-	public void nextTurn() {
+	public void oneGameTurn() {
+		
+		// System.out.println(this.gameTurn);
 		
 		if (this.gameTurn == 1) {
-			System.out.println("Reached nextTurn gameturn of 1");
+			// System.out.println("Reached nextTurn gameturn of 1");
 			userTurn();
+			
+			
 		} else {
+			// userTurn();
 			computerTurn();
 		}
 		
@@ -107,14 +112,19 @@ public class Test {
 		
 		// ArrayList<String> demo = board.allLegalMoves();
 		
+		// This line doesn't work
 		board.displayAllLegalMoves();
 		
+		// This line doesn't work
 		board.printJumpRequirementString();
 		
+		//
 		String moveString = getUserMove();
 		
 		// Check to make sure the move is legal
 		boolean result = board.isLegalMove(moveString);
+		
+		System.out.println(result);
 		
 		// System.out.println(result);
 		
@@ -122,9 +132,10 @@ public class Test {
 			boolean kingAtStartingPoint = board.isKingAtStartingPoint(moveString);
 			boolean isJump = TextConversions.isJump(moveString);
 			
+			// Actually move the piece
 			board.preCheckedMove(moveString);
-			// System.out.println("Successfully completed the move.");
-			// I need to check if I already jumped before
+			
+			System.out.println("Successfully completed the move.");
 			
 			if (kingAtStartingPoint && isJump) {
 				// System.out.println("Checking the king");
@@ -164,6 +175,7 @@ public class Test {
 		BoardState nextState = getOpponentMove();
 		this.board = nextState;
 		this.gameTurn = nextState.getTurn();
+		board.printState();
 	}
 	
 	public void secondTurn(String moveString) {
@@ -248,20 +260,21 @@ public class Test {
 	}
 	
 	public String getUserMove() {
-		while (index < 0) {
-			index++;
-			
-			if (gameTurn == 1) {
-				System.out.print("Black Turn. Please enter the start and end coordinates of your move: ");
-			} else {
-				System.out.print("Red Turn. Please enter the start and end coordinates of your move: ");
-			}
-			
-			// System.out.print(moveArray[index -1]);
-			// System.out.println();
-			// return moveArray[index -1];
-					
-		}
+		// The while loop is only here for integration testing
+		/*
+		 * while (index < 0) { index++;
+		 * 
+		 * if (gameTurn == 1) { System.out.
+		 * print("Black Turn. Please enter the start and end coordinates of your move: "
+		 * ); } else { System.out.
+		 * print("Red Turn. Please enter the start and end coordinates of your move: ");
+		 * }
+		 * 
+		 * // System.out.print(moveArray[index -1]); // System.out.println(); // return
+		 * moveArray[index -1];
+		 * 
+		 * }
+		 */
 		
 		Scanner in = new Scanner(System.in);
 		
@@ -280,15 +293,20 @@ public class Test {
 	}
 	
 	public BoardState getOpponentMove() {
+		System.out.println("Reached getOpponentMove");
+		
 		BoardState move = null;
 		
 		if (!multiplayer) {
+			// System.out.println("Reached not multiplayer");
 			// Random Move
 			// move = CheckersEngine.getRandomMoveString(getStringArrayOfPossibleMoves());
 			
+			
+			// System.out.println(this.gameTurn);
+
 			// Minmax move
 			move = CheckersEngine.minMaxMove(this.board);
-			
 			
 		} else {
 			// Call the methods from the sockets classes

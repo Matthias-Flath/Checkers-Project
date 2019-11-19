@@ -30,7 +30,15 @@ public class CheckersEngine {
 
 	public static BoardState minMaxMove(BoardState currentState) {
 		
+		// System.out.println("CurrentState when minMaxMove is called");
+		// currentState.printState();
+		
+		System.out.println("Reached minMaxMove");
+		
+		// Bug in this line
 		BoardState[] allMoves = currentState.possibleChildStatesArray();
+		
+		// System.out.println(Arrays.toString(allMoves));
 		
 		int numChildren = allMoves.length;
 		
@@ -53,10 +61,16 @@ public class CheckersEngine {
 	// Recursively fill the search tree
 	public static void fillTreeNode(TreeNode root, int depth) {
 		
+		System.out.println("Reached the fill tree method");
+		
 		BoardState[] allMoves = root.getTreeNodeData().possibleChildStatesArray();
 		
-		int numChildren = allMoves.length;
+		// System.out.println(allMoves);
+		System.out.println("Depth " + depth);
 		
+		int numChildren = allMoves.length;
+		System.out.println(numChildren);
+
 		if (depth > 0 ) {
 			for (int i = 0; i < numChildren; i++) {
 				int numSecondLevelChildren = BoardState.numPossibleChildren(allMoves[i]);

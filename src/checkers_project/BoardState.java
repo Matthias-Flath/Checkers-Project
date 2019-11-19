@@ -1,7 +1,20 @@
 package checkers_project;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+/**
+ * positions
+ * 		1 is a black piece
+ * 		2 is a red piece
+ * 		3 is a black king
+ * 		4 is a red king
+ * turns
+ * 		1 black
+ * 		2 is red * 
+ * @author James Lanska
+ *
+ */
 public class BoardState {
 	
 	private byte turn;
@@ -10,19 +23,15 @@ public class BoardState {
 	// I need to refactor this away.
 	ArrayList<String> legalMoves = new ArrayList();
 	
+	/**
+	 * Create a board state for the beginning of the game.
+	 * @precondition
+	 * 		The game has not started.
+	 * @postcondition
+	 * 		The game has started with black starting first. 
+	 */
 	public BoardState() {
-		// Create a board state for the beginning of the game.
-		
-		// positions
-		// 1 is a black piece
-		// 2 is a red piece
-		// 3 is a black king
-		// 4 is a red king
-	
-		// turns
-		// 1 black
-		// 2 is red
-	
+
 		for (byte i = 0; i < Game2.ROWS; i++) {
 			for (byte j = 0; j < Game2.COLUMNS; j++) {
 				if (i < 3) {
@@ -37,31 +46,65 @@ public class BoardState {
 		this.turn = 1;	
 	}
 	
+	// This method has a bug in it
+	/**
+	 * Create a new boardState object
+	 * @param current
+	 * @param move
+	 */
 	public BoardState(BoardState current, String move) {
+				
+		// System.out.println("Original " + current);
+		
 		this.positions = current.positions.clone();
 		this.turn = current.turn;
 		
-		// Do I actually have to call this method?
-		this.nextTurn();
+		if (this.canJumpAtDestination(move)) {
+			this.nextTurn();
+		}
 		
-		// I need to make sure this doesn't change my turn again. 
+		// System.out.println("Cloned " + this);
 		
 		// Call a check method to ensure that it is indeed a safe move.
 		
 		this.preCheckedMove(move);
+		
+		// System.out.println(move);
+		// System.out.println("Cloned and moved " + this);
+		
 	}
 	
 	// Create another BoardState constructor that takes an int array (might be a lot faster)
 	
+	// Doesn't actually change the turn, simply moves the piece
 	public void preCheckedMove(String move) {
+		// System.out.println(move);
 		int[] fromAndTo = TextConversions.convertMoveStringToIntArray(move);	
+		System.out.println(Arrays.toString(fromAndTo));
 		preCheckedMove(fromAndTo[0], fromAndTo[1], fromAndTo[2], fromAndTo[3]);
 	}
 	
 	public void preCheckedMove(int py, int px, int dy, int dx) {
+		
+		// System.out.println(px);
+		// System.out.println(dx);
+		
+		
+		
 		if ((dy - py) == 1 || (dy - py) == -1) {
+			// System.out.println("Reached the single move area");
+			
 			this.positions[dy][dx] = this.positions[py][px];
+			// System.out.println(dy);
+			// System.out.println(dx);
+			// System.out.println(positions[dy][dx]);
+			
 			this.positions[py][px] = 0;
+			
+			// System.out.println("After the move method");
+			// System.out.println(this);
+			
+			
 		} else {
 			// Rules for jumps
 			
@@ -128,8 +171,12 @@ public class BoardState {
 			}
 		}
 		
+		
+		
 		if (dy == 0 || dy == 7) {
-			king(dy, dx);
+			if (positions[dy][dx] == 3 || positions[dy][dx] == 4) {
+				king(dy, dx);
+			}
 		}
 		
 	}
@@ -137,7 +184,7 @@ public class BoardState {
 	public void king(int dy, int dx) {
 		if (positions[dy][dx] == 1) {
 			positions[dy][dx] = 3;
-		} else {
+		} else if (positions[dy][dx] == 2) {
 			positions[dy][dx] = 4;
 		}
 	}
@@ -455,7 +502,9 @@ public class BoardState {
 			
 	}
 	
-	public void printState() {
+	public String toString() {
+		String returnString = "";
+		
 		for (byte i = Game2.ROWS - 1; i >= 0; i--) {
 			for (byte j = 0; j < Game2.COLUMNS; j++) {
 				
@@ -474,13 +523,18 @@ public class BoardState {
 				String pieceString = " " + String.valueOf(this.positions[i][j]) + " ";
 
 				if (i%2 == 0) {
-					System.out.print(rowNum + firstChar + pieceString + rowNum + secondChar + "   " );
+					returnString += (rowNum + firstChar + pieceString + rowNum + secondChar + "   " );
 				} else {
-					System.out.print (rowNum + firstChar + "   " + rowNum + secondChar + pieceString);
+					returnString += (rowNum + firstChar + "   " + rowNum + secondChar + pieceString);
 				} 
 			} 
-			System.out.println();
+			returnString += "\n";
 		}
+		return returnString;
+	}
+	
+	public void printState() {
+		System.out.println(this.toString());
 	}
 
 	public byte getTurn() {
@@ -872,8 +926,13 @@ public class BoardState {
 	public BoardState[] possibleChildStatesArray() {
 		
 		ArrayList<BoardState> childStates = possibleChildStates(this);
+		// System.out.println(childStates);
 		
+		// System.out.println("finished created the arraylist");
 		BoardState[] allMovesOfMultipleLevels =  childStates.toArray(new BoardState[childStates.size()]);
+		
+		// System.out.println(Arrays.toString(allMovesOfMultipleLevels));
+		// System.out.println(allMovesOfMultipleLevels.length + " possibleChildStatesArray length");
 		
 		return allMovesOfMultipleLevels;
 	}
@@ -882,19 +941,25 @@ public class BoardState {
 		// Iterate through all the possible first moves
 		ArrayList<BoardState> childStates = new ArrayList();
 		String[] legalFirstMoves = current.allLegalMovesArray();
+		
+		// System.out.println(Arrays.toString(legalFirstMoves));
+		
 		int firstMoves = current.numLegalMoves();
 		BoardState[] firstBoardStates = new BoardState[firstMoves];
-		
-		
 		
 		for (int i = 0; i < firstMoves; i++) {
 			firstBoardStates[i] = new BoardState(current, legalFirstMoves[i]);
 		}
 		
 		for (int j = 0; j < firstMoves; j++) {
-			if (firstBoardStates[j].getTurn() == current.getTurn()) {
+
+			// If the new board state and the current board state are different, then the move has finished
+			if (firstBoardStates[j].getTurn() != current.getTurn()) {
 				childStates.add(firstBoardStates[j]);
+			// Otherwise recursively find the endpoints of that move.
 			} else {
+				System.out.println("Found a jump turn");
+				// System.exit(0);
 				ArrayList<BoardState> nextLevel = possibleChildStates(firstBoardStates[j]);
 				childStates.addAll(nextLevel);
 			}
@@ -913,7 +978,7 @@ public class BoardState {
 		
 		
 		
-		return null;
+		return childStates;
 	}
 	
 	public static int numPossibleChildren(BoardState current) {
