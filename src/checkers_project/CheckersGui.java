@@ -218,13 +218,12 @@ public class CheckersGui extends Application {
 			 * hide this
 			 */
 	        });
-		
 		startScreen.setVgap(15);
-		startScreen.add(title, 1, 1);
-		startScreen.add(onePlayerButton, 0, 2);
-		startScreen.add(twoPlayerButton, 2, 2);
-		startScreen.add(ipLabel, 0, 3);
-		startScreen.add(ipTextField, 1, 3);
+		startScreen.add(title, 2, 1);
+		startScreen.add(onePlayerButton, 1, 2);
+		startScreen.add(twoPlayerButton, 3, 2);
+		startScreen.add(ipLabel, 1, 3);
+		startScreen.add(ipTextField, 2, 3);
 		
 		return startScreen;
 	}
