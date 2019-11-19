@@ -155,7 +155,7 @@ public class CheckersGui extends Application {
 	private Parent createStartScreen() {
 		GridPane startScreen = new GridPane();
 		startScreen.setPrefSize(500,500);
-		Label title = new Label("\t\t    Checkers \n By James Lanka and Matthias Flath");
+		Label title = new Label("\t\t    Checkers \n By James Lanska and Matthias Flath");
 		Button onePlayerButton = new Button("One Player V.S. AI");
 		Button twoPlayerButton = new Button("Two Player");
 		Label ipLabel = new Label("IP Address");
