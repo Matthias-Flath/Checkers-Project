@@ -27,4 +27,53 @@ public class CheckersEngine {
 		return allPossibleMoves[randomIndex];
 	}
 
+	public static String minMaxMove(BoardState currentState) {
+		
+		int numChildren = currentState.numLegalMoves();
+		
+		TreeNode root = new TreeNode(currentState, numChildren);
+		
+		// Fill the tree
+		fillTreeNode(root, depth);
+		
+		
+		
+		
+		
+		
+		
+		
+		return "";
+		
+		
+		
+	}
+	
+	// Recursively fill the search tree
+	
+	public static void fillTreeNode(TreeNode root, int depth) {
+				
+		int numChildren = root.getTreeNodeData().numLegalMoves();
+		String[] moves = root.getTreeNodeData().allLegalMovesArray();
+		
+		for (int i = 0; i < numChildren; i++) {
+			BoardState newState = new BoardState(root.getTreeNodeData(), moves[i]);
+			
+			// Add a depth check here
+			int childrenOfChildNum = 0;
+			
+			if (depth > 0) {
+				childrenOfChildNum = newState.numLegalMoves();
+			}
+			
+			TreeNode newNode = new TreeNode(newState, childrenOfChildNum);
+			root.setChild(i, newNode);
+
+			if (depth > 0) {
+				fillTreeNode(newNode, depth - 1);
+			}
+		}
+		
+	}
+	
 }

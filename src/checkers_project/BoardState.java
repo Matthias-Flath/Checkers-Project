@@ -6,6 +6,8 @@ public class BoardState {
 	
 	private byte turn;
 	private byte[][] positions = new byte[Game2.ROWS][Game2.COLUMNS];
+	
+	// I need to refactor this away.
 	ArrayList<String> legalMoves = new ArrayList();
 	
 	public BoardState() {
@@ -37,11 +39,15 @@ public class BoardState {
 	
 	public BoardState(BoardState current, String move) {
 		this.positions = current.positions.clone();
-		
 		this.turn = current.turn;
+		
+		// Do I actually have to call this method?
 		this.nextTurn();
 		
 		// I need to make sure this doesn't change my turn again. 
+		
+		// Call a check method to ensure that it is indeed a safe move.
+		
 		this.preCheckedMove(move);
 	}
 	
@@ -858,7 +864,10 @@ public class BoardState {
 		return allLegalMovesArray;
 	}
 	
-
+	public int numLegalMoves() {
+		return allLegalMovesArray().length;
+	}
+	
 	public int[][] availableDestinations() {
 		// This should be used to highlight legal moves in the GUI.
 		// Then when the user clicks a specific piece, it shrinks to show only the destinations for that tile. 
@@ -866,7 +875,46 @@ public class BoardState {
 		return null;
 	}
 	
-	
+	public double evaluate() {
+		
+		int player1Pieces = 0;
+		int player1Kings = 0;
+		int player2Pieces = 0;
+		int player2Kings = 0;
+		
+		int pieceDifferential = 0;
+		
+		for (int y = 0; y < Test.ROWS; y++) {
+			for (int x = 0; x < Test.COLUMNS; y++) {
+				if (this.positions[y][x] == 1) {
+					player1Pieces++;	
+				}	
+				
+				else if (this.positions[y][x] == 2) {
+					player2Pieces++;
+				} else if (this.positions[y][x] == 3) {
+					player1Kings++;
+					
+				} else if (this.positions[y][x] == 4){
+					player2Kings++;	
+				}
+			}
+		}
+		
+		double returnValue = 0;
+		
+		returnValue += (player1Pieces - player2Pieces);
+		returnValue += (1.5) * (player1Kings - player2Kings);
+		
+		double jumpNum = canJump();
+		
+		returnValue += (jumpNum * 0.2);
+		
+		return returnValue;
+		
+		// Add a random small number addition to make sure that no two numbers are equal.
+		
+	}
 	
 }
 
