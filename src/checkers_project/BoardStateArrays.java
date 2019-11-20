@@ -41,8 +41,118 @@ public class BoardStateArrays {
 	 * @return
 	 */
 	public static ArrayList<String> getJumpMovesStringList(BoardState current) {
+
+		ArrayList<String> legalMoves = new ArrayList();
+
+		// Iterate through the entire board
+		for (int y = 0; y < Game.ROWS; y++) {
+			for (int x = 0; x < Game.COLUMNS; x++) {
+
+				// If the piece is the current player's and not a king
+				if (current.positions[y][x] == current.getTurn()) {
+					// Code to figure out which direction they are going.
+					
+				// If the king is the current player's
+				} else if (current.positions[y][x] == current.getTurn() + 2) {
+					
+					// Moving up the board
+					legalMoves.addAll(jumpStringsAtLocation(current, y, x, 1));
+					
+					// Moving down the board
+					legalMoves.addAll(jumpStringsAtLocation(current, y, x, -1));
+
+
+					
+				}
+			}
+		}
+					
 		
 		return null; //legalMoves;
+	}
+	
+	/**
+	 * 
+	 * @param current
+	 * @param y
+	 * @param x
+	 * @param direction
+	 * 		1 or -1 to represent which way we are moving rows on the board
+	 * @return
+	 */
+	private static ArrayList<String> jumpStringsAtLocation(BoardState current, int y, int x, int direction) {
+		
+		// Do I need any checks as to whether positions[y][x] is used.
+		
+		ArrayList<String> legalMoves = new ArrayList();
+		
+		int player = current.whosePieceIsThis(y, x);
+
+		int leftXToJumpOver;
+		int rightXToJumpOver;
+
+		// Check if the potential jump y value is on the board.
+		boolean isYJumpLegal = TextConversions.isLegalY(y+ (2 * direction));
+		if (isYJumpLegal == false) return legalMoves;
+		
+		// Right leaning rows
+		if (y%2 == 1) {
+			// 0 and +1 for the next row
+			// - 1 and + 1 for the second row
+
+			leftXToJumpOver = x;
+			rightXToJumpOver = x + 1;
+
+			if (TextConversions.isLegalX(leftXToJumpOver - 1)) {	
+				if (BoardStateJumps.isOpposingPieceAt(current, player, y + direction, leftXToJumpOver)) {
+					if (current.positions[y+(2 * direction)][x-1] == 0) {
+						int[] array = {y, x, y+(2 * direction), x - 1 };
+						String jump = TextConversions.convertIntArrayToString(array);
+						legalMoves.add(jump);
+					}
+				}
+			}
+
+			if (TextConversions.isLegalX(rightXToJumpOver + 1)) {	
+				if (BoardStateJumps.isOpposingPieceAt(current, player, y + direction, rightXToJumpOver)) {
+					if (current.positions[y+(2 * direction)][x + 1] == 0) {
+						int[] array = {y, x, y+(2 * direction), x + 1 };
+						String jump = TextConversions.convertIntArrayToString(array);
+						legalMoves.add(jump);
+					}
+				}
+			}
+
+		// Left leaning rows
+		} else {
+			// -1 and 0 for the next row
+			// -1 and positive one
+
+			leftXToJumpOver = x - 1;
+			rightXToJumpOver = x;
+
+			if (TextConversions.isLegalX(leftXToJumpOver)) {
+				if (BoardStateJumps.isOpposingPieceAt(current, player, y+ direction, leftXToJumpOver)) {
+					if (current.positions[y+(2 * direction)][x-1] == 0) {
+						int[] array = {y, x, y+(2 * direction), x - 1 };
+						String jump = TextConversions.convertIntArrayToString(array);
+						legalMoves.add(jump);
+					}
+				}
+			}
+
+			if (TextConversions.isLegalX(rightXToJumpOver + 1)) {
+				if (BoardStateJumps.isOpposingPieceAt(current, player, y+ direction, rightXToJumpOver)) {
+					if (current.positions[y+(2 * direction)][x + 1] == 0) {
+						int[] array = {y, x, y+(2 * direction), x + 1 };
+						String jump = TextConversions.convertIntArrayToString(array);
+						legalMoves.add(jump);
+					}
+				}
+			}	
+		}						
+
+		return legalMoves;
 	}
 	
 	public static ArrayList<String> getNonJumpMovesStringList(BoardState current) {

@@ -95,6 +95,10 @@ public class BoardState {
 	// Create another BoardState constructor that takes an int array (might be a lot faster)
 	
 	// Doesn't actually change the turn, simply moves the piece
+	/**
+	 * 
+	 * @param move
+	 */
 	public void preCheckedMove(String move) {
 		// System.out.println(move);
 		int[] fromAndTo = TextConversions.convertMoveStringToIntArray(move);	
@@ -102,6 +106,13 @@ public class BoardState {
 		preCheckedMove(fromAndTo[0], fromAndTo[1], fromAndTo[2], fromAndTo[3]);
 	}
 	
+	/**
+	 * 
+	 * @param py
+	 * @param px
+	 * @param dy
+	 * @param dx
+	 */
 	public void preCheckedMove(int py, int px, int dy, int dx) {
 		
 		// System.out.println(px);
@@ -199,6 +210,11 @@ public class BoardState {
 		
 	}
 	
+	/**
+	 * 
+	 * @param dy
+	 * @param dx
+	 */
 	public void king(int dy, int dx) {
 		if (positions[dy][dx] == 1) {
 			positions[dy][dx] = 3;
@@ -207,11 +223,20 @@ public class BoardState {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param move
+	 * @return
+	 */
 	public boolean isLegalMove(String move) {
 		return BoardStateMove.isLegalMove(this, move);
 	}
 	
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean checkBlackVictory() {
 		for (int y = 0; y < Game.ROWS; y++) {
 			for (int x = 0; x < Game.COLUMNS; x++) {
@@ -225,6 +250,10 @@ public class BoardState {
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean checkRedVictory() {
 		for (int i = 0; i < Game.ROWS; i++) {
 			for (int j = 0; j < Game.COLUMNS; j++) {
@@ -234,6 +263,10 @@ public class BoardState {
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean checkVictory() {
 		boolean black = checkBlackVictory();
 		boolean red = checkRedVictory();
@@ -241,6 +274,10 @@ public class BoardState {
 		return black || red;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean checkDraw() {
 		// I need to look up the official definitions of draws in the rules
 		// For now, we will simply use each side has only 1 piece. 
@@ -265,6 +302,9 @@ public class BoardState {
 			
 	}
 	
+	/**
+	 * 
+	 */
 	public String toString() {
 		String returnString = "";
 		
@@ -296,14 +336,24 @@ public class BoardState {
 		return returnString;
 	}
 	
+	/**
+	 * 
+	 */
 	public void printState() {
 		System.out.println(this.toString());
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public byte getTurn() {
 		return this.turn;
 	}
 	
+	/**
+	 * 
+	 */
 	public void nextTurn() {
 		
 		this.secondMove = false;
@@ -317,7 +367,12 @@ public class BoardState {
 		}
 	}
 
-
+	/**
+	 * 
+	 * @param py
+	 * @param px
+	 * @return
+	 */
 	public int whosePieceIsThis(int py, int px) {
 		if (positions[py][px] == 2 || positions[py][px] == 4) {
 			return 2;
@@ -326,17 +381,10 @@ public class BoardState {
 		}
 	}
 
-	// This method isn't yet implemented
-	private void checkSecondLegalMoves(String destinationString, String n) {
-		// System.out.println(n.substring(0, 2));
-		if (n.substring(0, 2) == destinationString) {
-			
-		}
-		
-		// I need a way to remove the wrong ones from the arraylist without a for each loop. 
-		
-	}	
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public double evaluate() {
 		
 		int player1Pieces = 0;

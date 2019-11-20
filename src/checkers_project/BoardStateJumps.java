@@ -37,7 +37,7 @@ public class BoardStateJumps {
 		
 		return 0;
 	}
-	
+		
 	/**
 	 * Determine how many jumps are possible at a given location on the board in a specific direction.
 	 * This method does not consider turns. 
@@ -47,6 +47,7 @@ public class BoardStateJumps {
 	 * @param y
 	 * @param x
 	 * @param direction
+	 * 		1 or -1 to represent which way we are moving rows on the board
 	 * @return
 	 * 		byte of the number of jumps possible at that board location in a specific direction
 	 */
@@ -60,9 +61,6 @@ public class BoardStateJumps {
 
 		int leftXToJumpOver;
 		int rightXToJumpOver;
-
-		int leftXToLandOn;
-		int rightXToLandOn;
 
 		// Check if the potential jump y value is on the board.
 		boolean isYJumpLegal = TextConversions.isLegalY(y+ (2 * direction));
@@ -87,14 +85,13 @@ public class BoardStateJumps {
 				}
 			}
 
-			if (TextConversions.isLegalX(rightXToJumpOver)) {	
+			if (TextConversions.isLegalX(rightXToJumpOver + 1)) {	
 				if (isOpposingPieceAt(current, player, y + direction, rightXToJumpOver)) {
 
-					if (TextConversions.isLegalX(rightXToJumpOver + 1)) {
 						if (current.positions[y+(2 * direction)][x + 1] == 0) {
 							jumpCount++;
 						}
-					}
+					
 				}
 			}
 
@@ -115,12 +112,10 @@ public class BoardStateJumps {
 				}
 			}
 
-			if (TextConversions.isLegalX(rightXToJumpOver)) {
+			if (TextConversions.isLegalX(rightXToJumpOver + 1)) {
 				if (isOpposingPieceAt(current, player, y+ direction, rightXToJumpOver)) {
-					if (TextConversions.isLegalX(x+1)) {
-						if (current.positions[y+(2 * direction)][x + 1] == 0) {
-							jumpCount++;
-						}
+					if (current.positions[y+(2 * direction)][x + 1] == 0) {
+						jumpCount++;
 					}
 				}
 			}	
@@ -128,6 +123,53 @@ public class BoardStateJumps {
 
 		return jumpCount;
 	}
+	
+	/**
+	 * 
+	 * @param current
+	 * @param y
+	 * @param x
+	 * @param direction
+	 * @param right
+	 * 		This is the same regardless of which vertical direction the piece is moving on the board.
+	 * @return
+	 */
+	public static boolean numJumpsInSpecificDirectionAtLocation(BoardState current, int y, int x, int direction, boolean right) {
+		// Check if the potential jump y value is on the board.
+		boolean isYJumpLegal = TextConversions.isLegalY(y+ (2 * direction));
+		if (isYJumpLegal == false) return false;
+
+		int player = current.whosePieceIsThis(y, x);
+		boolean isRightLeaning = isRightLeaning(y); 
+		
+		int xToJumpOver; //
+		int xToLandOn =  (right) ? x + 1 : x - 1;
+		
+		if (isRightLeaning) {
+			xToJumpOver = (right) ? x + 1 : x;
+		} else {
+			xToJumpOver = (right) ? x : x - 1;
+		}
+		
+		if (TextConversions.isLegalX(xToLandOn)) {	
+			if (isOpposingPieceAt(current, player, y + direction, xToJumpOver)) {
+				// Check that the landing position is empty
+				if (current.positions[y+(2 * direction)][x-1] == 0) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean isRightLeaning(int y) {
+		if ((y % 2) == 0 ) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 	/**
 	 * Determine the number of jumps possible in a forward direction

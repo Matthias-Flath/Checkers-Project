@@ -34,10 +34,17 @@ public class Test {
 	 * 
 	 */
 	
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Test demo = new Test();
 	}
  
+	/**
+	 * 
+	 */
 	public Test() {
 		
 		// Create a game state with the proper starting pieces
@@ -52,6 +59,9 @@ public class Test {
 		} 		 
 	}
 	
+	/**
+	 * 
+	 */
 	public void checkVictory() {
 		// Add checking for no possible moves.
 		
@@ -72,18 +82,30 @@ public class Test {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public void draw() {
 		System.out.println("Draw!");
 	}
 	
+	/**
+	 * 
+	 */
 	public void player1Victory() {
 		System.out.println("Player 1 Wins!");
 	}
 	
+	/**
+	 * 
+	 */
 	public void player2Victory() {
 		System.out.println("Player 2 Wins!");
 	}
 	
+	/**
+	 * 
+	 */
 	public void oneGameTurn() {
 		
 		// System.out.println(this.gameTurn);
@@ -97,10 +119,11 @@ public class Test {
 			userTurn();
 			// computerTurn();
 		}
-		
-		
 	}
 	
+	/**
+	 * 
+	 */
 	public void userTurn() {
 		// Show the user the current state of the board
 		System.out.println();
@@ -170,6 +193,9 @@ public class Test {
 		// System.out.println(result);
 	}
 	
+	/**
+	 * 
+	 */
 	public void computerTurn() {
 		BoardState nextState = getOpponentMove();
 		this.board = nextState;
@@ -177,6 +203,10 @@ public class Test {
 		board.printState();
 	}
 	
+	/**
+	 * 
+	 * @param moveString
+	 */
 	public void secondTurn(String moveString) {
 		// Show the user the current state of the board
 		System.out.println();
@@ -253,6 +283,10 @@ public class Test {
 		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getUserMove() {
 		// The while loop is only here for integration testing
 		while (index < 0) { // moveArray.length
@@ -288,6 +322,10 @@ public class Test {
 		return s;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public BoardState getOpponentMove() {
 		System.out.println("Reached getOpponentMove");
 		
@@ -312,6 +350,9 @@ public class Test {
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public void nextGameTurn() {
 		// System.out.println("We reached the next turn method.");
 		
