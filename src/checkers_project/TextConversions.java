@@ -2,31 +2,57 @@ package checkers_project;
 
 public class TextConversions {
 	
-	
+	/**
+	 * Check whether the x value is valid.
+	 * @param x
+	 * @return
+	 * 		true if x is on the board
+	 * 		false if x is not on the board
+	 */
 	public static boolean isLegalX(int x) {
-		if (x >= 0 && x < Game2.COLUMNS) {
+		if (x >= 0 && x < Game.COLUMNS) {
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	 * Check whether the y value is valid.
+	 * @param y
+	 * @return
+	 * 		true if y is on the board
+	 * 		false if y is not on the board
+	 */
 	public static boolean isLegalY(int y) {
-		if (y < Game2.ROWS && y >= 0) {
+		if (y < Game.ROWS && y >= 0) {
 			return true;
 		}
 		return false;
 	}
 	
+	/**
+	 * Check both x and y
+	 * @param y
+	 * @param x
+	 * @return
+	 * 		true if x and y are both valid
+	 */
 	public static boolean checkOnBoard(int y, int x) {
-		// Y is listed first because a chess board is listed as 1a where 1 is the y axis and a is the x axis.
-		
-		boolean onBoard = true;
-		if (y < 0 || y > 7 ) onBoard = false;
-		if (x < 0 || x > 3) onBoard = false;
-		return onBoard;
+		return (isLegalX(x) && isLegalY(y));
 	}
 	
-	// This isn't a row
+	/**
+	 * Convert a letter to a column number
+	 * @precondition
+	 * 		letter is between "a" and "h".
+	 * @param letter
+	 * @return
+	 * 		The corresponding column number out of 8 possibilities.  This number has not been
+	 * 		pruned to the 4 column approach yet. 
+	 * 		-1 if an invalid input was given.
+	 * @throws IllegalArgumentException
+	 * 		if the letter was not within the range or was not of length 1.
+	 */
 	public static int convertLetterToColumnNumber(String letter) {
 		switch (letter) {
 		case "a":
@@ -46,22 +72,46 @@ public class TextConversions {
 		case "h":
 			return 7;
 		default:
-			return -1;
+			System.err.println("You gave an invalid input to convertLetterToColumnNumber");
+			throw new IllegalArgumentException();
 		}		
 	}
 	
+	/**
+	 * Find the column letter at a given position
+	 * @precondition
+	 * 		The column number given is of shortened form (of 4 choices)
+	 * 		The position given is valid.
+	 * @param y
+	 * 		The row
+	 * @param x
+	 * 		The column
+	 * @return
+	 * 		The column letter for the position given.
+	 */
 	public static String convertColumnNumberToLetter(int y, int x) {
 		
+		// Right leaning rows
 		if (y%2 == 1) { 
-			// Right leaning rows
 			return convertNumberToLetter(x * 2 + 1);
-			
+		
+		// Left leaning rows
 		} else {
-			// Left leaning rows
 			return convertNumberToLetter(x * 2);
 		}
 	}
 	
+	/**
+	 * Convert a long form column number (8 choices) to its column letter.
+	 * @precondition
+	 * 		number integer is of long form
+	 * 		number integer is valid (between 0 and 7)
+	 * @param number
+	 * @return
+	 * 		letter corresponding to a specific 
+	 * @throws IllegalArgumentException
+	 * 		If the number is not valid.
+	 */
 	public static String convertNumberToLetter(int number) {
 		switch (number) {
 		case 0:
@@ -81,144 +131,168 @@ public class TextConversions {
 		case 7:
 			return "h";
 		default:
-			System.exit(0); 
-			return "";
+			System.err.println("You gave an invalid input to convertNumberToLetter");
+			throw new IllegalArgumentException();
 		}	
 	}
 	
-
-	public static int[] convertStringArrayToIntArray(String piece, String destination) {		
-				
-		String pieceXString = piece.substring(1, 2);
-		// System.out.println(pieceXString);
+	/**
+	 * Convert a piece and destination string to an integer array
+	 * @precondition
+	 * 		piece and destination are both valid
+	 * 		They can be either chess notation or long form number notation (8 x 8 coordinates)
+	 * @param piece
+	 * @param destination
+	 * @return
+	 * 		integer array [pieceY, pieceX, destinationY, destinationX]
+	 * 		short form integers
+	 */
+	public static int[] convertStringsToIntArray(String piece, String destination) {		
 		
-		String pieceYString = piece.substring(0,1);
-		// System.out.println(pieceYString);
+		int[] pieceInts = convertPieceString(piece);
+		int[] destinationInts = convertPieceString(destination);
 		
-		
-		String destinationXString = destination.substring(1, 2);
-		String destinationYString = destination.substring(0, 1);
-
-		int pieceX = -1;
-		int pieceY = -1;
-		
-		int destinationX = -1;
-		int destinationY = -1;
-		
-		try {
-			pieceX = Integer.parseInt(pieceXString) / 2;
-			pieceY = Integer.parseInt(pieceYString);
-			
-			destinationX = Integer.parseInt(destinationXString) / 2;
-			destinationY = Integer.parseInt(destinationYString);
-			
-		} catch (Exception e) {
-			pieceX = convertLetterToColumnNumber(pieceXString);
-			pieceY = Integer.parseInt(pieceYString);
-			
-			pieceX /= 2;
-			pieceY -= 1;
-			
-			destinationX = convertLetterToColumnNumber(destinationXString);
-			destinationY = Integer.parseInt(destinationYString);
-			
-			destinationX /= 2;
-			destinationY -= 1;
-		}
-		
-		// System.out.println(pieceY);
-		// System.out.println(pieceX);
-		// System.out.println(destinationY);
-		
-		int[] returnList = {pieceY, pieceX, destinationY, destinationX};
+		int[] returnList = {pieceInts[0], pieceInts[1], destinationInts[0], destinationInts[1]};
 		return returnList;
 	}
 	
+	/**
+	 * Convert a piece string to an integer array
+	 * @precondition
+	 * 		piece and destination are both valid
+	 * 		They can be either chess notation or long form number notation (8 x 8 coordinates)
+	 * @param piece
+	 * @return
+	 * 		integer array of length 2 [y, x]
+	 */
 	public static int[] convertPieceString(String piece) {
-		
 		
 		int y = -1;
 		int x = -1;
 		
+		// If piece string is in chess notation
 		try {
 			int[] returnArray = convertChessNotation(piece);
+		// If piece string is in 8x8 array notation.
 		} catch(Exception e) {
 			String yString = piece.substring(0, 1);
 			String xString = piece.substring(1, 2);
 			
 			y = Integer.parseInt(yString);
+			// Convert the number to short form (8x4) notation.
 			x = Integer.parseInt(xString) / 2;
-			
 		}
 		
 		int[] returnArray = {y, x};
-		
 		return returnArray;
 	}
 	
+	/**
+	 * Convert a piece string to an integer array
+	 * @precondition
+	 * 		pieceString is in chess notation
+	 * @param piece
+	 * @return
+	 * 		int array [y, x]
+	 */
 	public static int[] convertChessNotation(String piece) {
+		// Subtract 1 to convert it from start_1 to start_0
 		int y = Integer.parseInt(piece.substring(0, 1)) - 1;
 		int x = convertLetterToColumnNumber(piece.substring(1, 2));
+		// Divide by 2 to convert from 8x8 array notation to 8x4.
 		x = x / 2;
 		
-		System.out.println(x);
-		System.out.println(y);
-		
 		int[] returnArray = {y, x};
-		
 		return returnArray;
 	}
 
+	/**
+	 * Convert a move String to a final int array
+	 * @precondition
+	 * 		moveString must be valid (piece and destination are on the board)
+	 * 		The move itself does not need to be valid.
+	 * @param move
+	 * 		String representing the move (either 8x8 array notation or chess notation)
+	 * @return
+	 * 		int array [pieceY, pieceX, destinationY, destinationX]
+	 */
 	public static int[] convertMoveStringToIntArray(String move) {
 		String[] stringArray = convertMoveStringToStringArray(move);
-		
-		int[] returnArray = convertStringArrayToIntArray(stringArray[0], stringArray[1]);
-		
+		int[] returnArray = convertStringsToIntArray(stringArray[0], stringArray[1]);
 		return returnArray;
 	}
 	
+	/**
+	 * Split a move string into an array of 2 strings.
+	 * @precondition
+	 * 		The piece and destination must be split by a single " ".
+	 * @param move
+	 * @return
+	 * 		Array of strings [piece, destination]
+	 */
 	public static String[] convertMoveStringToStringArray(String move) {
+		move = move.strip();
 		String[] returnArray = move.split(" ");
 		return returnArray;
 	}
 	
-	public static int[] convertStringToIntArray(String move) {
-		String[] stringArray = move.split(" ");
-		// System.out.println(stringArray[0]);
-		// System.out.println(stringArray[1]);
-		
-		return convertStringArrayToIntArray(stringArray[0], stringArray[1]);
-		
-	}
-	
+	/**
+	 * Convert an int array back to a string.
+	 * @precondition
+	 * 		The int array must be valid [py, px, dy, dx]
+	 * @param intArray
+	 * @return
+	 * 		String representing the move in Chess notation.
+	 */
 	public static String convertIntArrayToString(int[] intArray) {
+		// Seperate the array
 		int py = intArray[0];
 		int px = intArray[1];
 		int dy = intArray[2];
 		int dx = intArray[3];
 			
+		// convert ints to Strings
 		String pyString = String.valueOf(py + 1);
 		String dyString = String.valueOf(dy + 1);
 		
 		String pxString = convertColumnNumberToLetter(py, px);
 		String dxString = convertColumnNumberToLetter(dy, dx);
 		
+		// Concatenate the string
 		return pyString + pxString + " " + dyString + dxString;
 	}
-			
+	
+	/**
+	 * Determine if a move is a jump
+	 * @precondition
+	 * 		The move must be valid.
+	 * @param moveString
+	 * @return
+	 * 		true if the move is a jump.
+	 * 		false if not.
+	 */
 	public static boolean isJump(String moveString) {
-		int[] intArray = convertStringToIntArray(moveString); 
+		int[] intArray = convertMoveStringToIntArray(moveString); 
 		return isJump(intArray[0], intArray[1], intArray[2], intArray[3]);
-		
 	}
 	
+	/**
+	 * Determine if a move is a jump
+	 * @precondition
+	 * 		The move must be valid
+	 * @param py
+	 * @param px
+	 * @param dy
+	 * @param dx
+	 * @return
+	 * 		true if the move is a jump.
+	 * 		false if not.
+	 */
 	public static boolean isJump(int py, int px, int dy, int dx) {
 		if (((dy - py) == 2) || ((dy - py) == -2)) {
 			return true;
 		}
 		return false;
 	}
-
-	
 	
 }

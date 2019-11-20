@@ -36,7 +36,7 @@ public class CheckersEngine {
 		System.out.println("Reached minMaxMove");
 		
 		// Bug in this line
-		BoardState[] allMoves = currentState.possibleChildStatesArray();
+		BoardState[] allMoves = BoardStateArrays.possibleChildStatesArray(currentState);
 		
 		// System.out.println(Arrays.toString(allMoves));
 		
@@ -63,7 +63,7 @@ public class CheckersEngine {
 		
 		System.out.println("Reached the fill tree method");
 		
-		BoardState[] allMoves = root.getTreeNodeData().possibleChildStatesArray();
+		BoardState[] allMoves = BoardStateArrays.possibleChildStatesArray(root.getTreeNodeData());
 		
 		// System.out.println(allMoves);
 		System.out.println("Depth " + depth);
@@ -73,7 +73,7 @@ public class CheckersEngine {
 
 		if (depth > 0 ) {
 			for (int i = 0; i < numChildren; i++) {
-				int numSecondLevelChildren = BoardState.numPossibleChildren(allMoves[i]);
+				int numSecondLevelChildren = BoardStateArrays.numPossibleChildren(allMoves[i]);
 				
 				TreeNode newNode = new TreeNode(allMoves[i], numSecondLevelChildren);
 
