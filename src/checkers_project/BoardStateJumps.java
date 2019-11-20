@@ -1,5 +1,10 @@
 package checkers_project;
 
+/**
+ * 
+ * @author computer
+ *
+ */
 public class BoardStateJumps {
 
 	/**
@@ -102,13 +107,19 @@ public class BoardStateJumps {
 		return false;
 	}
 	
+	/**
+	 * Check if a row is right leaning.
+	 * @param y
+	 * @return
+	 * 		true if right leaning.
+	 * 		false if left leaning.
+	 */
 	public static boolean isRightLeaning(int y) {
 		if ((y % 2) == 0 ) {
 			return true;
 		}
 		return false;
 	}
-	
 	
 	/**
 	 * Determine the number of jumps possible in a forward direction

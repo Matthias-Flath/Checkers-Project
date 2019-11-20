@@ -86,73 +86,37 @@ public class BoardStateArrays {
 		
 		ArrayList<String> legalMoves = new ArrayList();
 		
-		int player = current.whosePieceIsThis(y, x);
-
-		int leftXToJumpOver;
-		int rightXToJumpOver;
-
-		// Check if the potential jump y value is on the board.
-		boolean isYJumpLegal = TextConversions.isLegalY(y+ (2 * direction));
-		if (isYJumpLegal == false) return legalMoves;
+		String leftString = jumpStringInSpecificDirectionAtLocation(current, y, x, direction, false);
+		if (leftString != null) legalMoves.add(leftString);
 		
-		// Right leaning rows
-		if (y%2 == 1) {
-			// 0 and +1 for the next row
-			// - 1 and + 1 for the second row
-
-			leftXToJumpOver = x;
-			rightXToJumpOver = x + 1;
-
-			if (TextConversions.isLegalX(leftXToJumpOver - 1)) {	
-				if (BoardStateJumps.isOpposingPieceAt(current, player, y + direction, leftXToJumpOver)) {
-					if (current.positions[y+(2 * direction)][x-1] == 0) {
-						int[] array = {y, x, y+(2 * direction), x - 1 };
-						String jump = TextConversions.convertIntArrayToString(array);
-						legalMoves.add(jump);
-					}
-				}
-			}
-
-			if (TextConversions.isLegalX(rightXToJumpOver + 1)) {	
-				if (BoardStateJumps.isOpposingPieceAt(current, player, y + direction, rightXToJumpOver)) {
-					if (current.positions[y+(2 * direction)][x + 1] == 0) {
-						int[] array = {y, x, y+(2 * direction), x + 1 };
-						String jump = TextConversions.convertIntArrayToString(array);
-						legalMoves.add(jump);
-					}
-				}
-			}
-
-		// Left leaning rows
-		} else {
-			// -1 and 0 for the next row
-			// -1 and positive one
-
-			leftXToJumpOver = x - 1;
-			rightXToJumpOver = x;
-
-			if (TextConversions.isLegalX(leftXToJumpOver)) {
-				if (BoardStateJumps.isOpposingPieceAt(current, player, y+ direction, leftXToJumpOver)) {
-					if (current.positions[y+(2 * direction)][x-1] == 0) {
-						int[] array = {y, x, y+(2 * direction), x - 1 };
-						String jump = TextConversions.convertIntArrayToString(array);
-						legalMoves.add(jump);
-					}
-				}
-			}
-
-			if (TextConversions.isLegalX(rightXToJumpOver + 1)) {
-				if (BoardStateJumps.isOpposingPieceAt(current, player, y+ direction, rightXToJumpOver)) {
-					if (current.positions[y+(2 * direction)][x + 1] == 0) {
-						int[] array = {y, x, y+(2 * direction), x + 1 };
-						String jump = TextConversions.convertIntArrayToString(array);
-						legalMoves.add(jump);
-					}
-				}
-			}	
-		}						
-
+		String rightString = jumpStringInSpecificDirectionAtLocation(current, y, x, direction, false);
+		if (rightString != null) legalMoves.add(rightString);
+		
 		return legalMoves;
+	}
+	
+	/**
+	 * Determine if a specific jump is possible. 
+	 * Given a starting point, vertical and horizontal direction to jump
+	 * @param current
+	 * @param y
+	 * @param x
+	 * @param direction
+	 * @param right
+	 * 		This is the same regardless of which vertical direction the piece is moving on the board.
+	 * @return
+	 * 		String describing the possible jump move (chess notation)
+	 */
+	public static String jumpStringInSpecificDirectionAtLocation(BoardState current, int y, int x, int direction, boolean right) {
+		
+		boolean jumpLegality = BoardStateJumps.numJumpsInSpecificDirectionAtLocation(current, y, x, direction, right);
+		if (!jumpLegality) return null;
+		
+		int xToLandOn =  (right) ? x + 1 : x - 1;
+		int[] array = {y, x, y + (2 * direction), xToLandOn };
+		String jump = TextConversions.convertIntArrayToString(array);
+		
+		return jump;
 	}
 	
 	public static ArrayList<String> getNonJumpMovesStringList(BoardState current) {
