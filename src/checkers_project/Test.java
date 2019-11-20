@@ -140,7 +140,7 @@ public class Test {
 				// System.out.println("Checking the king");
 				
 				
-				if (BoardStateJumps.canJumpAtDestinationForAKing(board, moveString)) {
+				if (BoardStateJumps.canJumpAtDestination(board, moveString)) {
 					System.out.println("Can jump at destination for a King");
 					secondTurn(moveString);
 				} else {
@@ -186,7 +186,7 @@ public class Test {
 		
 		byte secondJump = 0; // BoardStateJumps.canJump(intArray[2], intArray[3]);
 		
-		BoardStateArrays.displayAllLegalMovesSecondJump(this.board, moveString);
+		// BoardStateArrays.displayAllLegalMovesSecondJump(this.board, moveString);
 		
 		
 		if (secondJump == 1) {
@@ -221,7 +221,7 @@ public class Test {
 				// System.out.println("Checking the king");
 				
 				
-				if (BoardStateJumps.canJumpAtDestinationForAKing(board, moveString)) {
+				if (BoardStateJumps.canJumpAtDestination(board, moveString)) {
 					System.out.println("Can jump at destination for a King");
 					secondTurn(moveString);
 				} else {

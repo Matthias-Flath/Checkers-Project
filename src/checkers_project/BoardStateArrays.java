@@ -5,61 +5,72 @@ import java.util.Arrays;
 
 public class BoardStateArrays {
 	
-	// This entire thing needs to be rebuilt
+	/**
+	 * Return an array of all the possible single depth moves at the current BoardState.
+	 * @param current
+	 * @return
+	 */
+	public static String[] allLegalMovesArray(BoardState current) {
+		ArrayList<String> allLegalMoves = allLegalMovesList(current);
+		String[] allLegalMovesArray = allLegalMoves.toArray(new String[allLegalMoves.size()]);
+		return allLegalMovesArray;
+	}
 	
-	// elimintate the 
+	/**
+	 * Return an ArrayList of all the possible single depth moves at the current BoardState.
+	 * For single depth moves only
+	 * @param current
+	 * @return
+	 */
+	public static ArrayList<String> allLegalMovesList(BoardState current) {
+		
+		// Needs to check if this is the second move and if so limit the jumping to only one location. 
+		
+		if (BoardStateJumps.canJump(current)) {
+			return getJumpMovesStringList(current);
+		} else {
+			return getNonJumpMovesStringList(current);
+		}
+	}
 	
-	public static ArrayList<String> getAvailableJumpMoves(BoardState current) {
+	/**
+	 * Return an ArrayList of all the possible non-jump moves at the current BoardState.
+	 * @precondition
+	 * 		Assumes that no jumps are possible.
+	 * @param current
+	 * @return
+	 */
+	public static ArrayList<String> getJumpMovesStringList(BoardState current) {
 		
 		return null; //legalMoves;
 	}
 	
-	// This method needs to be fixed
-	public static void displayAllLegalMoves(BoardState current) {
-		//this.canJump();
-
-		// I need to add something here for the double jump or triple jump.
-		// Add something here for the regular moves. 
-
-		// Replace the for each with a simple print statement
-	}
-
-
-	public static void displayAllLegalMovesSecondJump(BoardState current, String moveString) {
-		// This method uses the string from the previous jump
-		// The destination must be the same as all the new starting points.
-		
-		String destinationString = moveString.substring(3, 5);
-		
-		// System.out.println(destinationString);
-		
-		// legalMoves.forEach((n) -> checkSecondLegalMoves(destinationString, n)); 
-				
-		// legalMoves.forEach((m) -> System.out.println(m));
-		
-	}
-	
-
-	public static void addAvailableNonJumpMoves(BoardState current) {
+	public static ArrayList<String> getNonJumpMovesStringList(BoardState current) {
 		ArrayList<String> legalMoves = new ArrayList();
 		
+		// Iterate through the entire board
 		for (int y = 0; y < Game.ROWS; y++) {
 			for (int x = 0; x < Game.COLUMNS; x++) {
+				
+				// If the piece is the current player's
 				if (current.positions[y][x] == current.getTurn() || current.positions[y][x] == current.getTurn() + 2) {
-					// Check for a single move by brute force.  
 					
+					// Check for a single move by brute force.  (i = -1 & 1)
 					for (int i = -1; i < 2; i+= 2) {
 						if (BoardStateMove.isLegalMove(current, y, x, y + i, x + 1)) {
-							// System.out.println("We found a success.");
+							
+							// Create an int array representing the move.
 							int[] legalMoveToAdd = {y, x, y + i, x + 1};
+							
+							// Convert the int array to a String.
 							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
+							
+							// Add the string to the ArrayList.
 							legalMoves.add(legalMoveString);
 							
 						}
 						
 						if (BoardStateMove.isLegalMove(current, y, x, y + i, x)) {
-							// System.out.println("We found a success.");
-
 							int[] legalMoveToAdd = {y, x, y + i, x};
 							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
 							legalMoves.add(legalMoveString);
@@ -67,54 +78,48 @@ public class BoardStateArrays {
 						}
 						
 						if (BoardStateMove.isLegalMove(current, y, x, y + i, x - 1)) {
-							// System.out.println("We found a success.");
-
 							int[] legalMoveToAdd = {y, x, y + i, x - 1};
 							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
 							legalMoves.add(legalMoveString);
-							
 						}
 					}
 				}
 			}
 		}
+		
+		return legalMoves;
 	}
 	
-	public static ArrayList<String> allLegalMoves(BoardState current) {
+	
+	/**
+	 * Print out the string array of all legal single depth moves at this BoardState.
+	 * @param current
+	 */
+	public static void displayAllLegalMoves(BoardState current) {
+		// Get an array of all possible string moves
 		
-		/*
-		 * legalMoves.clear();
-		 * 
-		 * if (canJump() != 0) { return getAvailableJumpMoves(); } else {
-		 * addAvailableNonJumpMoves(); }
-		 */
-		
-		
-		// Should simply return this information 
-		// return legalMoves;
-		
-		// iterate through the positions array and then run a method to determine each legal move for each piece of that player. 
-		
-		// Concatenate all of them and return the list. 
-		
-		// Use this list to create the tree. 
-		
-		return null;
-		
+		// Print the entire array
 	}
 
-	public static String[] allLegalMovesArray(BoardState current) {
-		ArrayList<String> allLegalMoves = allLegalMoves(current);
-		
-		String[] allLegalMovesArray = allLegalMoves.toArray(new String[allLegalMoves.size()]);
-		
-		return allLegalMovesArray;
-	}
 	
+
+	
+	
+	/**
+	 * Return the number of possible single depth moves at the current board state
+	 * @param current
+	 * @return
+	 */
 	public static int numLegalMoves(BoardState current) {
 		return allLegalMovesArray(current).length;
 	}
 	
+	/**
+	 * Return the number of possible moves of full depth
+	 * For use by the checkers engine
+	 * @param current
+	 * @return
+	 */
 	public static BoardState[] possibleChildStatesArray(BoardState current) {
 		
 		ArrayList<BoardState> childStates = possibleChildStates(current);
@@ -129,6 +134,11 @@ public class BoardStateArrays {
 		return allMovesOfMultipleLevels;
 	}
 	
+	/**
+	 * 
+	 * @param current
+	 * @return
+	 */
 	public static ArrayList<BoardState> possibleChildStates(BoardState current) {
 		// Iterate through all the possible first moves
 		ArrayList<BoardState> childStates = new ArrayList();
@@ -173,13 +183,22 @@ public class BoardStateArrays {
 		return childStates;
 	}
 	
+	/**
+	 * 
+	 * @param current
+	 * @return
+	 */
 	public static int numPossibleChildren(BoardState current) {
 		int numChildren = possibleChildStatesArray(current).length;
 		
 		return numChildren;
 	}
 	
-
+	/**
+	 * 
+	 * @param firstMove
+	 * @return
+	 */
 	public static ArrayList<BoardState> possibleSecondMoves(BoardState firstMove) {
 		ArrayList<BoardState> childStates = new ArrayList();
 		
@@ -189,7 +208,11 @@ public class BoardStateArrays {
 	
 	// has second jump method
 	
-
+	/**
+	 * 
+	 * @param current
+	 * @return
+	 */
 	public static int[][] availableDestinations(BoardState current) {
 		// This should be used to highlight legal moves in the GUI.
 		// Then when the user clicks a specific piece, it shrinks to show only the destinations for that tile. 
@@ -197,6 +220,11 @@ public class BoardStateArrays {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param current
+	 * @return
+	 */
 	public static String[] getStringArrayOfPossibleMoves(BoardState current) {
 		
 		String[] allLegalMovesArray = allLegalMovesArray(current);

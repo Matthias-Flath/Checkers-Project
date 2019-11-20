@@ -18,6 +18,7 @@ import java.util.Arrays;
 public class BoardState {
 	
 	private byte turn;
+	private boolean secondMove = false;
 	byte[][] positions = new byte[Game.ROWS][Game.COLUMNS];
 	
 	/**
@@ -56,6 +57,8 @@ public class BoardState {
 		this.turn = current.turn;
 		
 		if (BoardStateJumps.canJumpAtDestination(current, move)) {
+			this.secondMove = true;
+		} else {
 			this.nextTurn();
 		}
 		
@@ -302,6 +305,8 @@ public class BoardState {
 	}
 	
 	public void nextTurn() {
+		
+		this.secondMove = false;
 		
 		// System.out.println("We reached the next turn method.");
 		if (this.turn == 1) {
