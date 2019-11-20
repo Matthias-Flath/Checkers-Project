@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class BoardStateArrays {
 	
 	/**
-	 * Return an array of all the possible single depth moves at the current BoardState.
+	 * Return an array of all the possible single depth move strings at the current BoardState.
 	 * @param current
 	 * @return
 	 */
@@ -36,7 +36,7 @@ public class BoardStateArrays {
 	/**
 	 * Return an ArrayList of all the possible non-jump moves at the current BoardState.
 	 * @precondition
-	 * 		Assumes that no jumps are possible.
+	 * 		Assumes that at least 1 jump is possible
 	 * @param current
 	 * @return
 	 */
@@ -60,19 +60,14 @@ public class BoardStateArrays {
 					
 					// Moving down the board
 					legalMoves.addAll(jumpStringsAtLocation(current, y, x, -1));
-
-
-					
 				}
 			}
 		}
-					
-		
-		return null; //legalMoves;
+		return legalMoves;
 	}
 	
 	/**
-	 * 
+	 * Returns a list of strings of all possible jumps at that location.
 	 * @param current
 	 * @param y
 	 * @param x
@@ -119,6 +114,12 @@ public class BoardStateArrays {
 		return jump;
 	}
 	
+	/**
+	 * Return an ArrayList of all the possible non-jump moves at the current BoardState.
+	 * Assumes that no jump moves are possible.
+	 * @param current
+	 * @return
+	 */
 	public static ArrayList<String> getNonJumpMovesStringList(BoardState current) {
 		ArrayList<String> legalMoves = new ArrayList();
 		
@@ -141,14 +142,12 @@ public class BoardStateArrays {
 							
 							// Add the string to the ArrayList.
 							legalMoves.add(legalMoveString);
-							
 						}
 						
 						if (BoardStateMove.isLegalMove(current, y, x, y + i, x)) {
 							int[] legalMoveToAdd = {y, x, y + i, x};
 							String legalMoveString = TextConversions.convertIntArrayToString(legalMoveToAdd);
 							legalMoves.add(legalMoveString);
-								
 						}
 						
 						if (BoardStateMove.isLegalMove(current, y, x, y + i, x - 1)) {
@@ -170,14 +169,9 @@ public class BoardStateArrays {
 	 * @param current
 	 */
 	public static void displayAllLegalMoves(BoardState current) {
-		// Get an array of all possible string moves
-		
-		// Print the entire array
+		String[] allMoves = allLegalMovesArray(current);
+		System.out.println(Arrays.deepToString(allMoves));
 	}
-
-	
-
-	
 	
 	/**
 	 * Return the number of possible single depth moves at the current board state
@@ -188,8 +182,14 @@ public class BoardStateArrays {
 		return allLegalMovesArray(current).length;
 	}
 	
+	
+	// Possible Child State
+	// The below methods are for the checkers engine. 
+	
+	
+	
 	/**
-	 * Return the number of possible moves of full depth
+	 * Returns an array of all possible end BoardStates after the current turn.  (Full depth moves)
 	 * For use by the checkers engine
 	 * @param current
 	 * @return
@@ -197,14 +197,8 @@ public class BoardStateArrays {
 	public static BoardState[] possibleChildStatesArray(BoardState current) {
 		
 		ArrayList<BoardState> childStates = possibleChildStates(current);
-		// System.out.println(childStates);
-		
-		// System.out.println("finished created the arraylist");
 		BoardState[] allMovesOfMultipleLevels =  childStates.toArray(new BoardState[childStates.size()]);
-		
-		// System.out.println(Arrays.toString(allMovesOfMultipleLevels));
-		// System.out.println(allMovesOfMultipleLevels.length + " possibleChildStatesArray length");
-		
+
 		return allMovesOfMultipleLevels;
 	}
 	
