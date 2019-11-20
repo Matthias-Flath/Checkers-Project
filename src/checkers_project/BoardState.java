@@ -21,6 +21,9 @@ public class BoardState {
 	private boolean secondMove = false;
 	byte[][] positions = new byte[Game.ROWS][Game.COLUMNS];
 	
+	
+	
+	
 	/**
 	 * Create a board state for the beginning of the game.
 	 * @precondition
@@ -89,6 +92,34 @@ public class BoardState {
 		if (nextTurn) {
 			this.nextTurn();
 		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public byte getTurn() {
+		return this.turn;
+	}
+	
+	/**
+	 * 
+	 */
+	public void nextTurn() {
+		
+		this.secondMove = false;
+		
+		// System.out.println("We reached the next turn method.");
+		if (this.turn == 1) {
+			
+			this.turn = 2;
+		} else {
+			this.turn = 1;
+		}
+	}
+
+	public boolean isSecondMovePossible() {
+		return this.secondMove;
 	}
 	
 	
@@ -343,29 +374,7 @@ public class BoardState {
 		System.out.println(this.toString());
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public byte getTurn() {
-		return this.turn;
-	}
-	
-	/**
-	 * 
-	 */
-	public void nextTurn() {
-		
-		this.secondMove = false;
-		
-		// System.out.println("We reached the next turn method.");
-		if (this.turn == 1) {
-			
-			this.turn = 2;
-		} else {
-			this.turn = 1;
-		}
-	}
+
 
 	/**
 	 * 

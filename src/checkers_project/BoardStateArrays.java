@@ -186,8 +186,6 @@ public class BoardStateArrays {
 	// Possible Child State
 	// The below methods are for the checkers engine. 
 	
-	
-	
 	/**
 	 * Returns an array of all possible end BoardStates after the current turn.  (Full depth moves)
 	 * For use by the checkers engine
@@ -203,103 +201,43 @@ public class BoardStateArrays {
 	}
 	
 	/**
-	 * 
+	 * Return an ArrayList of all possible end BoardStates after the current turn.  (Full depth moves) 
 	 * @param current
 	 * @return
 	 */
 	public static ArrayList<BoardState> possibleChildStates(BoardState current) {
+		
 		// Iterate through all the possible first moves
 		ArrayList<BoardState> childStates = new ArrayList();
 		String[] legalFirstMoves = allLegalMovesArray(current);
 		
-		// System.out.println(Arrays.toString(legalFirstMoves));
-		
 		int firstMoves = numLegalMoves(current);
-		BoardState[] firstBoardStates = new BoardState[firstMoves];
+		
+		// BoardState[] firstBoardStates = new BoardState[firstMoves];
 		
 		for (int i = 0; i < firstMoves; i++) {
-			firstBoardStates[i] = new BoardState(current, legalFirstMoves[i]);
-		}
-		
-		for (int j = 0; j < firstMoves; j++) {
-
-			// If the new board state and the current board state are different, then the move has finished
-			if (firstBoardStates[j].getTurn() != current.getTurn()) {
-				childStates.add(firstBoardStates[j]);
-			// Otherwise recursively find the endpoints of that move.
+			BoardState temp =  new BoardState(current, legalFirstMoves[i]);
+			
+			if (temp.isSecondMovePossible() == false) {
+				childStates.add(temp);
 			} else {
-				System.out.println("Found a jump turn");
-				// System.exit(0);
-				ArrayList<BoardState> nextLevel = possibleChildStates(firstBoardStates[j]);
-				childStates.addAll(nextLevel);
+				
+				childStates.addAll(possibleChildStates(temp));
 			}
-			
-			 
-			// check if move is the same a "this"
-			
-			// If not recursively call possibleChildStates
-			
 		}
 	
-		// Iterate through the array
-		// Check if there are possible next jumps
-		// If so call another method and add it to board state.
-		
-		
-		
-		
 		return childStates;
 	}
 	
 	/**
-	 * 
+	 * Return the number possible BoardStates after this turn. 
+	 * This will be used to determine the number of children in a TreeNode.
 	 * @param current
 	 * @return
 	 */
 	public static int numPossibleChildren(BoardState current) {
 		int numChildren = possibleChildStatesArray(current).length;
-		
 		return numChildren;
-	}
-	
-	/**
-	 * 
-	 * @param firstMove
-	 * @return
-	 */
-	public static ArrayList<BoardState> possibleSecondMoves(BoardState firstMove) {
-		ArrayList<BoardState> childStates = new ArrayList();
-		
-		
-		return null;
-	}
-	
-	// has second jump method
-	
-	/**
-	 * 
-	 * @param current
-	 * @return
-	 */
-	public static int[][] availableDestinations(BoardState current) {
-		// This should be used to highlight legal moves in the GUI.
-		// Then when the user clicks a specific piece, it shrinks to show only the destinations for that tile. 
-		
-		return null;
-	}
-	
-	/**
-	 * 
-	 * @param current
-	 * @return
-	 */
-	public static String[] getStringArrayOfPossibleMoves(BoardState current) {
-		
-		String[] allLegalMovesArray = allLegalMovesArray(current);
-		
-		System.out.println(Arrays.toString(allLegalMovesArray));
-		
-		return allLegalMovesArray;
 	}
 	
 }
