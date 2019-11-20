@@ -50,82 +50,21 @@ public class BoardStateJumps {
 	 * 		1 or -1 to represent which way we are moving rows on the board
 	 * @return
 	 * 		byte of the number of jumps possible at that board location in a specific direction
+	 * 		Possible values are 0, 1, and 2
 	 */
 	private static byte numJumpsAtLocation(BoardState current, int y, int x, int direction) {
 		
-		// Do I need any checks as to whether positions[y][x] is used.
-		
 		byte jumpCount = 0;
 
-		int player = current.whosePieceIsThis(y, x);
-
-		int leftXToJumpOver;
-		int rightXToJumpOver;
-
-		// Check if the potential jump y value is on the board.
-		boolean isYJumpLegal = TextConversions.isLegalY(y+ (2 * direction));
-
-		if (isYJumpLegal == false) return 0;
+		if (numJumpsInSpecificDirectionAtLocation(current, y, x, direction, true)) jumpCount++;
+		if (numJumpsInSpecificDirectionAtLocation(current, y, x, direction, false)) jumpCount++;
 		
-		// Right leaning rows
-		if (y%2 == 1) {
-			// 0 and +1 for the next row
-			// - 1 and + 1 for the second row
-
-			leftXToJumpOver = x;
-			rightXToJumpOver = x + 1;
-
-			// Consider refactoring the below 7 lines into 1 method call
-			
-			if (TextConversions.isLegalX(leftXToJumpOver - 1)) {	
-				if (isOpposingPieceAt(current, player, y + direction, leftXToJumpOver)) {
-					if (current.positions[y+(2 * direction)][x-1] == 0) {
-						jumpCount++;
-					}
-				}
-			}
-
-			if (TextConversions.isLegalX(rightXToJumpOver + 1)) {	
-				if (isOpposingPieceAt(current, player, y + direction, rightXToJumpOver)) {
-
-						if (current.positions[y+(2 * direction)][x + 1] == 0) {
-							jumpCount++;
-						}
-					
-				}
-			}
-
-		// Left leaning rows
-		} else {
-			// -1 and 0 for the next row
-			// -1 and positive one
-
-			leftXToJumpOver = x - 1;
-			rightXToJumpOver = x;
-
-			if (TextConversions.isLegalX(leftXToJumpOver)) {
-
-				if (isOpposingPieceAt(current, player, y+ direction, leftXToJumpOver)) {
-					if (current.positions[y+(2 * direction)][x-1] == 0) {
-						jumpCount++;
-					}
-				}
-			}
-
-			if (TextConversions.isLegalX(rightXToJumpOver + 1)) {
-				if (isOpposingPieceAt(current, player, y+ direction, rightXToJumpOver)) {
-					if (current.positions[y+(2 * direction)][x + 1] == 0) {
-						jumpCount++;
-					}
-				}
-			}	
-		}						
-
 		return jumpCount;
 	}
 	
 	/**
-	 * 
+	 * Determine if a specific jump is possible. 
+	 * Given a starting point, vertical and horizontal direction to jump
 	 * @param current
 	 * @param y
 	 * @param x
