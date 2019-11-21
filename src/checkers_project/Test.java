@@ -28,6 +28,7 @@ public class Test {
 	int index = 0;
 	
 	// This array is used to test both sides of the game (without an engine)
+	
 	String moveArray[] = {"3a 4b", "6d 5c", "4b 6d", "7c 5e", "3e 4f", "7e 6d",
 			"2b 3a", "6f 5g", "3g 4h", "5g 3e", "2d 4f", "5e 3g", "2h 4f", "6b 5a",
 			"2f 3e", "8d 7c", "1c 2b", "8f 7e", "1e 2f", "6h 5g", "4h 6f", "6f 8d",
@@ -35,6 +36,9 @@ public class Test {
 			"3a 4b", "7g 6f", "2f 3g", "6f 5e", "1g 2f", "8b 7a", "6b 7c", "7a 6b",
 			"7c 8d", "6b 5c", "8d 7e", "5c 3a", "7e 5c", "5e 4d", "5c 4b", "6h 5g",
 			"4f 6h", "3a 2b", "1a 3c", "3c 5e"};
+
+
+	// String moveArray[] = {"3a 4b", "6b 5a", "3c 4d", "5a 3c", "2d 4b", "6d 5c", "4d 6b", "7c 5a", "5a 3c", "2b 4d"};
 	
 	/*
 	 * Invariant of the Test ADT
@@ -58,6 +62,11 @@ public class Test {
 		
 		// Create a game state with the proper starting pieces
 		this.board = new BoardState();
+		
+		// Test the cloning constructor
+		// BoardState test = new BoardState(board, "3a 4b");
+		
+		
 		this.gameTurn = board.getTurn();
 		this.multiplayer = true;
 		this.end = false;
@@ -154,13 +163,13 @@ public class Test {
 		System.out.println();
 		board.printState();
 
-		System.out.println("Move: " + this.gameTurn);
+		// System.out.println("Move: " + this.gameTurn);
 		
 		// List all legal moves for the user
-		// BoardStateArrays.displayAllLegalMoves(board);
+		BoardStateArrays.displayAllLegalMoves(board);
 		
 		// Tell the user if they need to jump
-		// BoardStateJumps.printJumpRequirementString(board);
+		BoardStateJumps.printJumpRequirementString(board);
 		
 		// Get a move string from the user
 		String moveString = getUserMove();
@@ -170,7 +179,10 @@ public class Test {
 		
 		if (board.isSecondMovePossible()) {
 			System.out.println("Possible second move");
-			result = board.isLegalMove(moveString, this.getPreviousMove());
+			String previousMove = this.getPreviousMove();
+			System.out.println("Previous move" + previousMove);
+			result = board.isLegalMove(moveString, previousMove);
+			System.out.println(result);
 		} else {
 			// System.out.println("Current turn:" + this.gameTurn);
 			result = board.isLegalMove(moveString);
@@ -181,11 +193,13 @@ public class Test {
 		System.out.println(result);
 		
 		if (result) {
-			// Add the pre-move state to the boardHistory
-			this.boardStateHistory.add(board);
+			// The java.util.LinkedList add method adds to the tail.
 			
-			// Add the moveString to the history
-			this.moveStringHistory.add(moveString);
+			// Add the pre-move state to the boardHistory head
+			this.boardStateHistory.push(board);
+			
+			// Add the moveString to the history head
+			this.moveStringHistory.push(moveString);
 			
 			// Set the second turn value
 			board.setSecondMove(BoardStateJumps.canJumpAtDestination(board, moveString));
@@ -208,7 +222,7 @@ public class Test {
 	 */
 	public String getUserMove() {
 		// The while loop is only here for integration testing
-		while (index < 0) { // moveArray.length
+		while (index < moveArray.length) { // moveArray.length
 			index++;
 
 			if (gameTurn == 1) { 

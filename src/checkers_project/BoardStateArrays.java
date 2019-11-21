@@ -27,10 +27,10 @@ public class BoardStateArrays {
 		// Needs to check if this is the second move and if so limit the jumping to only one location. 
 		
 		if (BoardStateJumps.canJump(current)) {
-			System.out.println("Can jump");
+			// System.out.println("Can jump");
 			return getJumpMovesStringList(current);
 		} else {
-			System.out.println("Can't jump");
+			// System.out.println("Can't jump");
 			return getNonJumpMovesStringList(current);
 		}
 	}

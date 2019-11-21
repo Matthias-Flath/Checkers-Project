@@ -75,18 +75,11 @@ public class BoardState {
 			this.nextTurn();
 		}
 		
+		// System.out.println("Below is the cloned boardstate");
+		// this.printState();
 		
-		// This line doesn't do anything with turns
-		
-		
-		System.out.println("Below is the cloned boardstate");
-		this.printState();
-		
-		System.out.println("Below is the current BoardState");
-		current.printState();
-		
-		
-		
+		// System.out.println("Below is the current BoardState");
+		// current.printState();
 		
 	}
 	
@@ -133,16 +126,16 @@ public class BoardState {
 			}
 		}
 		
-		System.out.println("Below is the cloned boardstate");
-		this.printState();
+		// System.out.println("Below is the cloned boardstate");
+		// this.printState();
 
-		System.out.println("Below is the current BoardState");
-		current.printState();
+		// System.out.println("Below is the current BoardState");
+		// current.printState();
 
 	}
 	
 	/**
-	 * Return the current turn of the boardstate.
+	 * Return the current turn of the BoardState.
 	 * @return
 	 */
 	public byte getTurn() {
@@ -221,7 +214,7 @@ public class BoardState {
 	 */
 	public void preCheckedMove(int py, int px, int dy, int dx) {
 		
-		System.out.println("Prechecked Move has been called.");
+		// System.out.println("Prechecked Move has been called.");
 		
 		// Move the piece
 		this.positions[dy][dx] = this.positions[py][px];
@@ -230,9 +223,11 @@ public class BoardState {
 		// Call the isJump method
 		if (TextConversions.isJump(py, px, dy, dx)) {
 			
-			
-			
+			// There is a bug in the line below
 			int middleX = BoardStateJumps.getXToJumpOver(py, px, dy, dx);
+			// System.out.println(middleX);
+			
+			
 			int direction = (dy - py) / 2;
 			
 			// Delete the jumped over piece
@@ -284,8 +279,6 @@ public class BoardState {
 	public boolean isLegalMove(String move, String previousMove) {
 		return BoardStateMove.isLegalMove(this, move, previousMove);
 	}
-	
-	
 	
 	/**
 	 * 

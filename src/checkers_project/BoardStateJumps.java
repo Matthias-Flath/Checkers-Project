@@ -121,7 +121,10 @@ public class BoardStateJumps {
 		int xToJumpOver;
 
 		boolean isRightLeaning = BoardStateJumps.isRightLeaning(py);
+		// System.out.println("Is right leaning: " + isRightLeaning);
+		
 		boolean jumpRight = (dx - px == 1) ? true : false;
+		// System.out.println("Jump Right" + jumpRight);
 
 		if (isRightLeaning) {
 			xToJumpOver = (jumpRight) ? px + 1 : px;
@@ -140,7 +143,7 @@ public class BoardStateJumps {
 	 * 		false if left leaning.
 	 */
 	public static boolean isRightLeaning(int y) {
-		if ((y % 2) == 0 ) {
+		if ((y % 2) == 1 ) {
 			return true;
 		}
 		return false;

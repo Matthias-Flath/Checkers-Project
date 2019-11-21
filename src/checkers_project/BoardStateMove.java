@@ -48,8 +48,9 @@ public class BoardStateMove {
 		int startY = previousMoveArray[2];
 		int startX = previousMoveArray[3];
 		
-		if (currentMoveArray[2] != startY) return false;
-		if (currentMoveArray[3] != startX) return false;
+		// Check if the starting position (0 and 1) are equal to the ending position (2 and 3) of the previous move.
+		if (currentMoveArray[0] != startY) return false;
+		if (currentMoveArray[1] != startX) return false;
 		
 		return true;
 	}
@@ -70,11 +71,10 @@ public class BoardStateMove {
 	 */
 	public static boolean isLegalMove(BoardState current, int py, int px, int dy, int dx) {
 		
-		System.out.println(py);
-		System.out.println(px);
-		System.out.println(dy);
-		System.out.println(dx);
-		System.out.println("");
+		/*
+		 * System.out.println(py); System.out.println(px); System.out.println(dy);
+		 * System.out.println(dx); System.out.println("");
+		 */
 		
 		
 		
@@ -93,11 +93,11 @@ public class BoardStateMove {
 		
 		// Check to make sure all py and x are actually in the domain. 
 		if (!TextConversions.checkOnBoard(py, px)) {
-			System.out.println("Piece is not on the board.");
+			// System.out.println("Piece is not on the board.");
 			return false;
 		}
 		if (!TextConversions.checkOnBoard(dy, dx)) {
-			System.out.println("Destination is not on the board.");
+			// System.out.println("Destination is not on the board.");
 			return false;
 		}
 		
@@ -110,13 +110,13 @@ public class BoardStateMove {
  		
 		// Check to make sure the destination is empty
 		if (current.positions[dy][dx] != 0) {
-			System.out.println("Destination is not empty.");
+			// System.out.println("Destination is not empty.");
 			return false;
 		}
 		
 		// Check to make sure it is the appropriate turn (or turn with kings)
 		if ((current.positions[py][px] != current.getTurn()) && (current.positions[py][px] != current.getTurn() + 2)) {
-			System.out.println("Wrong turn");
+			// System.out.println("Wrong turn");
 			return false;
 		}
 		
