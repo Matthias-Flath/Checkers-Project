@@ -2,6 +2,7 @@ package checkers_project;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.lang.System;
 
 /**
  * positions
@@ -56,8 +57,17 @@ public class BoardState {
 	 */
 	public BoardState(BoardState current, String move) {
 				
-		this.positions = current.positions.clone();
+		// This clone line doesn't work
+		clonePositionArray(current.positions);
 		this.turn = current.turn;
+		this.secondMove = current.secondMove;
+		
+		if (!this.isLegalMove(move)) {
+			System.out.println("BoardState object cannot be created because this move is illegal.");
+			throw new IllegalArgumentException();
+		}
+		
+		this.preCheckedMove(move);
 		
 		if (BoardStateJumps.canJumpAtDestination(current, move)) {
 			this.secondMove = true;
@@ -65,13 +75,31 @@ public class BoardState {
 			this.nextTurn();
 		}
 		
-		if (!current.isLegalMove(move)) {
-			System.out.println("BoardState object cannot be created because this move is illegal.");
-			throw new IllegalArgumentException();
-		}
 		
 		// This line doesn't do anything with turns
-		this.preCheckedMove(move);
+		
+		
+		System.out.println("Below is the cloned boardstate");
+		this.printState();
+		
+		System.out.println("Below is the current BoardState");
+		current.printState();
+		
+		
+		
+		
+	}
+	
+	private void clonePositionArray(byte[][] oldArray) {
+
+		for(int i = 0; i < this.positions.length; i++) {
+			// I'm not yet sure that this actually works
+			// How many columns do I need?
+			java.lang.System.arraycopy(oldArray[i], 0, this.positions[i], 0, Game.COLUMNS);
+		}
+		
+		
+		
 	}
 	
 	/**
@@ -115,7 +143,6 @@ public class BoardState {
 		this.secondMove = false;
 		
 		if (this.turn == 1) {
-			
 			this.turn = 2;
 		} else {
 			this.turn = 1;
@@ -137,6 +164,7 @@ public class BoardState {
 		this.secondMove = secondMove;
 	}
 	
+	// Bug in this method 
 	/**
 	 * Complete the move described in the string on the calling BoardState.
 	 * Doesn't actually change the turn, simply moves the piece
@@ -155,7 +183,7 @@ public class BoardState {
 		}
 		
 		int[] fromAndTo = TextConversions.convertMoveStringToIntArray(move);	
-		System.out.println(Arrays.toString(fromAndTo));
+		// System.out.println(Arrays.toString(fromAndTo));
 		preCheckedMove(fromAndTo[0], fromAndTo[1], fromAndTo[2], fromAndTo[3]);
 	}
 	
@@ -172,12 +200,17 @@ public class BoardState {
 	 */
 	public void preCheckedMove(int py, int px, int dy, int dx) {
 		
+		System.out.println("Prechecked Move has been called.");
+		
 		// Move the piece
 		this.positions[dy][dx] = this.positions[py][px];
 		this.positions[py][px] = 0;
 		
 		// Call the isJump method
 		if (TextConversions.isJump(py, px, dy, dx)) {
+			
+			
+			
 			int middleX = BoardStateJumps.getXToJumpOver(py, px, dy, dx);
 			int direction = (dy - py) / 2;
 			
