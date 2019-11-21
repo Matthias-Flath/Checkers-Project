@@ -224,6 +224,7 @@ public class BoardStateArrays {
 		return allMovesOfMultipleLevels;
 	}
 	
+ 	// Bug in this and the below method
 	/**
 	 * Return an ArrayList of all possible end BoardStates after the current turn.  (Full depth moves) 
 	 * @param current

@@ -29,14 +29,15 @@ public class Test {
 	
 	// This array is used to test both sides of the game (without an engine)
 	
-	String moveArray[] = {"3a 4b", "6d 5c", "4b 6d", "7c 5e", "3e 4f", "7e 6d",
-			"2b 3a", "6f 5g", "3g 4h", "5g 3e", "2d 4f", "5e 3g", "2h 4f", "6b 5a",
-			"2f 3e", "8d 7c", "1c 2b", "8f 7e", "1e 2f", "6h 5g", "4h 6f", "6f 8d",
-			"7g 6h", "8d 6b", "7a 5c", "3c 4b", "5a 3c", "2b 4d", "4d 6b", "8h 7g",
-			"3a 4b", "7g 6f", "2f 3g", "6f 5e", "1g 2f", "8b 7a", "6b 7c", "7a 6b",
-			"7c 8d", "6b 5c", "8d 7e", "5c 3a", "7e 5c", "5e 4d", "5c 4b", "6h 5g",
-			"4f 6h", "3a 2b", "1a 3c", "3c 5e"};
-
+	/*
+	 * String moveArray[] = {"3a 4b", "6d 5c", "4b 6d", "7c 5e", "3e 4f", "7e 6d",
+	 * "2b 3a", "6f 5g", "3g 4h", "5g 3e", "2d 4f", "5e 3g", "2h 4f", "6b 5a",
+	 * "2f 3e", "8d 7c", "1c 2b", "8f 7e", "1e 2f", "6h 5g", "4h 6f", "6f 8d",
+	 * "7g 6h", "8d 6b", "7a 5c", "3c 4b", "5a 3c", "2b 4d", "4d 6b", "8h 7g",
+	 * "3a 4b", "7g 6f", "2f 3g", "6f 5e", "1g 2f", "8b 7a", "6b 7c", "7a 6b",
+	 * "7c 8d", "6b 5c", "8d 7e", "5c 3a", "7e 5c", "5e 4d", "5c 4b", "6h 5g",
+	 * "4f 6h", "3a 2b", "1a 3c", "3c 5e"};
+	 */
 
 	// String moveArray[] = {"3a 4b", "6b 5a", "3c 4d", "5a 3c", "2d 4b", "6d 5c", "4d 6b", "7c 5a", "5a 3c", "2b 4d"};
 	
@@ -68,7 +69,7 @@ public class Test {
 		
 		
 		this.gameTurn = board.getTurn();
-		this.multiplayer = true;
+		this.multiplayer = false;
 		this.end = false;
 		
 		// Add the starting position to the boardStateHistory
@@ -83,6 +84,10 @@ public class Test {
 		} 		 
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getPreviousMove() {
 		// Do I need to do any checking to make sure it isn't null?
 		return this.moveStringHistory.peek();
@@ -182,7 +187,7 @@ public class Test {
 			String previousMove = this.getPreviousMove();
 			System.out.println("Previous move" + previousMove);
 			result = board.isLegalMove(moveString, previousMove);
-			System.out.println(result);
+			// System.out.println(result);
 		} else {
 			// System.out.println("Current turn:" + this.gameTurn);
 			result = board.isLegalMove(moveString);
@@ -190,7 +195,7 @@ public class Test {
 		
 		}
 		
-		System.out.println(result);
+		// System.out.println(result);
 		
 		if (result) {
 			// The java.util.LinkedList add method adds to the tail.
@@ -222,7 +227,7 @@ public class Test {
 	 */
 	public String getUserMove() {
 		// The while loop is only here for integration testing
-		while (index < moveArray.length) { // moveArray.length
+		while (index < 0) { // moveArray.length
 			index++;
 
 			if (gameTurn == 1) { 
@@ -231,17 +236,15 @@ public class Test {
 				System.out.print("Red Turn. Please enter the start and end coordinates of your move: ");
 			}
 
-			System.out.print(moveArray[index -1]); 
+			// System.out.print(moveArray[index -1]); 
 			System.out.println(); 
 			
-			return moveArray[index - 1];
+			// return moveArray[index - 1];
 
 		}
 
 
 		Scanner in = new Scanner(System.in);
-		
-		// board.canJump();
 		
 		if (gameTurn == 1) {
 			System.out.print("Black Turn. Please enter the start and end coordinates of your move: ");

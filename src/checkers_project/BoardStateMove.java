@@ -81,7 +81,7 @@ public class BoardStateMove {
 		// Check to ensure the jump rule is followed.
 		if (BoardStateJumps.canJump(current)) {
 			
-			System.out.println("Can jump");
+			// System.out.println("Can jump");
 			
 			// Enforcing the jump rule.
 			// System.out.println("Enforcing the jump rule.");

@@ -11,7 +11,11 @@ public class CheckersEngine {
 
 	public static final int depth = 4;
 	
-	
+	/**
+	 * 
+	 * @param bound
+	 * @return
+	 */
 	public static int getRandomMove(int bound) {
 		Random random = new Random();
 		int move = random.nextInt(bound);
@@ -19,6 +23,11 @@ public class CheckersEngine {
 		
 	}
 	
+	/**
+	 * 
+	 * @param allPossibleMoves
+	 * @return
+	 */
 	public static String getRandomMoveString(String[] allPossibleMoves) {
 		
 		int length = allPossibleMoves.length;  
@@ -26,15 +35,16 @@ public class CheckersEngine {
 		return allPossibleMoves[randomIndex];
 	}
 
+	/**
+	 * 
+	 * @param currentState
+	 * @return
+	 */
 	public static BoardState minMaxMove(BoardState currentState) {
 		
 		System.out.println("Reached minMaxMove");
 		
-		// Bug in this line
 		BoardState[] allMoves = BoardStateArrays.possibleChildStatesArray(currentState);
-		
-		// System.out.println(Arrays.toString(allMoves));
-		
 		int numChildren = allMoves.length;
 		
 		TreeNode root = new TreeNode(currentState, numChildren);
@@ -47,16 +57,20 @@ public class CheckersEngine {
 		// Index with the best move
 		int maxIndex = maxValueIndex(root);
 		
-		
 		BoardState bestMove = allMoves[maxIndex];
 		
 		return bestMove;
 		
 	}
-	// Recursively fill the search tree
+	
+	/**
+	 * Recursively fill the search tree
+	 * @param root
+	 * @param depth
+	 */
 	public static void fillTreeNode(TreeNode root, int depth) {
 		
-		System.out.println("Reached the fill tree method");
+		// System.out.println("Reached the fill tree method");
 		
 		BoardState[] allMoves = BoardStateArrays.possibleChildStatesArray(root.getTreeNodeData());
 		
@@ -79,6 +93,10 @@ public class CheckersEngine {
 		} 
 	}
 	
+	/**
+	 * 
+	 * @param root
+	 */
 	public static void evaluatePositions(TreeNode root) {
 		// fill in the boardPositionValue of each TreeNode object.
 		// byte turn = root.getTreeNodeData().getTurn();
@@ -114,6 +132,11 @@ public class CheckersEngine {
 		
 	}
 	
+	/**
+	 * 
+	 * @param root
+	 * @return
+	 */
 	public static int minValueIndex(TreeNode root) {
 		double minimum = 100;
 		int minIndex = -1;
@@ -128,6 +151,11 @@ public class CheckersEngine {
 		return minIndex;
 	}
 	
+	/**
+	 * 
+	 * @param root
+	 * @return
+	 */
 	public static int maxValueIndex(TreeNode root) {
 		double max = -100;
 		int maxIndex = -1;
@@ -141,6 +169,11 @@ public class CheckersEngine {
 		return maxIndex;
 	}
 	
+	/**
+	 * 
+	 * @param root
+	 * @return
+	 */
 	public static int findBestMove(TreeNode root) {
 		return maxValueIndex(root);
 	}
