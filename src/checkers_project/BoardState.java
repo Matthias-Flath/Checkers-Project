@@ -21,9 +21,6 @@ public class BoardState {
 	private boolean secondMove = false;
 	byte[][] positions = new byte[Game.ROWS][Game.COLUMNS];
 	
-	
-	
-	
 	/**
 	 * Create a board state for the beginning of the game.
 	 * @precondition
@@ -51,11 +48,14 @@ public class BoardState {
 	 * Create a new boardState object
 	 * @param current
 	 * @param move
+	 * @postcondition
+	 * 		If a second move is possible, this.SecondMove is true
+	 * 		Else, the nextTurn method is called
+	 * @throws IllegalArgumentException
+	 * 		If move is illegal for BoardState current
 	 */
 	public BoardState(BoardState current, String move) {
 				
-		// System.out.println("Original " + current);
-		
 		this.positions = current.positions.clone();
 		this.turn = current.turn;
 		
@@ -65,15 +65,13 @@ public class BoardState {
 			this.nextTurn();
 		}
 		
-		// System.out.println("Cloned " + this);
+		if (!current.isLegalMove(move)) {
+			System.out.println("BoardState object cannot be created because this move is illegal.");
+			throw new IllegalArgumentException();
+		}
 		
-		// Call a check method to ensure that it is indeed a safe move.
-		
+		// This line doesn't do anything with turns
 		this.preCheckedMove(move);
-		
-		// System.out.println(move);
-		// System.out.println("Cloned and moved " + this);
-		
 	}
 	
 	/**
@@ -95,7 +93,7 @@ public class BoardState {
 	}
 	
 	/**
-	 * 
+	 * Return the current turn of the boardstate.
 	 * @return
 	 */
 	public byte getTurn() {
@@ -103,13 +101,18 @@ public class BoardState {
 	}
 	
 	/**
-	 * 
+	 * Turn off the secondMove value.
+	 * Change the turn of the calling BoardState.
+	 * @precondition
+	 * 		No additional moves are possible for the current player
+	 * @postcondition
+	 * 		secondMove is false
+	 * 		turn has switched to the other user.
 	 */
 	public void nextTurn() {
 		
 		this.secondMove = false;
 		
-		// System.out.println("We reached the next turn method.");
 		if (this.turn == 1) {
 			
 			this.turn = 2;
@@ -118,131 +121,79 @@ public class BoardState {
 		}
 	}
 
+	/**
+	 * Get the value of the secondMove instance variable.
+	 * This method doesn't actually do any computation, merely fetch the value.
+	 * @return
+	 */
 	public boolean isSecondMovePossible() {
 		return this.secondMove;
 	}
 	
-	
-	// Create another BoardState constructor that takes an int array (might be a lot faster)
-	
-	// Doesn't actually change the turn, simply moves the piece
 	/**
-	 * 
+	 * Complete the move described in the string on the calling BoardState.
+	 * Doesn't actually change the turn, simply moves the piece
 	 * @param move
+	 * @throws IllegalArgumentException
+	 * 		If move is not legal for the calling BoardState
 	 */
 	public void preCheckedMove(String move) {
-		// System.out.println(move);
+		
+		// For debugging
+		if (this.isLegalMove(move) == false) {
+			System.out.println("This move is illegal!");
+			System.out.println(move);
+			this.printState();
+			throw new IllegalArgumentException();
+		}
+		
 		int[] fromAndTo = TextConversions.convertMoveStringToIntArray(move);	
 		System.out.println(Arrays.toString(fromAndTo));
 		preCheckedMove(fromAndTo[0], fromAndTo[1], fromAndTo[2], fromAndTo[3]);
 	}
 	
 	/**
-	 * 
+	 * Complete the move described in the string on the calling BoardState.
+	 * Doesn't actually change the turn, simply moves the piece.
+	 * This method does not check for move legality.  It assumes that you are calling this method from a method that already has.
 	 * @param py
 	 * @param px
 	 * @param dy
 	 * @param dx
+	 * @postcondition
+	 * 		The move is complete, turn has not been changed.
 	 */
 	public void preCheckedMove(int py, int px, int dy, int dx) {
 		
-		// System.out.println(px);
-		// System.out.println(dx);
+		// Move the piece
+		this.positions[dy][dx] = this.positions[py][px];
+		this.positions[py][px] = 0;
 		
-		
-		
-		if ((dy - py) == 1 || (dy - py) == -1) {
-			// System.out.println("Reached the single move area");
-			
-			this.positions[dy][dx] = this.positions[py][px];
-			// System.out.println(dy);
-			// System.out.println(dx);
-			// System.out.println(positions[dy][dx]);
-			
-			this.positions[py][px] = 0;
-			
-			// System.out.println("After the move method");
-			// System.out.println(this);
-			
-			
-		} else {
-			// Rules for jumps
-			
+		// Call the isJump method
+		if (TextConversions.isJump(py, px, dy, dx)) {
+			int middleX = BoardStateJumps.getXToJumpOver(py, px, dy, dx);
 			int direction = (dy - py) / 2;
 			
-			if ((py % 2) == 1) {
-				// Right leaning rows
-				
-				if (direction == 1) {
-					// Move the piece to the new location
-					positions[dy][dx] = positions[py][px];
-					positions[py][px] = 0;
-					
-					// Eliminate the piece jumped over
-					if ((dx - px) == direction) {
-						positions[py+direction][px + direction] = 0;
-					} else {
-						// Eliminate the piece jumped over
-						positions[py+direction][px] = 0;
-					}
-				} else {
-					// Move the piece to the new location
-					positions[dy][dx] = positions[py][px];
-					positions[py][px] = 0;
-					
-					// Eliminate the piece jumped over
-					if ((dx - px) == direction) {
-						positions[py+direction][px] = 0;
-					} else {
-						// Eliminate the piece jumped over
-						positions[py+direction][px + direction] = 0;
-					}
-				}
-				
-				
-			} else {
-				// left leaning rows
-				
-				if (direction == 1) {
-					// Move the piece to the new location
-					positions[dy][dx] = positions[py][px];
-					positions[py][px] = 0;
-					
-					// Eliminate the piece jumped over
-					if ((dx - px) == direction) {
-						positions[py+direction][px] = 0;
-					} else {
-						// Eliminate the piece jumped over
-						positions[py+direction][px + direction] = 0;
-					}
-				} else {
-					// Move the piece to the new location
-					positions[dy][dx] = positions[py][px];
-					positions[py][px] = 0;
-					
-					// Eliminate the piece jumped over
-					if ((dx - px) == direction) {
-						positions[py+direction][px + direction] = 0;
-					} else {
-						// Eliminate the piece jumped over
-						positions[py+direction][px] = 0;
-					}
-				}
-			}
+			// Delete the jumped over piece
+			positions[py+direction][middleX] = 0;
 		}
 		
-		
-		
+		// King pieces that reach the end
 		if (dy == 0 || dy == 7) {
-			if (positions[dy][dx] == 3 || positions[dy][dx] == 4) {
+			
+			// Checks to make sure the pieces aren't already kings.
+			if (positions[dy][dx] == 1 || positions[dy][dx] == 2) {
 				king(dy, dx);
 			}
 		}
-		
 	}
 	
+	
 	/**
-	 * 
+	 * Convert a piece to a king
+	 * This method doesn't check the precondition.  It assumes that it is called from a method that did.
+	 * @precondition
+	 * 		Piece reached the appropriate end of the board.
 	 * @param dy
 	 * @param dx
 	 */
@@ -255,14 +206,13 @@ public class BoardState {
 	}
 	
 	/**
-	 * 
+	 * Check if a move is legal for the calling BoardState.
 	 * @param move
 	 * @return
 	 */
 	public boolean isLegalMove(String move) {
 		return BoardStateMove.isLegalMove(this, move);
 	}
-	
 
 	/**
 	 * 
@@ -374,8 +324,6 @@ public class BoardState {
 		System.out.println(this.toString());
 	}
 
-
-
 	/**
 	 * 
 	 * @param py
@@ -435,7 +383,4 @@ public class BoardState {
 		
 	}
 	
-	
-	
 }
-

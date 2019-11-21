@@ -104,7 +104,7 @@ public class BoardStateArrays {
 	 */
 	public static String jumpStringInSpecificDirectionAtLocation(BoardState current, int y, int x, int direction, boolean right) {
 		
-		boolean jumpLegality = BoardStateJumps.numJumpsInSpecificDirectionAtLocation(current, y, x, direction, right);
+		boolean jumpLegality = BoardStateJumps.canJumpInSpecificDirectionAtLocation(current, y, x, direction, right);
 		if (!jumpLegality) return null;
 		
 		int xToLandOn =  (right) ? x + 1 : x - 1;

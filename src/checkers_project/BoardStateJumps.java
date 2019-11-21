@@ -2,6 +2,7 @@ package checkers_project;
 
 /**
  * 
+ * 
  * @author computer
  *
  */
@@ -61,8 +62,8 @@ public class BoardStateJumps {
 		
 		byte jumpCount = 0;
 
-		if (numJumpsInSpecificDirectionAtLocation(current, y, x, direction, true)) jumpCount++;
-		if (numJumpsInSpecificDirectionAtLocation(current, y, x, direction, false)) jumpCount++;
+		if (canJumpInSpecificDirectionAtLocation(current, y, x, direction, true)) jumpCount++;
+		if (canJumpInSpecificDirectionAtLocation(current, y, x, direction, false)) jumpCount++;
 		
 		return jumpCount;
 	}
@@ -78,7 +79,7 @@ public class BoardStateJumps {
 	 * 		This is the same regardless of which vertical direction the piece is moving on the board.
 	 * @return
 	 */
-	public static boolean numJumpsInSpecificDirectionAtLocation(BoardState current, int y, int x, int direction, boolean right) {
+	public static boolean canJumpInSpecificDirectionAtLocation(BoardState current, int y, int x, int direction, boolean right) {
 		// Check if the potential jump y value is on the board.
 		boolean isYJumpLegal = TextConversions.isLegalY(y+ (2 * direction));
 		if (isYJumpLegal == false) return false;
@@ -106,6 +107,32 @@ public class BoardStateJumps {
 		
 		return false;
 	}
+	
+	/**
+	 * 
+	 * @param py
+	 * @param px
+	 * @param dy
+	 * @param dx
+	 * @return
+	 */
+	public static int getXToJumpOver(int py, int px, int dy, int dx) {
+
+		int xToJumpOver;
+
+		boolean isRightLeaning = BoardStateJumps.isRightLeaning(py);
+
+		boolean jumpRight = (dx - px == 1) ? true : false;
+
+		if (isRightLeaning) {
+			xToJumpOver = (jumpRight) ? px + 1 : px;
+		} else {
+			xToJumpOver = (jumpRight) ? px : px - 1;
+		}
+
+		return xToJumpOver;
+	}
+
 	
 	/**
 	 * Check if a row is right leaning.
