@@ -99,7 +99,7 @@ public class BoardStateJumps {
 		if (TextConversions.isLegalX(xToLandOn)) {	
 			if (isOpposingPieceAt(current, player, y + direction, xToJumpOver)) {
 				// Check that the landing position is empty
-				if (current.positions[y+(2 * direction)][x-1] == 0) {
+				if (current.positions[y+(2 * direction)][xToLandOn] == 0) {
 					return true;
 				}
 			}
