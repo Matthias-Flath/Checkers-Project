@@ -221,6 +221,12 @@ public class BoardState {
 		return BoardStateMove.isLegalMove(this, move);
 	}
 
+	/**
+	 * Check if a second move is legal for the calling BoardState.
+	 * @param move
+	 * @param previousMove
+	 * @return
+	 */
 	public boolean isLegalMove(String move, String previousMove) {
 		return BoardStateMove.isLegalMove(this, move, previousMove);
 	}

@@ -59,7 +59,7 @@ public class Test {
 		// Create a game state with the proper starting pieces
 		this.board = new BoardState();
 		this.gameTurn = board.getTurn();
-		this.multiplayer = false;
+		this.multiplayer = true;
 		this.end = false;
 		
 		// Add the starting position to the boardStateHistory
@@ -155,10 +155,10 @@ public class Test {
 		board.printState();
 
 		// List all legal moves for the user
-		BoardStateArrays.displayAllLegalMoves(board);
+		// BoardStateArrays.displayAllLegalMoves(board);
 		
 		// Tell the user if they need to jump
-		BoardStateJumps.printJumpRequirementString(board);
+		// BoardStateJumps.printJumpRequirementString(board);
 		
 		// Get a move string from the user
 		String moveString = getUserMove();
@@ -167,14 +167,16 @@ public class Test {
 		boolean result;
 		
 		if (board.isSecondMovePossible()) {
+			System.out.println("Possible second move");
 			result = board.isLegalMove(moveString, this.getPreviousMove());
 		} else {
+			// System.out.println("Current turn:" + this.gameTurn);
 			result = board.isLegalMove(moveString);
+			// System.out.println("Current board turn" + this.board.getTurn());
 		
 		}
 		
-		
-		// System.out.println(result);
+		System.out.println(result);
 		
 		if (result) {
 			// Add the pre-move state to the boardHistory
@@ -189,14 +191,13 @@ public class Test {
 			// Actually move the piece
 			board.preCheckedMove(moveString);
 			
+			// Move to the next single depth turn
+			this.nextGameTurn();
+			
 		} else {
 			// If the move ins't legal, ask for a new move.
 			userTurn();
-			
-			
-			// Call a method to move to the next turn (if no other jumps are possible)
 		}
-		
 	}
 	
 	/**
@@ -276,18 +277,20 @@ public class Test {
 	}
 	
 	/**
-	 * Simply ends the current turn and switches the gameTurn instance variable
-	 * No checks for secondMoves are given here.
+	 * Checks if a secondTurn is possible.  If so, calls oneGameTurn() again.
+	 * If not, switches the turn. 
 	 */
 	public void nextGameTurn() {
 		// Deal with the secondMove problem here
 		
-		if (this.gameTurn == 1) this.gameTurn = 2;
-		else this.gameTurn = 1;
+		if (board.isSecondMovePossible()) {
+			this.oneGameTurn();
+		} else {
+			// Move to the next turn
+			this.gameTurn = (byte) ((this.gameTurn == 1) ? 2 : 1); 
+		}
 	}
 
-
-	
 }
 
 

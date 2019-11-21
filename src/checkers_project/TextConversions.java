@@ -1,5 +1,7 @@
 package checkers_project;
 
+import java.util.Arrays;
+
 public class TextConversions {
 	
 	/**
@@ -173,6 +175,8 @@ public class TextConversions {
 		// If piece string is in chess notation
 		try {
 			int[] returnArray = convertChessNotation(piece);
+			return returnArray;
+			
 		// If piece string is in 8x8 array notation.
 		} catch(Exception e) {
 			String yString = piece.substring(0, 1);
@@ -218,6 +222,7 @@ public class TextConversions {
 	 */
 	public static int[] convertMoveStringToIntArray(String move) {
 		String[] stringArray = convertMoveStringToStringArray(move);
+		System.out.println(Arrays.toString(stringArray));
 		int[] returnArray = convertStringsToIntArray(stringArray[0], stringArray[1]);
 		return returnArray;
 	}

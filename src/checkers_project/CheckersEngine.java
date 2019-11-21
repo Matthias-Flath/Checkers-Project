@@ -22,16 +22,11 @@ public class CheckersEngine {
 	public static String getRandomMoveString(String[] allPossibleMoves) {
 		
 		int length = allPossibleMoves.length;  
-		
 		int randomIndex = getRandomMove(length);
-		
 		return allPossibleMoves[randomIndex];
 	}
 
 	public static BoardState minMaxMove(BoardState currentState) {
-		
-		// System.out.println("CurrentState when minMaxMove is called");
-		// currentState.printState();
 		
 		System.out.println("Reached minMaxMove");
 		
@@ -90,14 +85,7 @@ public class CheckersEngine {
 		// System.out.println(turn);
 		
 		
-		
-		
-		
 		System.out.println(root);
-		
-		// Why would root ever be null
-		
-		// Oh I have to add functionality to deal with automatic second jumps.
 		
 		// I also have to deal with the change in moves during minmax search layers
 		

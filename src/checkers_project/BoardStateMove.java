@@ -19,8 +19,10 @@ public class BoardStateMove {
 	public static boolean isLegalMove(BoardState current, String move) {
 		// Create a check to make sure this is the first move.
 		
-		String[] fromAndTo = TextConversions.convertMoveStringToStringArray(move);
-		int[] coordinates = TextConversions.convertStringsToIntArray(fromAndTo[0], fromAndTo[1]);
+		System.out.println("isLegalMove method");
+		System.out.println(move);
+		
+		int[] coordinates = TextConversions.convertMoveStringToIntArray(move);
 		return isLegalMove(current, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
 	}
 	
@@ -71,8 +73,21 @@ public class BoardStateMove {
 	 */
 	public static boolean isLegalMove(BoardState current, int py, int px, int dy, int dx) {
 		
+		System.out.println("We got here");
+		System.out.println(py);
+		System.out.println(px);
+		System.out.println(dy);
+		System.out.println(dx);
+		
+		
+		// System.out.println(current.positions[py][px]);
+		
+		
 		// Check to ensure the jump rule is followed.
 		if (BoardStateJumps.canJump(current)) {
+			
+			System.out.println("Can jump");
+			
 			// Enforcing the jump rule.
 			// System.out.println("Enforcing the jump rule.");
 			if (TextConversions.isJump(py, px, dy, dx) != true) {
@@ -82,10 +97,9 @@ public class BoardStateMove {
 		}
 		
 		// Check to make sure all py and x are actually in the domain. 
-		if (!TextConversions.isLegalY(py)) return false;
-		if (!TextConversions.isLegalY(dy)) return false;
-		if (!TextConversions.isLegalX(px)) return false;
-		if (!TextConversions.isLegalX(dx)) return false;
+		if (!TextConversions.checkOnBoard(py, px)) return false;
+		if (!TextConversions.checkOnBoard(dy, dx)) return false;
+		
 		
 		// Check to ensure a piece is actually there
 		if (current.positions[py][px] == 0) return false;
@@ -96,9 +110,12 @@ public class BoardStateMove {
 		// Check to make sure it is the appropriate turn (or turn with kings)
 		if ((current.positions[py][px] != current.getTurn()) && (current.positions[py][px] != current.getTurn() + 2)) return false;
 		
+		
+		
 		// Black piece
 		if (current.positions[py][px] == 1) {
 			// System.out.println("Check black move legality");
+			// System.out.println("Black move legality");
 			return blackMoveLegality(current, py, px, dy, dx);
 		}
 		

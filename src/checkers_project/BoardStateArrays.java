@@ -163,7 +163,6 @@ public class BoardStateArrays {
 		return legalMoves;
 	}
 	
-	
 	/**
 	 * Print out the string array of all legal single depth moves at this BoardState.
 	 * @param current
@@ -182,6 +181,19 @@ public class BoardStateArrays {
 		return allLegalMovesArray(current).length;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String[] allLegalMovesAtLocation() {
+		
+		
+		// I might not need this method now that I have fixed some of the isLegalMoves stuff.
+		
+		// However, that only works in the test method.
+		
+		return null;
+	}
 	
 	// Possible Child State
 	// The below methods are for the checkers engine. 
@@ -192,7 +204,7 @@ public class BoardStateArrays {
 	 * @param current
 	 * @return
 	 */
-	public static BoardState[] possibleChildStatesArray(BoardState current) {
+ 	public static BoardState[] possibleChildStatesArray(BoardState current) {
 		
 		ArrayList<BoardState> childStates = possibleChildStates(current);
 		BoardState[] allMovesOfMultipleLevels =  childStates.toArray(new BoardState[childStates.size()]);
@@ -226,6 +238,29 @@ public class BoardStateArrays {
 			}
 		}
 	
+		return childStates;
+	}
+	
+	public static ArrayList<BoardState> possibleGrandchildStates(BoardState current, String previousMove) {
+		// Iterate through all the possible first moves
+		ArrayList<BoardState> childStates = new ArrayList();
+		String[] legalSecondMoves = allLegalMovesArray(current);
+
+		int firstMoves = numLegalMoves(current);
+
+		// BoardState[] firstBoardStates = new BoardState[firstMoves];
+
+		for (int i = 0; i < firstMoves; i++) {
+			BoardState temp =  new BoardState(current, legalSecondMoves[i]);
+
+			if (temp.isSecondMovePossible() == false) {
+				childStates.add(temp);
+			} else {
+
+				childStates.addAll(possibleChildStates(temp));
+			}
+		}
+
 		return childStates;
 	}
 	
