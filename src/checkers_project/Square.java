@@ -12,11 +12,12 @@ on each position.
 public class Square extends Rectangle {
 
 	private CheckerPiece piece;//tiles can have pieces
+	private String chessLocation;
 	
 	public Square(boolean color, int xCoordinate, int yCoordinate) {//creates our squares
 		setWidth(CheckersGui.SQUARE_SIZE);
 		setHeight(CheckersGui.SQUARE_SIZE);
-
+		//this.setChessLocation(chessLocation);
 		relocate(xCoordinate * CheckersGui.SQUARE_SIZE, yCoordinate * CheckersGui.SQUARE_SIZE);
 		if(color == false) {
 			setFill(Color.LIGHTYELLOW);
@@ -39,5 +40,13 @@ public class Square extends Rectangle {
 	
 	public void setPiece(CheckerPiece piece) {//sets the piece if it has one
 		this.piece = piece;
+	}
+
+	public String getChessLocation() {
+		return chessLocation;
+	}
+
+	public void setChessLocation(String chessLocation) {
+		this.chessLocation = chessLocation;
 	}
 }

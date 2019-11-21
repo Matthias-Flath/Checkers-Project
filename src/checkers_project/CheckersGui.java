@@ -23,7 +23,8 @@ public class CheckersGui extends Application {
 	public static final int SQUARE_SIZE = 80;// tiles are 100 pixels wide
 	public static final int SQUARES_WIDE = 8;// 8 tiles wide
 	public static final int SQUARES_HIGH = 8;// 8 tiles high
-
+	public static String movement = "";
+	public static boolean canMove = true;
 	private Group squareGroup = new Group();// keep track of all our squares
 	private Group checkerPieceGroup = new Group();// keep track of all our pieces
 
@@ -37,7 +38,7 @@ public class CheckersGui extends Application {
 
 		for (int y = 0; y < SQUARES_HIGH; y++) {// creating the squares and pieces
 			for (int x = 0; x < SQUARES_WIDE; x++) {
-
+				//String chessLocation = 8-x + TextConversions.convertNumberToString(y);
 				Square square = new Square((x + y) % 2 == 0, x, y);// only alternating squares matter
 				gameBoard[x][y] = square;// add them to our board
 				squareGroup.getChildren().add(square);
@@ -162,6 +163,7 @@ public class CheckersGui extends Application {
 		TextField ipTextField = new TextField();
 		
 		DropShadow shadow = new DropShadow();
+		
 		 
         // Adding the shadow when the mouse cursor is on
         onePlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
@@ -193,8 +195,7 @@ public class CheckersGui extends Application {
 		
 		onePlayerButton.setOnAction(value ->  {
 			ipTextField.clear();
-			ipTextField.setText("You clicked one player");
-			
+			ipTextField.setText("You clicked one player");;
 			  Stage game = new Stage();
 			  Scene board = new Scene(createBoard());
 			  game.setTitle("Checkers");
@@ -224,7 +225,6 @@ public class CheckersGui extends Application {
 		startScreen.add(twoPlayerButton, 3, 2);
 		startScreen.add(ipLabel, 1, 3);
 		startScreen.add(ipTextField, 2, 3);
-		
 		return startScreen;
 	}
 	
@@ -236,4 +236,62 @@ public class CheckersGui extends Application {
 
 }
 
+/*
+ * 8*4 array to represent board states
+ * if the board states have an instance of checkers Gui but it is declared null does it take space?
+ * When turn changes check current board state and redraw
+ * Maybe Expand Board size to display whose turn and a button to end turn
+ * 
+ * Button endTurnButton = new Button(End Turn) 
+ * 
+ * endTurnButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+ *           @Override
+ *          public void handle(MouseEvent e) {
+ *               endTurnButton.setEffect(shadow);
+ *           }
+ *       });
+ *
+ *       // Removing the shadow when the mouse cursor is off
+ *      endTurnButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+ *           public void handle(MouseEvent e) {
+ *               endTurnButton.setEffect(null);
+ *           }
+ *       });
+ *       
+ * endTurnButton.setOnAction(value ->  {
+ * 		if(movesLeft ==0){
+ *		computerTurn();
+ *		}
+ *        });
+ *        
+ *  Move Logic needs an update if it is not your turn it is illegal move. a moveCounter variable that will also prevent you from 
+ *  ending the turn when you have not moved
+ *  Label turnLabel = new Label();
+ *	turnLabel.setText();
+ *			use this to tell you whose turn it is or a victory notification\
+ *	Gonna need an update method that checks the current board state possibly attached to a button but hopefully not;
+ * 
+ */
+
+/*
+ * Receipt Paper Notes
+ * 	Note 1
+ * 		give each square a string
+ * 		mouse click and release adds together then passes new combo string to james version
+ * 			addendum: if square has piece
+ * 		make sure to clear string afterwards
+ * Note 2
+ * 		Square2.setPiece(Square1.getPiece());
+ * 		Square1.getPiece().move(Square2);
+ * 		Square1.setPiece(null);
+ * Note 3
+ * 		After Piece moves if it is king redraw it as one
+ * Note 4
+ * 		Will we have to Thread?
+ * 		Regardless need to make sure it updates when Computer Moves as well
+ * Note 5
+ * 		Rather than a loop use signal and response
+ * 		Means we may not have to thread hopefully
+ */
+ 
 //--module-path "C:\Users\Matthias Laptop\Desktop\javafx-sdk-11.0.2\lib" --add-modules javafx.controls,javafx.fxml

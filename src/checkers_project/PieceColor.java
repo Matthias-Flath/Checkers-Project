@@ -6,7 +6,9 @@ package checkers_project;
 public enum PieceColor {
 
 	Red(-1),
-	Black(1);
+	Black(1),
+	RedKing(-1),
+	BlackKing(1);
 	
 	final int moveDir;
 	
