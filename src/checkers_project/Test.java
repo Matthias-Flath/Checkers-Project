@@ -154,6 +154,8 @@ public class Test {
 		System.out.println();
 		board.printState();
 
+		System.out.println("Move: " + this.gameTurn);
+		
 		// List all legal moves for the user
 		// BoardStateArrays.displayAllLegalMoves(board);
 		
@@ -288,6 +290,7 @@ public class Test {
 		} else {
 			// Move to the next turn
 			this.gameTurn = (byte) ((this.gameTurn == 1) ? 2 : 1); 
+			this.board.nextTurn();
 		}
 	}
 

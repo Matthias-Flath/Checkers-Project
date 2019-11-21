@@ -222,7 +222,6 @@ public class TextConversions {
 	 */
 	public static int[] convertMoveStringToIntArray(String move) {
 		String[] stringArray = convertMoveStringToStringArray(move);
-		System.out.println(Arrays.toString(stringArray));
 		int[] returnArray = convertStringsToIntArray(stringArray[0], stringArray[1]);
 		return returnArray;
 	}

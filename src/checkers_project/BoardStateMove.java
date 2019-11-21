@@ -19,9 +19,6 @@ public class BoardStateMove {
 	public static boolean isLegalMove(BoardState current, String move) {
 		// Create a check to make sure this is the first move.
 		
-		System.out.println("isLegalMove method");
-		System.out.println(move);
-		
 		int[] coordinates = TextConversions.convertMoveStringToIntArray(move);
 		return isLegalMove(current, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
 	}
@@ -73,14 +70,12 @@ public class BoardStateMove {
 	 */
 	public static boolean isLegalMove(BoardState current, int py, int px, int dy, int dx) {
 		
-		System.out.println("We got here");
 		System.out.println(py);
 		System.out.println(px);
 		System.out.println(dy);
 		System.out.println(dx);
+		System.out.println("");
 		
-		
-		// System.out.println(current.positions[py][px]);
 		
 		
 		// Check to ensure the jump rule is followed.
@@ -97,25 +92,37 @@ public class BoardStateMove {
 		}
 		
 		// Check to make sure all py and x are actually in the domain. 
-		if (!TextConversions.checkOnBoard(py, px)) return false;
-		if (!TextConversions.checkOnBoard(dy, dx)) return false;
+		if (!TextConversions.checkOnBoard(py, px)) {
+			System.out.println("Piece is not on the board.");
+			return false;
+		}
+		if (!TextConversions.checkOnBoard(dy, dx)) {
+			System.out.println("Destination is not on the board.");
+			return false;
+		}
 		
 		
 		// Check to ensure a piece is actually there
-		if (current.positions[py][px] == 0) return false;
+		if (current.positions[py][px] == 0) {
+			System.out.println("No piece at the starting point.");
+			return false;
+		}
  		
 		// Check to make sure the destination is empty
-		if (current.positions[dy][dx] != 0) return false;
+		if (current.positions[dy][dx] != 0) {
+			System.out.println("Destination is not empty.");
+			return false;
+		}
 		
 		// Check to make sure it is the appropriate turn (or turn with kings)
-		if ((current.positions[py][px] != current.getTurn()) && (current.positions[py][px] != current.getTurn() + 2)) return false;
-		
-		
+		if ((current.positions[py][px] != current.getTurn()) && (current.positions[py][px] != current.getTurn() + 2)) {
+			System.out.println("Wrong turn");
+			return false;
+		}
 		
 		// Black piece
 		if (current.positions[py][px] == 1) {
 			// System.out.println("Check black move legality");
-			// System.out.println("Black move legality");
 			return blackMoveLegality(current, py, px, dy, dx);
 		}
 		
@@ -130,6 +137,7 @@ public class BoardStateMove {
 			return kingMoveLegality(current, py, px, dy, dx);
 		}
 		
+		System.out.println("Somehow made it through the isLegalMove checks");
 		return false;
 	}
 	
