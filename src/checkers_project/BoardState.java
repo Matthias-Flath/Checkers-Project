@@ -111,13 +111,34 @@ public class BoardState {
 	 * @param nextTurn
 	 */
 	public BoardState(BoardState current, String move, boolean nextTurn) {
-		this.positions = current.positions.clone();
+
+		// This clone line doesn't work
+		clonePositionArray(current.positions);
 		this.turn = current.turn;
+		this.secondMove = current.secondMove;
+
+		if (!this.isLegalMove(move)) {
+			System.out.println("BoardState object cannot be created because this move is illegal.");
+			throw new IllegalArgumentException();
+		}
+
 		this.preCheckedMove(move);
+
 		
 		if (nextTurn) {
-			this.nextTurn();
+			if (BoardStateJumps.canJumpAtDestination(current, move)) {
+				this.secondMove = true;
+			} else {
+				this.nextTurn();
+			}
 		}
+		
+		System.out.println("Below is the cloned boardstate");
+		this.printState();
+
+		System.out.println("Below is the current BoardState");
+		current.printState();
+
 	}
 	
 	/**
