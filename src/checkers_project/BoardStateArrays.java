@@ -27,8 +27,10 @@ public class BoardStateArrays {
 		// Needs to check if this is the second move and if so limit the jumping to only one location. 
 		
 		if (BoardStateJumps.canJump(current)) {
+			System.out.println("Can jump");
 			return getJumpMovesStringList(current);
 		} else {
+			System.out.println("Can't jump");
 			return getNonJumpMovesStringList(current);
 		}
 	}
@@ -50,7 +52,13 @@ public class BoardStateArrays {
 
 				// If the piece is the current player's and not a king
 				if (current.positions[y][x] == current.getTurn()) {
-					// Code to figure out which direction they are going.
+					
+					// Player 1
+					if (current.positions[y][x] == 1) {
+						legalMoves.addAll(jumpStringsAtLocation(current, y, x, 1));
+					} else {
+						legalMoves.addAll(jumpStringsAtLocation(current, y, x, -1));
+					}
 					
 				// If the king is the current player's
 				} else if (current.positions[y][x] == current.getTurn() + 2) {
@@ -81,10 +89,12 @@ public class BoardStateArrays {
 		
 		ArrayList<String> legalMoves = new ArrayList();
 		
+		// False means left
 		String leftString = jumpStringInSpecificDirectionAtLocation(current, y, x, direction, false);
 		if (leftString != null) legalMoves.add(leftString);
 		
-		String rightString = jumpStringInSpecificDirectionAtLocation(current, y, x, direction, false);
+		// True means right
+		String rightString = jumpStringInSpecificDirectionAtLocation(current, y, x, direction, true);
 		if (rightString != null) legalMoves.add(rightString);
 		
 		return legalMoves;
@@ -99,6 +109,8 @@ public class BoardStateArrays {
 	 * @param direction
 	 * @param right
 	 * 		This is the same regardless of which vertical direction the piece is moving on the board.
+	 * 		True means right
+	 * 		False means left
 	 * @return
 	 * 		String describing the possible jump move (chess notation)
 	 */
@@ -169,7 +181,7 @@ public class BoardStateArrays {
 	 */
 	public static void displayAllLegalMoves(BoardState current) {
 		String[] allMoves = allLegalMovesArray(current);
-		System.out.println(Arrays.deepToString(allMoves));
+		System.out.println(Arrays.toString(allMoves));
 	}
 	
 	/**
