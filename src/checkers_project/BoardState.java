@@ -100,6 +100,7 @@ public class BoardState {
 		return this.turn;
 	}
 	
+	// Add checks to this method
 	/**
 	 * Turn off the secondMove value.
 	 * Change the turn of the calling BoardState.
@@ -128,6 +129,12 @@ public class BoardState {
 	 */
 	public boolean isSecondMovePossible() {
 		return this.secondMove;
+	}
+	
+	public void setSecondMove(boolean secondMove) {
+		
+		
+		this.secondMove = secondMove;
 	}
 	
 	/**
@@ -214,11 +221,20 @@ public class BoardState {
 		return BoardStateMove.isLegalMove(this, move);
 	}
 
+	public boolean isLegalMove(String move, String previousMove) {
+		return BoardStateMove.isLegalMove(this, move, previousMove);
+	}
+	
+	
+	
 	/**
 	 * 
 	 * @return
 	 */
 	public boolean checkBlackVictory() {
+		// Add a condition for no possible moves.
+		
+		
 		for (int y = 0; y < Game.ROWS; y++) {
 			for (int x = 0; x < Game.COLUMNS; x++) {
 				if ((positions[y][x] == 2) || (positions[y][x] == 4)) {
@@ -256,7 +272,7 @@ public class BoardState {
 	}
 	
 	/**
-	 * 
+	 * Check if each side has only 1 piece.  This isn't the official definition of a draw for checkers, but it works well.
 	 * @return
 	 */
 	public boolean checkDraw() {

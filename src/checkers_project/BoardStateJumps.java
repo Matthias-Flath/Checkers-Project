@@ -109,7 +109,7 @@ public class BoardStateJumps {
 	}
 	
 	/**
-	 * 
+	 * Find the x value for the piece being jumped over
 	 * @param py
 	 * @param px
 	 * @param dy
@@ -121,7 +121,6 @@ public class BoardStateJumps {
 		int xToJumpOver;
 
 		boolean isRightLeaning = BoardStateJumps.isRightLeaning(py);
-
 		boolean jumpRight = (dx - px == 1) ? true : false;
 
 		if (isRightLeaning) {
@@ -133,7 +132,6 @@ public class BoardStateJumps {
 		return xToJumpOver;
 	}
 
-	
 	/**
 	 * Check if a row is right leaning.
 	 * @param y
@@ -229,6 +227,9 @@ public class BoardStateJumps {
 	 */
 	public static boolean canJumpAtDestination(BoardState current, String moveString) {
 		
+		// Ensure movestring is actually a jump.
+		if (!TextConversions.isJump(moveString)) return false;
+		
 		// Convert the moveString to an int array
 		int[] intArray = TextConversions.convertMoveStringToIntArray(moveString);
 
@@ -299,7 +300,8 @@ public class BoardStateJumps {
 	}
 	
 	/**
-	 * 
+	 * Print to the console user a string stating the jump requirements if there are any.
+	 * Otherwise do nothing.
 	 * @param current
 	 */
 	public static void printJumpRequirementString(BoardState current) {

@@ -3,8 +3,14 @@ package checkers_project;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
-
+/**
+ * This class should only be used for console based input
+ * Create a subclass (or something of that variety to change userTurn() for the GUI.
+ * @author computer
+ *
+ */
 public class Test {
 	
 	public static final byte ROWS = 8;
@@ -13,9 +19,12 @@ public class Test {
 	private BoardState board;
 	private byte gameTurn;
 	boolean end;
-	
 	boolean multiplayer;
 	
+	private LinkedList<String> moveStringHistory = new LinkedList();
+	private LinkedList<BoardState> boardStateHistory = new LinkedList();
+	
+	// Eliminate this after testing is complete.
 	int index = 0;
 	
 	// This array is used to test both sides of the game (without an engine)
@@ -35,7 +44,7 @@ public class Test {
 	 */
 	
 	/**
-	 * 
+	 * Start the game
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -43,7 +52,7 @@ public class Test {
 	}
  
 	/**
-	 * 
+	 * Create a game object (for testing)
 	 */
 	public Test() {
 		
@@ -52,12 +61,25 @@ public class Test {
 		this.gameTurn = board.getTurn();
 		this.multiplayer = false;
 		this.end = false;
-
+		
+		// Add the starting position to the boardStateHistory
+		
+		// Run the game
 		while (end == false) { 
+			
+			// Add some stuff about no move win conditions here.
+			
 			oneGameTurn(); 
 			checkVictory();
 		} 		 
 	}
+	
+	public String getPreviousMove() {
+		// Do I need to do any checking to make sure it isn't null?
+		return this.moveStringHistory.peek();
+	}
+	
+	// Win conditions
 	
 	/**
 	 * 
@@ -103,21 +125,23 @@ public class Test {
 		System.out.println("Player 2 Wins!");
 	}
 	
+	// Game turns
+	
 	/**
 	 * 
 	 */
 	public void oneGameTurn() {
 		
-		// System.out.println(this.gameTurn);
-		
 		if (this.gameTurn == 1) {
-			// System.out.println("Reached nextTurn gameturn of 1");
 			userTurn();
-			
+	
+			// potentially add win conditions here
 			
 		} else {
-			userTurn();
-			// computerTurn();
+			if (multiplayer) userTurn();
+			else computerTurn();
+			
+			// And here
 		}
 	}
 	
@@ -125,161 +149,53 @@ public class Test {
 	 * 
 	 */
 	public void userTurn() {
+		
 		// Show the user the current state of the board
 		System.out.println();
 		board.printState();
-		
+
 		// List all legal moves for the user
-		// Can later be added as a GUI hint.
-		
-		// ArrayList<String> demo = board.allLegalMoves();
-		
-		// This line doesn't work
 		BoardStateArrays.displayAllLegalMoves(board);
 		
-		// This line doesn't work
+		// Tell the user if they need to jump
 		BoardStateJumps.printJumpRequirementString(board);
 		
-		//
+		// Get a move string from the user
 		String moveString = getUserMove();
 		
 		// Check to make sure the move is legal
-		boolean result = board.isLegalMove(moveString);
+		boolean result;
 		
-		System.out.println(result);
+		if (board.isSecondMovePossible()) {
+			result = board.isLegalMove(moveString, this.getPreviousMove());
+		} else {
+			result = board.isLegalMove(moveString);
 		
-		// re factor all of this into a method that determines if another move is possible.
+		}
+		
+		
+		// System.out.println(result);
 		
 		if (result) {
-			boolean kingAtStartingPoint = BoardStateJumps.isKingAtStartingPoint(board, moveString);
-			boolean isJump = TextConversions.isJump(moveString);
+			// Add the pre-move state to the boardHistory
+			this.boardStateHistory.add(board);
 			
+			// Add the moveString to the history
+			this.moveStringHistory.add(moveString);
+			
+			// Set the second turn value
+			board.setSecondMove(BoardStateJumps.canJumpAtDestination(board, moveString));
+						
 			// Actually move the piece
 			board.preCheckedMove(moveString);
-			
-			System.out.println("Successfully completed the move.");
-			
-			if (kingAtStartingPoint && isJump) {
-				// System.out.println("Checking the king");
-				
-				
-				if (BoardStateJumps.canJumpAtDestination(board, moveString)) {
-					System.out.println("Can jump at destination for a King");
-					secondTurn(moveString);
-				} else {
-					board.nextTurn();
-					this.nextGameTurn();
-				}
-			
-			} else if (!kingAtStartingPoint && isJump){
-				// System.out.println("Is jump.");
-				if (BoardStateJumps.canJumpAtDestination(board, moveString)) {
-					// System.out.println("Right before calling turn again.");
-					secondTurn(moveString);
-				} else {
-					board.nextTurn();
-					this.nextGameTurn();
-				}
-			} else {
-				board.nextTurn();
-				this.nextGameTurn();
-			}
 			
 		} else {
 			// If the move ins't legal, ask for a new move.
 			userTurn();
+			
+			
+			// Call a method to move to the next turn (if no other jumps are possible)
 		}
-		
-		// System.out.println(result);
-	}
-	
-	/**
-	 * 
-	 */
-	public void computerTurn() {
-		BoardState nextState = getOpponentMove();
-		this.board = nextState;
-		this.gameTurn = nextState.getTurn();
-		board.printState();
-	}
-	
-	/**
-	 * 
-	 * @param moveString
-	 */
-	public void secondTurn(String moveString) {
-		// Show the user the current state of the board
-		System.out.println();
-		board.printState();
-
-		int[] intArray = TextConversions.convertMoveStringToIntArray(moveString);
-		
-		byte secondJump = 0; // BoardStateJumps.canJump(intArray[2], intArray[3]);
-		
-		// BoardStateArrays.displayAllLegalMovesSecondJump(this.board, moveString);
-		
-		
-		if (secondJump == 1) {
-			System.out.println("There is only 1 jump available.");
-		} else {
-			System.out.println("There are  " + secondJump + " jumps available.  Choose your jump");
-		}
-
-		int dy = intArray[2];
-		int dx = intArray[3];
-		
-		// Check to make sure it starts from the previous endpoint.
-
-		
-		moveString = getUserMove();
-		
-		// Check to make sure the move is legal
-		boolean result = board.isLegalMove(moveString);
-		
-		// System.out.println(result);
-		
-		if (result) {
-			boolean kingAtStartingPoint = BoardStateJumps.isKingAtStartingPoint(this.board, moveString);
-			boolean isJump = TextConversions.isJump(moveString);
-			
-			board.preCheckedMove(moveString);
-			// System.out.println("Successfully completed the move.");
-			// I need to check if I already jumped before
-			
-			
-			if (kingAtStartingPoint && isJump) {
-				// System.out.println("Checking the king");
-				
-				
-				if (BoardStateJumps.canJumpAtDestination(board, moveString)) {
-					System.out.println("Can jump at destination for a King");
-					secondTurn(moveString);
-				} else {
-					board.nextTurn();
-					this.nextGameTurn();
-				}
-			
-			} else if (!kingAtStartingPoint && isJump){
-				// System.out.println("Is jump.");
-				if (BoardStateJumps.canJumpAtDestination(board, moveString)) {
-					// System.out.println("Right before calling turn again.");
-					secondTurn(moveString);
-				} else {
-					board.nextTurn();
-					this.nextGameTurn();
-				}
-			} else {
-				board.nextTurn();
-				this.nextGameTurn();
-			}
-			
-		} else {
-			// If the move ins't legal, ask for a new move.
-			secondTurn(moveString);
-		}
-		
-		
-		
 		
 	}
 	
@@ -322,20 +238,29 @@ public class Test {
 		return s;
 	}
 	
+	
+	/**
+	 * 
+	 */
+	public void computerTurn() {
+		BoardState nextState = getOpponentMove();
+		this.board = nextState;
+		this.gameTurn = nextState.getTurn();
+		board.printState();
+	}
+
+
 	/**
 	 * 
 	 * @return
 	 */
 	public BoardState getOpponentMove() {
-		System.out.println("Reached getOpponentMove");
 		
 		BoardState move = null;
 		
 		if (!multiplayer) {
-			// System.out.println("Reached not multiplayer");
 			// Random Move
 			// move = CheckersEngine.getRandomMoveString(getStringArrayOfPossibleMoves());
-			
 			
 			// System.out.println(this.gameTurn);
 
@@ -351,10 +276,11 @@ public class Test {
 	}
 	
 	/**
-	 * 
+	 * Simply ends the current turn and switches the gameTurn instance variable
+	 * No checks for secondMoves are given here.
 	 */
 	public void nextGameTurn() {
-		// System.out.println("We reached the next turn method.");
+		// Deal with the secondMove problem here
 		
 		if (this.gameTurn == 1) this.gameTurn = 2;
 		else this.gameTurn = 1;

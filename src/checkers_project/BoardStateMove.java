@@ -17,9 +17,42 @@ public class BoardStateMove {
 	 * 		false if the move is not legal
 	 */
 	public static boolean isLegalMove(BoardState current, String move) {
+		// Create a check to make sure this is the first move.
+		
 		String[] fromAndTo = TextConversions.convertMoveStringToStringArray(move);
 		int[] coordinates = TextConversions.convertStringsToIntArray(fromAndTo[0], fromAndTo[1]);
 		return isLegalMove(current, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+	}
+	
+	public static boolean isLegalMove(BoardState current, String move, String previousMove) {
+		
+		// Check to make sure the start and end points match, then call the regular isLegalMove method.
+		if (isLegalStartingPoint(move, previousMove) == false) return false;
+		
+		// Check to make sure the move is a jump
+		if (!TextConversions.isJump(move)) return false;
+		
+		return isLegalMove(current, move);
+	}
+	
+	/**
+	 * 
+	 * @param move
+	 * @param previousMove
+	 * @return
+	 */
+	public static boolean isLegalStartingPoint(String move, String previousMove) {
+		
+		int[] previousMoveArray = TextConversions.convertMoveStringToIntArray(previousMove);
+		int[] currentMoveArray = TextConversions.convertMoveStringToIntArray(move);
+		
+		int startY = previousMoveArray[2];
+		int startX = previousMoveArray[3];
+		
+		if (currentMoveArray[2] != startY) return false;
+		if (currentMoveArray[3] != startX) return false;
+		
+		return true;
 	}
 	
 	/**
