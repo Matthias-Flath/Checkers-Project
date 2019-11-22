@@ -75,10 +75,10 @@ public class CheckersEngine {
 		BoardState[] allMoves = BoardStateArrays.possibleChildStatesArray(root.getTreeNodeData());
 		
 		// System.out.println(allMoves);
-		System.out.println("Depth " + depth);
+		// System.out.println("Depth " + depth);
 		
 		int numChildren = allMoves.length;
-		System.out.println("Number of children" + numChildren);
+		// System.out.println("Number of children" + numChildren);
 
 		if (depth > 0 ) {
 			for (int i = 0; i < numChildren; i++) {
@@ -109,14 +109,15 @@ public class CheckersEngine {
 	 */
 	public static void evaluatePositionLeaves(TreeNode root) {
 		
-		System.out.println(root);
+		// System.out.println(root);
 		
 		if (root == null) {
 			System.out.println("The calling root is equal to null");
 		} else {
-			if (root.children == null) {
+			if (root.children == null || root.children.length == 0) {
 				double evaluationScore = root.getTreeNodeData().evaluate();
 				root.setPositionValue(evaluationScore);
+				// System.out.println("Position value: " + evaluationScore);
 			} else {
 				
 				for (int i = 0; i < root.getNumChildren(); i++) {
@@ -128,39 +129,57 @@ public class CheckersEngine {
 		
 	}
 	
-	// This method needs to be recursive.
+	// This method needs a proper stopping case
 	public static void evaluateFilledTree(TreeNode root) {
 		// All the leaves should be properly evaluated by now. 
 
 		BoardState temp = root.getTreeNodeData();
 		// temp.printState();
 		
-		System.out.println("Evaluate filled tree.");
+		
+		int numChildren = root.getNumChildren();
+		
+		// System.out.println("Evaluate filled tree.");
 		
 		// This line has a bug in it
 		if (root.boardPositionValue == 0) {
 			// Iterate through all of the children
 			
-			int numChildren = root.getNumChildren();
+			// System.out.println("Evaluating now");
+			
+			
+			
 			
 			for (int i = 0; i < numChildren; i++) {
+				// System.out.println(numChildren);
+
 				evaluateFilledTree(root.children[i]);
 			}
 			
 		}
 		
-		if (temp.getTurn() == 1) {
-			int maxIndex = maxValueIndex(root);
-			
-			double value = root.children[maxIndex].boardPositionValue;
-			System.out.println("Value " + value);
-			root.setPositionValue(value);
-		}
+		if (numChildren > 0) {
+			if (temp.getTurn() == 1) {
+				int maxIndex = maxValueIndex(root);
+				
+				double value = root.children[maxIndex].boardPositionValue;
+				// System.out.println("Value " + value);
+				root.setPositionValue(value);
+			}
 
-		if (root.getTreeNodeData().getTurn() == 2) {
-			int minIndex = minValueIndex(root);
-			root.setPositionValue(root.children[minIndex].boardPositionValue);
+			if (temp.getTurn() == 2) {
+				int minIndex = minValueIndex(root);
+				
+				double value = root.children[minIndex].boardPositionValue;
+				// System.out.println("Value " + value);
+				
+				root.setPositionValue(value);
+			}
+		} else {
+			// System.out.println("No children " + root.boardPositionValue);
 		}
+		
+		
 	}
 
 	

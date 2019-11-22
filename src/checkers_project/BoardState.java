@@ -438,7 +438,7 @@ public class BoardState {
 		
 		double jumpNum = BoardStateJumps.numJumps(this) * 0.2;
 		
-		return pieceDifferential + jumpNum + 0.0000001;
+		return pieceDifferential + jumpNum + 0.1;
 		
 		// Add a random small number addition to make sure that no two numbers are equal.
 		
