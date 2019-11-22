@@ -194,17 +194,32 @@ public class BoardStateArrays {
 	}
 	
 	/**
-	 * 
+	 * Used to find all legal second moves for the checkers engine
 	 * @return
 	 */
-	public static String[] allLegalMovesAtLocation() {
+	public static String[] allLegalMovesAtLocation(BoardState current, String previousMove) {
 		
+		ArrayList<String> legalMovesAtLocation = new ArrayList();
 		
-		// I might not need this method now that I have fixed some of the isLegalMoves stuff.
+		// Get the destination of the previousMove
 		
-		// However, that only works in the test method.
+		int[] previousMoveArray = TextConversions.convertMoveStringToIntArray(previousMove);
 		
-		return null;
+		int dy = previousMoveArray[2];
+		int dx = previousMoveArray[3];
+		
+		if (current.positions[dy][dx] == 1) {
+			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, 1));
+		} else if (current.positions[dy][dx] == 2) {
+			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, 2));
+
+		} else if ((current.positions[dy][dx] == 3) || (current.positions[dy][dx] == 4)) {
+			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, 1));
+			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, 2));
+		}
+		
+		String[] allLegalMovesAtLocationArray = legalMovesAtLocation.toArray(new String[legalMovesAtLocation.size()]);
+		return allLegalMovesAtLocationArray;
 	}
 	
 	// Possible Child State
@@ -221,7 +236,19 @@ public class BoardStateArrays {
 		ArrayList<BoardState> childStates = possibleChildStates(current);
 		BoardState[] allMovesOfMultipleLevels =  childStates.toArray(new BoardState[childStates.size()]);
 
+		int range = allMovesOfMultipleLevels.length;
+		
+		for (int i = 0; i < range; i++) {
+			if (allMovesOfMultipleLevels == null) {
+				System.out.println("There is a null value in the childStateArray.");
+				System.exit(0);
+			}
+		}
+		
 		return allMovesOfMultipleLevels;
+		
+		
+		
 	}
 	
  	// Bug in this and the below method
@@ -241,13 +268,15 @@ public class BoardStateArrays {
 		// BoardState[] firstBoardStates = new BoardState[firstMoves];
 		
 		for (int i = 0; i < firstMoves; i++) {
+			String firstMove = legalFirstMoves[i];
 			BoardState temp =  new BoardState(current, legalFirstMoves[i]);
 			
 			if (temp.isSecondMovePossible() == false) {
 				childStates.add(temp);
 			} else {
-				
-				childStates.addAll(possibleChildStates(temp));
+			
+				// Need to properly test this line
+				childStates.addAll(possibleGrandchildStates(temp, firstMove));
 			}
 		}
 	
@@ -255,22 +284,27 @@ public class BoardStateArrays {
 	}
 	
 	public static ArrayList<BoardState> possibleGrandchildStates(BoardState current, String previousMove) {
+		
 		// Iterate through all the possible first moves
 		ArrayList<BoardState> childStates = new ArrayList();
-		String[] legalSecondMoves = allLegalMovesArray(current);
+		
+		// List of legal second moves
+		
+		ArrayList<String> secondMoves;
+		String[] legalSecondMoves = allLegalMovesAtLocation(current, previousMove);
 
-		int firstMoves = numLegalMoves(current);
+		int moveNum = legalSecondMoves.length;
 
-		// BoardState[] firstBoardStates = new BoardState[firstMoves];
+		for (int i = 0; i < moveNum; i++) {
+			String secondMove = legalSecondMoves[i];
 
-		for (int i = 0; i < firstMoves; i++) {
-			BoardState temp =  new BoardState(current, legalSecondMoves[i]);
-
+			BoardState temp =  new BoardState(current, secondMove);
+			
 			if (temp.isSecondMovePossible() == false) {
 				childStates.add(temp);
 			} else {
 
-				childStates.addAll(possibleChildStates(temp));
+				childStates.addAll(possibleGrandchildStates(temp, secondMove));
 			}
 		}
 

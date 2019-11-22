@@ -418,35 +418,27 @@ public class BoardState {
 		int player2Pieces = 0;
 		int player2Kings = 0;
 		
-		int pieceDifferential = 0;
 		
 		for (int y = 0; y < Test.ROWS; y++) {
-			for (int x = 0; x < Test.COLUMNS; y++) {
+			for (int x = 0; x < Test.COLUMNS; x++) {
 				if (this.positions[y][x] == 1) {
 					player1Pieces++;	
-				}	
-				
-				else if (this.positions[y][x] == 2) {
+				} else if (this.positions[y][x] == 2) {
 					player2Pieces++;
 				} else if (this.positions[y][x] == 3) {
 					player1Kings++;
-					
 				} else if (this.positions[y][x] == 4){
 					player2Kings++;	
 				}
 			}
 		}
 		
-		double returnValue = 0;
+		int pieceDifferential = (player1Pieces - player2Pieces);
+		pieceDifferential += (1.5) * (player1Kings - player2Kings);
 		
-		returnValue += (player1Pieces - player2Pieces);
-		returnValue += (1.5) * (player1Kings - player2Kings);
+		double jumpNum = BoardStateJumps.numJumps(this) * 0.2;
 		
-		double jumpNum = BoardStateJumps.numJumps(this);
-		
-		returnValue += (jumpNum * 0.2);
-		
-		return returnValue;
+		return pieceDifferential + jumpNum + 0.0000001;
 		
 		// Add a random small number addition to make sure that no two numbers are equal.
 		

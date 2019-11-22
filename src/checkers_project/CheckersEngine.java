@@ -52,10 +52,12 @@ public class CheckersEngine {
 		// Fill the tree
 		fillTreeNode(root, depth);
 		
-		evaluatePositions(root);
+		evaluatePositionLeaves(root);
+		
+		evaluateFilledTree(root);
 		
 		// Index with the best move
-		int maxIndex = maxValueIndex(root);
+		int maxIndex = findBestMove(root);
 		
 		BoardState bestMove = allMoves[maxIndex];
 		
@@ -69,23 +71,31 @@ public class CheckersEngine {
 	 * @param depth
 	 */
 	public static void fillTreeNode(TreeNode root, int depth) {
-		
-		// System.out.println("Reached the fill tree method");
-		
+				
 		BoardState[] allMoves = BoardStateArrays.possibleChildStatesArray(root.getTreeNodeData());
 		
 		// System.out.println(allMoves);
 		System.out.println("Depth " + depth);
 		
 		int numChildren = allMoves.length;
-		System.out.println(numChildren);
+		System.out.println("Number of children" + numChildren);
 
 		if (depth > 0 ) {
 			for (int i = 0; i < numChildren; i++) {
 				int numSecondLevelChildren = BoardStateArrays.numPossibleChildren(allMoves[i]);
 				
-				TreeNode newNode = new TreeNode(allMoves[i], numSecondLevelChildren);
+				TreeNode newNode;
+				
+				if (depth > 1) {
+					newNode = new TreeNode(allMoves[i], numSecondLevelChildren);
+				} else {
+					newNode = new TreeNode(allMoves[i], 0);
+				}
 
+				// Assign the new node to the parent's children array at the appropriate position.
+				root.children[i] = newNode;
+				
+				// Recursively add the next levels down
 				if (depth > 1) {
 					fillTreeNode(newNode, depth - 1); 
 				}
@@ -97,40 +107,63 @@ public class CheckersEngine {
 	 * 
 	 * @param root
 	 */
-	public static void evaluatePositions(TreeNode root) {
-		// fill in the boardPositionValue of each TreeNode object.
-		// byte turn = root.getTreeNodeData().getTurn();
-		// System.out.println(turn);
-		
+	public static void evaluatePositionLeaves(TreeNode root) {
 		
 		System.out.println(root);
 		
-		// I also have to deal with the change in moves during minmax search layers
-		
-		if (root.getNumChildren() == 0) {
-			double evaluationScore = root.getTreeNodeData().evaluate();
-			root.setPositionValue(evaluationScore);
+		if (root == null) {
+			System.out.println("The calling root is equal to null");
 		} else {
-			
-			for (int i = 0; i < root.getNumChildren(); i++) {
-				evaluatePositions(root.children[i]);
+			if (root.children == null) {
+				double evaluationScore = root.getTreeNodeData().evaluate();
+				root.setPositionValue(evaluationScore);
+			} else {
+				
+				for (int i = 0; i < root.getNumChildren(); i++) {
+					evaluatePositionLeaves(root.children[i]);
+				}
 			}
 		}
 		
-		// All the leaves should be properly evaluated by now. 
 		
-		if (root.getTreeNodeData().getTurn() == 1) {
-			int maxIndex = maxValueIndex(root);
+	}
+	
+	// This method needs to be recursive.
+	public static void evaluateFilledTree(TreeNode root) {
+		// All the leaves should be properly evaluated by now. 
+
+		BoardState temp = root.getTreeNodeData();
+		// temp.printState();
+		
+		System.out.println("Evaluate filled tree.");
+		
+		// This line has a bug in it
+		if (root.boardPositionValue == 0) {
+			// Iterate through all of the children
 			
-			root.setPositionValue(root.children[maxIndex].boardPositionValue);
+			int numChildren = root.getNumChildren();
+			
+			for (int i = 0; i < numChildren; i++) {
+				evaluateFilledTree(root.children[i]);
+			}
+			
 		}
 		
+		if (temp.getTurn() == 1) {
+			int maxIndex = maxValueIndex(root);
+			
+			double value = root.children[maxIndex].boardPositionValue;
+			System.out.println("Value " + value);
+			root.setPositionValue(value);
+		}
+
 		if (root.getTreeNodeData().getTurn() == 2) {
 			int minIndex = minValueIndex(root);
 			root.setPositionValue(root.children[minIndex].boardPositionValue);
 		}
-		
 	}
+
+	
 	
 	/**
 	 * 
