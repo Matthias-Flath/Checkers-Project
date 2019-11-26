@@ -87,7 +87,7 @@ public class BoardStateJumps {
 		int player = current.whosePieceIsThis(y, x);
 		boolean isRightLeaning = isRightLeaning(y); 
 		
-		int xToJumpOver; //
+		int xToJumpOver; 
 		int xToLandOn =  (right) ? x + 1 : x - 1;
 		
 		if (isRightLeaning) {
@@ -292,13 +292,15 @@ public class BoardStateJumps {
 			if (current.positions[dy][dx] == 2 || current.positions[dy][dx] == 4) {
 				return true;
 			}
-		} else {
+		} else if (player == 2) {
 			if (current.positions[dy][dx] == 1 || current.positions[dy][dx] == 3) {
 				return true;
 			}
+		} else {
+			System.out.println("Invalid player number");
+			System.exit(0);
 		}
 		
-		// System.out.println("That is not a valid player number.");
 		return false;
 	}
 	

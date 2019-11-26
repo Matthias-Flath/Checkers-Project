@@ -71,21 +71,16 @@ public class BoardStateMove {
 	 */
 	public static boolean isLegalMove(BoardState current, int py, int px, int dy, int dx) {
 		
-		/*
-		 * System.out.println(py); System.out.println(px); System.out.println(dy);
-		 * System.out.println(dx); System.out.println("");
-		 */
-		
-		
-		
 		// Check to ensure the jump rule is followed.
 		if (BoardStateJumps.canJump(current)) {
 			
-			// System.out.println("Can jump");
-			
 			// Enforcing the jump rule.
-			// System.out.println("Enforcing the jump rule.");
 			if (TextConversions.isJump(py, px, dy, dx) != true) {
+				System.out.println(py);
+				System.out.println(px);
+				System.out.println(dy);
+				System.out.println(dx);
+
 				System.out.println("Failed the jump rule.");
 				return false;
 			}
@@ -181,6 +176,7 @@ public class BoardStateMove {
 		return false;
 	}
 		
+	// Serious issue in the move checking
 	/**
 	 * Check the legality of non-king red piece moves
 	 * This method is private to ensure that it isn't called directly (only from isLegalMove.
@@ -199,9 +195,7 @@ public class BoardStateMove {
 		
 		if ((dy - py) == -2) {
 			return jumpLegality(current, py, px, dy, dx);
-		}
-		
-		if ((dy - py) == -1) {
+		} else if ((dy - py) == -1) {
 			// left leaning rows
 			if (py%2 == 0) {
 				// Check -1 and 0
@@ -217,6 +211,17 @@ public class BoardStateMove {
 				
 				return false;
 			}			
+		} else {
+			/*
+			 * System.out.println("Invalid move type");
+			 * 
+			 * current.printState(); System.out.println(py); System.out.println(px);
+			 * System.out.println(dy); System.out.println(dx);
+			 * 
+			 * 
+			 */
+			
+			// System.exit(0);
 		}
 		
 		return false;

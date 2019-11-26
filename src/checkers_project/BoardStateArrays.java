@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 public class BoardStateArrays {
 	
+	
+	
 	/**
 	 * Return an array of all the possible single depth move strings at the current BoardState.
 	 * @param current
@@ -13,7 +15,21 @@ public class BoardStateArrays {
 	public static String[] allLegalMovesArray(BoardState current) {
 		ArrayList<String> allLegalMoves = allLegalMovesList(current);
 		String[] allLegalMovesArray = allLegalMoves.toArray(new String[allLegalMoves.size()]);
+
+		// Show me if there is a bug where this method returns an illegal move.
+		printIllegalMoves(current, allLegalMovesArray);
+		
 		return allLegalMovesArray;
+	}
+	
+	public static void printIllegalMoves(BoardState current, String[] array) {
+		for (int a = 0; a < array.length; a++) {
+			if (!BoardStateMove.isLegalMove(current, array[a])) {
+				
+				System.out.print("Illegal Move: ");
+				System.out.println(array[a]);
+			}
+		}
 	}
 	
 	/**
@@ -24,7 +40,7 @@ public class BoardStateArrays {
 	 */
 	public static ArrayList<String> allLegalMovesList(BoardState current) {
 		
-		// Needs to check if this is the second move and if so limit the jumping to only one location. 
+		// Second move checking is left to the getJumpMovesStringList method.
 		
 		if (BoardStateJumps.canJump(current)) {
 			// System.out.println("Can jump");
@@ -36,13 +52,15 @@ public class BoardStateArrays {
 	}
 	
 	/**
-	 * Return an ArrayList of all the possible non-jump moves at the current BoardState.
+	 * Return an ArrayList of all the possible jump moves at the current BoardState.
 	 * @precondition
 	 * 		Assumes that at least 1 jump is possible
 	 * @param current
 	 * @return
 	 */
 	public static ArrayList<String> getJumpMovesStringList(BoardState current) {
+
+		// Needs to check if this is the second move and if so limit the jumping to only one location. 
 
 		ArrayList<String> legalMoves = new ArrayList();
 
@@ -56,6 +74,7 @@ public class BoardStateArrays {
 					// Player 1
 					if (current.positions[y][x] == 1) {
 						legalMoves.addAll(jumpStringsAtLocation(current, y, x, 1));
+					// Player 2
 					} else {
 						legalMoves.addAll(jumpStringsAtLocation(current, y, x, -1));
 					}
@@ -86,6 +105,11 @@ public class BoardStateArrays {
 	private static ArrayList<String> jumpStringsAtLocation(BoardState current, int y, int x, int direction) {
 		
 		// Do I need any checks as to whether positions[y][x] is used.
+		
+		if (direction != 1 && direction != -1) {
+			System.out.println("jumpStringsAtLocation was called with an invalid direction argument.");
+			System.exit(0);
+		}
 		
 		ArrayList<String> legalMoves = new ArrayList();
 		
@@ -201,21 +225,23 @@ public class BoardStateArrays {
 		
 		ArrayList<String> legalMovesAtLocation = new ArrayList();
 		
-		// Get the destination of the previousMove
-		
+		// Convert the previous move string to an int array
 		int[] previousMoveArray = TextConversions.convertMoveStringToIntArray(previousMove);
 		
+		// Extract the destination coordinates
 		int dy = previousMoveArray[2];
 		int dx = previousMoveArray[3];
+		
 		
 		if (current.positions[dy][dx] == 1) {
 			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, 1));
 		} else if (current.positions[dy][dx] == 2) {
-			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, 2));
+			// There is a bug in this line
+			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, -1));
 
 		} else if ((current.positions[dy][dx] == 3) || (current.positions[dy][dx] == 4)) {
 			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, 1));
-			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, 2));
+			legalMovesAtLocation.addAll(jumpStringsAtLocation(current, dy, dx, -1));
 		}
 		
 		String[] allLegalMovesAtLocationArray = legalMovesAtLocation.toArray(new String[legalMovesAtLocation.size()]);
@@ -237,17 +263,14 @@ public class BoardStateArrays {
 		BoardState[] allMovesOfMultipleLevels =  childStates.toArray(new BoardState[childStates.size()]);
 
 		int range = allMovesOfMultipleLevels.length;
-		
 		for (int i = 0; i < range; i++) {
 			if (allMovesOfMultipleLevels == null) {
 				System.out.println("There is a null value in the childStateArray.");
 				System.exit(0);
 			}
 		}
-		
+				
 		return allMovesOfMultipleLevels;
-		
-		
 		
 	}
 	
@@ -259,11 +282,14 @@ public class BoardStateArrays {
 	 */
 	public static ArrayList<BoardState> possibleChildStates(BoardState current) {
 		
+		
 		// Iterate through all the possible first moves
 		ArrayList<BoardState> childStates = new ArrayList();
 		String[] legalFirstMoves = allLegalMovesArray(current);
 		
-		int firstMoves = numLegalMoves(current);
+		// System.out.println(Arrays.toString(legalFirstMoves));
+		
+		int firstMoves = legalFirstMoves.length;
 		
 		// BoardState[] firstBoardStates = new BoardState[firstMoves];
 		
@@ -286,11 +312,10 @@ public class BoardStateArrays {
 	public static ArrayList<BoardState> possibleGrandchildStates(BoardState current, String previousMove) {
 		
 		// Iterate through all the possible first moves
-		ArrayList<BoardState> childStates = new ArrayList();
+		ArrayList<BoardState> childStates = new ArrayList<BoardState>();
 		
 		// List of legal second moves
 		
-		ArrayList<String> secondMoves;
 		String[] legalSecondMoves = allLegalMovesAtLocation(current, previousMove);
 
 		int moveNum = legalSecondMoves.length;

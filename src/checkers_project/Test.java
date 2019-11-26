@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+ 
+
 /**
  * This class should only be used for console based input
  * Create a subclass (or something of that variety to change userTurn() for the GUI.
@@ -15,6 +19,9 @@ public class Test {
 	
 	public static final byte ROWS = 8;
 	public static final byte COLUMNS = 4;
+	
+	private static final String filepath="/Users/computer";
+
 	
 	private BoardState board;
 	private byte gameTurn;
@@ -41,6 +48,8 @@ public class Test {
 
 	// String moveArray[] = {"3a 4b", "6b 5a", "3c 4d", "5a 3c", "2d 4b", "6d 5c", "4d 6b", "7c 5a", "5a 3c", "2b 4d"};
 	
+	String moveArray[] = {"3a 4b", "2b 3a", "3c 4d"};
+	
 	/*
 	 * Invariant of the Test ADT
 	 * turn of 1 means player 1
@@ -54,6 +63,9 @@ public class Test {
 	 */
 	public static void main(String[] args) {
 		Test demo = new Test();
+		
+		
+		
 	}
  
 	/**
@@ -81,6 +93,19 @@ public class Test {
 			
 			oneGameTurn(); 
 			checkVictory();
+			
+			// Finish the object serialization project.
+			
+			/*
+			 * try {
+			 * 
+			 * FileOutputStream fileOut = new FileOutputStream(filepath); ObjectOutputStream
+			 * objectOut = new ObjectOutputStream(fileOut);
+			 * objectOut.writeObject(boardStateHistory); objectOut.close();
+			 * System.out.println("The Object  was succesfully written to a file");
+			 * 
+			 * } catch (Exception ex) { ex.printStackTrace(); }
+			 */
 		} 		 
 	}
 	
@@ -239,7 +264,7 @@ public class Test {
 			// System.out.print(moveArray[index -1]); 
 			System.out.println(); 
 			
-			// return moveArray[index - 1];
+			return moveArray[index - 1];
 
 		}
 
@@ -266,7 +291,15 @@ public class Test {
 		BoardState nextState = getOpponentMove();
 		this.board = nextState;
 		this.gameTurn = nextState.getTurn();
-		board.printState();
+		
+		
+		// Make sure the turns are right
+		if (this.board.getTurn() == 2 || this.gameTurn == 2) {
+			System.out.println("Turn error");
+			System.exit(0);
+		}
+		
+		// board.printState();
 	}
 
 

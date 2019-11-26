@@ -64,7 +64,8 @@ public class BoardState {
 		
 		if (!this.isLegalMove(move)) {
 			System.out.println("BoardState object cannot be created because this move is illegal.");
-			throw new IllegalArgumentException();
+			System.out.println("illegal move: " + move);
+			System.exit(0);
 		}
 		
 		this.preCheckedMove(move);

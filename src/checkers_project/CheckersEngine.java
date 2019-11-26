@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class CheckersEngine {
 
-	public static final int depth = 4;
+	public static final int depth = 8;
 	
 	/**
 	 * 
@@ -43,6 +43,14 @@ public class CheckersEngine {
 	public static BoardState minMaxMove(BoardState currentState) {
 		
 		System.out.println("Reached minMaxMove");
+		// System.out.println(currentState.getTurn());
+		
+		BoardStateArrays.displayAllLegalMoves(currentState);
+		
+		// System.out.println("Current State below");
+		// currentState.printState();
+		
+		// System.out.println("All potential states");
 		
 		BoardState[] allMoves = BoardStateArrays.possibleChildStatesArray(currentState);
 		int numChildren = allMoves.length;
