@@ -52,7 +52,7 @@ public class CheckersGui extends Application {
 
 		for (int y = 0; y < SQUARES_HIGH; y++) {// creating the squares and pieces
 			for (int x = 0; x < SQUARES_WIDE; x++) {
-				String chessLocation = (8 - x) + CheckersGui.convertNumberToString(y);
+				String chessLocation = (8-y) + CheckersGui.convertNumberToString(x);
 				Square square = new Square((x + y) % 2 == 0, x, y, chessLocation);// only alternating squares matter
 				gameBoard[x][y] = square;// add them to our board
 				squareGroup.getChildren().add(square);
@@ -79,21 +79,21 @@ public class CheckersGui extends Application {
 	private static String convertNumberToString(int y) {
 		int check = y;
 		switch (check) {
-		case 7:
-			return "a";
-		case 6:
-			return "b";
-		case 5:
-			return "c";
-		case 4:
-			return "d";
-		case 3:
-			return "e";
-		case 2:
-			return "f";
-		case 1:
-			return "g";
 		case 0:
+			return "a";
+		case 1:
+			return "b";
+		case 2:
+			return "c";
+		case 3:
+			return "d";
+		case 4:
+			return "e";
+		case 5:
+			return "f";
+		case 6:
+			return "g";
+		case 7:
 			return "h";
 		default:
 			return null;
