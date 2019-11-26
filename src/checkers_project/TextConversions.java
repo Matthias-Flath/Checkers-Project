@@ -235,7 +235,7 @@ public class TextConversions {
 	 * 		Array of strings [piece, destination]
 	 */
 	public static String[] convertMoveStringToStringArray(String move) {
-		move = move.strip();
+		move = move.replaceAll(" ","");
 		String[] returnArray = move.split(" ");
 		return returnArray;
 	}
