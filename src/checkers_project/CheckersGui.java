@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /*
@@ -40,16 +41,15 @@ public class CheckersGui extends Application {
 		GridPane labelHolder = new GridPane();
 		Label moveLabel = new Label("Movement Label");
 		Button moveButton = new Button("Movement Button");
-		labelHolder.add(moveButton,0,0);
-		labelHolder.add(moveLabel,0,1);
+		labelHolder.add(moveButton, 0, 0);
+		labelHolder.add(moveLabel, 0, 1);
 		board.getChildren().add(labelHolder);
 		labelHolder.relocate(700, 0);
-			moveButton.setOnAction( value -> {
+		moveButton.setOnAction(value -> {
 			moveLabel.setText(CheckersGui.movement);
 			CheckersGui.movement = "";
-			});
-			
-		
+		});
+
 		for (int y = 0; y < SQUARES_HIGH; y++) {// creating the squares and pieces
 			for (int x = 0; x < SQUARES_WIDE; x++) {
 				String chessLocation = (8 - x) + CheckersGui.convertNumberToString(y);
@@ -141,24 +141,26 @@ public class CheckersGui extends Application {
 	// creates a checkers piece
 	private CheckerPiece createPiece(PieceColor color, int xCoordinate, int yCoordinate) {
 		CheckerPiece piece = new CheckerPiece(color, xCoordinate, yCoordinate);
-		
-		piece.setOnMousePressed(e -> {//need to know where the mouse is when clicked
+
+		piece.setOnMousePressed(e -> {// need to know where the mouse is when clicked
 			piece.setMouseX(e.getSceneX());
 			piece.setMouseY(e.getSceneY());
 			int xLocation = toBoardCoordinates(piece.getLayoutX());
-			int yLocation= toBoardCoordinates(piece.getLayoutY());
+			int yLocation = toBoardCoordinates(piece.getLayoutY());
 			CheckersGui.movement = gameBoard[xLocation][yLocation].getChessLocation();
+
 		});
-		
-		piece.setOnMouseDragged(e -> {//move the piece with the mouse
-			piece.relocate(e.getSceneX() - piece.getMouseX() + piece.getOldXCoordinate(), e.getSceneY() - piece.getMouseY() + piece.getOldYCoordinate());
+
+		piece.setOnMouseDragged(e -> {// move the piece with the mouse
+			piece.relocate(e.getSceneX() - piece.getMouseX() + piece.getOldXCoordinate(),
+					e.getSceneY() - piece.getMouseY() + piece.getOldYCoordinate());
 		});
 
 		piece.setOnMouseReleased(e -> {// back in the piece we can pick up the piece by clicking now we need to set
 										// them down
 			int newX = toBoardCoordinates(piece.getLayoutX());
 			int newY = toBoardCoordinates(piece.getLayoutY());
-			
+
 			CheckersGui.movement += " " + gameBoard[newX][newY].getChessLocation();
 
 			MoveResult result = tryMove(piece, newX, newY);// find out what kind of move we are attempting to do

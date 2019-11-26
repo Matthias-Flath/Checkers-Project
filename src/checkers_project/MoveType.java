@@ -1,4 +1,5 @@
 package checkers_project;
+
 /*
  * the three types of moves
  * 
