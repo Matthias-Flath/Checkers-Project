@@ -13,12 +13,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
 /*
 Renders the GUI for the checkers game
 */
 public class CheckersGui extends Application {
 
-	private BoardState boardState;
+	public BoardState boardState;
 	public static final int SQUARE_SIZE = 80;// tiles are 100 pixels wide
 	public static final int SQUARES_WIDE = 8;// 8 tiles wide
 	public static final int SQUARES_HIGH = 8;// 8 tiles high
@@ -29,7 +30,7 @@ public class CheckersGui extends Application {
 
 	private Square[][] gameBoard = new Square[SQUARES_WIDE][SQUARES_HIGH];// keep track of where all our squares are
 	// creates the game board
-	
+
 	private Parent createBoard() {
 		Pane board = new Pane();
 		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE + 200, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
@@ -37,18 +38,21 @@ public class CheckersGui extends Application {
 		GridPane labelHolder = new GridPane();
 		Label moveLabel = new Label("Movement Label");
 		Button moveButton = new Button("Movement Button");
+		Label helperLabel = new Label("Use me for testing!");
 		labelHolder.add(moveButton, 0, 0);
 		labelHolder.add(moveLabel, 0, 1);
+		labelHolder.add(helperLabel, 0, 3);
 		board.getChildren().add(labelHolder);
 		labelHolder.relocate(700, 0);
 		moveButton.setOnAction(value -> {
 			moveLabel.setText(CheckersGui.movement);
+			helperLabel.setText(boardState.toString());
 			CheckersGui.movement = "";
 		});
 
 		for (int y = 0; y < SQUARES_HIGH; y++) {// creating the squares and pieces
 			for (int x = 0; x < SQUARES_WIDE; x++) {
-				String chessLocation = (8-y) + CheckersGui.convertNumberToString(x);
+				String chessLocation = (8 - y) + CheckersGui.convertNumberToString(x);
 				Square square = new Square((x + y) % 2 == 0, x, y, chessLocation);// only alternating squares matter
 				gameBoard[x][y] = square;// add them to our board
 				squareGroup.getChildren().add(square);
@@ -116,13 +120,7 @@ public class CheckersGui extends Application {
 			int x1 = x0 + (newX - x0) / 2;
 			int y1 = y0 + (newY - y0) / 2;
 
-			if (gameBoard[x1][y1].hasPiece() && gameBoard[x1][y1].getPiece().getColor() != piece.getColor()) {// check
-																												// if it
-																												// is
-																												// jumping
-																												// over
-																												// a
-																												// piece
+			if (gameBoard[x1][y1].hasPiece() && gameBoard[x1][y1].getPiece().getColor() != piece.getColor()) {
 				return new MoveResult(MoveType.Jump, gameBoard[x1][y1].getPiece());// move and delete
 			}
 		}
@@ -136,7 +134,7 @@ public class CheckersGui extends Application {
 
 	// creates a checkers piece
 	private CheckerPiece createPiece(PieceColor color, int xCoordinate, int yCoordinate) {
-		CheckerPiece piece = new CheckerPiece(color, xCoordinate, yCoordinate);
+		CheckerPiece piece = new CheckerPiece(color, xCoordinate, yCoordinate, this, this.boardState);
 
 		piece.setOnMousePressed(e -> {// need to know where the mouse is when clicked
 			piece.setMouseX(e.getSceneX());
@@ -156,9 +154,10 @@ public class CheckersGui extends Application {
 										// them down
 			int newX = toBoardCoordinates(piece.getLayoutX());
 			int newY = toBoardCoordinates(piece.getLayoutY());
-
 			CheckersGui.movement += " " + gameBoard[newX][newY].getChessLocation();
-
+//			if(boardState.isLegalMove(CheckersGui.movement)){
+//				System.out.println("Step 1");
+//			}
 			MoveResult result = tryMove(piece, newX, newY);// find out what kind of move we are attempting to do
 			int x0 = toBoardCoordinates(piece.getOldXCoordinate());
 			int y0 = toBoardCoordinates(piece.getOldYCoordinate());
@@ -196,7 +195,7 @@ public class CheckersGui extends Application {
 	// used to launch
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
+		boardState = new BoardState();
 		Scene startScreen = new Scene(createStartScreen());
 		primaryStage.setTitle("Checkers");
 		primaryStage.setScene(startScreen);
@@ -323,5 +322,5 @@ public class CheckersGui extends Application {
  * when Computer Moves as well Note 5 Rather than a loop use signal and response
  * Means we may not have to thread hopefully
  */
-
+// --module-path "C:\Users\Matthias Laptop\Desktop\openjfx-13.0.1_windows-x64_bin-sdk\javafx-sdk-13.0.1\lib" --add-modules javafx.controls,javafx.fxml
 //--module-path "C:\Users\Matthias Laptop\Desktop\javafx-sdk-11.0.2\lib" --add-modules javafx.controls,javafx.fxml

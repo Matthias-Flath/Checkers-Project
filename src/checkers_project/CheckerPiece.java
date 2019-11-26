@@ -14,6 +14,8 @@ various information it can hold.
 public class CheckerPiece extends StackPane {
 
 	// is it a red or black piece
+	private BoardState currentBoardstate;
+	private CheckersGui game;
 	private PieceColor color;
 	private double mouseX, mouseY;// mouse coordinates for when you pick things up
 	private double oldXCoordinate, oldYCoordinate;// so it can remember where it used to be
@@ -21,7 +23,7 @@ public class CheckerPiece extends StackPane {
 
 	// a piece needs a color which also determines which direction it can move
 	// it also needs starting coordinates
-	public CheckerPiece(PieceColor color, int xCoordinate, int yCoordinate) {
+	public CheckerPiece(PieceColor color, int xCoordinate, int yCoordinate, CheckersGui game, BoardState boardState) {
 		this.color = color;// set whether it is a black or red piece
 
 		move(xCoordinate, yCoordinate);// move the piece to the starting coordinates
