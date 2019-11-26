@@ -41,18 +41,48 @@ public class CheckerPiece extends StackPane {
 		
 		getChildren().add(pieceSprite);
 		
-		setOnMousePressed(e -> {//need to know where the mouse is when clicked
-			mouseX = e.getSceneX();
-			mouseY = e.getSceneY();
-		});
-		
-		setOnMouseDragged(e -> {//move the piece with the mouse
-			relocate(e.getSceneX() - mouseX + oldXCoordinate, e.getSceneY() - mouseY + oldYCoordinate);
-		});
+//		setOnMousePressed(e -> {//need to know where the mouse is when clicked
+//			mouseX = e.getSceneX();
+//			mouseY = e.getSceneY();
+//		});
+//		
+//		setOnMouseDragged(e -> {//move the piece with the mouse
+//			relocate(e.getSceneX() - mouseX + oldXCoordinate, e.getSceneY() - mouseY + oldYCoordinate);
+//		});
 	}
 	
 	
 	
+	public double getMouseX() {
+		return mouseX;
+	}
+
+
+
+	public void setMouseX(double mouseX) {
+		this.mouseX = mouseX;
+	}
+
+
+
+	public double getMouseY() {
+		return mouseY;
+	}
+
+
+
+	public void setMouseY(double mouseY) {
+		this.mouseY = mouseY;
+	}
+
+
+
+	public void setColor(PieceColor color) {
+		this.color = color;
+	}
+
+
+
 	public void move(int x, int y) {// make sure you remember the old coordinates then move the piece to the new ones
 		oldXCoordinate = x * CheckersGui.SQUARE_SIZE;
 		oldYCoordinate = y * CheckersGui.SQUARE_SIZE;

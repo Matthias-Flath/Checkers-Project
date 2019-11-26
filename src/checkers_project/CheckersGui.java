@@ -2,6 +2,7 @@ package checkers_project;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /*
@@ -33,13 +35,25 @@ public class CheckersGui extends Application {
 	// creates the game board
 	private Parent createBoard() {
 		Pane board = new Pane();
-		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
+		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE + 200, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
 		board.getChildren().addAll(squareGroup, checkerPieceGroup);
-
+		GridPane labelHolder = new GridPane();
+		Label moveLabel = new Label("Movement Label");
+		Button moveButton = new Button("Movement Button");
+		labelHolder.add(moveButton,0,0);
+		labelHolder.add(moveLabel,0,1);
+		board.getChildren().add(labelHolder);
+		labelHolder.relocate(700, 0);
+			moveButton.setOnAction( value -> {
+			moveLabel.setText(CheckersGui.movement);
+			CheckersGui.movement = "";
+			});
+			
+		
 		for (int y = 0; y < SQUARES_HIGH; y++) {// creating the squares and pieces
 			for (int x = 0; x < SQUARES_WIDE; x++) {
-				//String chessLocation = 8-x + TextConversions.convertNumberToString(y);
-				Square square = new Square((x + y) % 2 == 0, x, y);// only alternating squares matter
+				String chessLocation = (8 - x) + CheckersGui.convertNumberToString(y);
+				Square square = new Square((x + y) % 2 == 0, x, y, chessLocation);// only alternating squares matter
 				gameBoard[x][y] = square;// add them to our board
 				squareGroup.getChildren().add(square);
 
@@ -60,6 +74,31 @@ public class CheckersGui extends Application {
 		}
 
 		return board;
+	}
+
+	private static String convertNumberToString(int y) {
+		int check = y;
+		switch (check) {
+		case 7:
+			return "a";
+		case 6:
+			return "b";
+		case 5:
+			return "c";
+		case 4:
+			return "d";
+		case 3:
+			return "e";
+		case 2:
+			return "f";
+		case 1:
+			return "g";
+		case 0:
+			return "h";
+		default:
+			return null;
+
+		}
 	}
 
 	/*
@@ -102,11 +141,25 @@ public class CheckersGui extends Application {
 	// creates a checkers piece
 	private CheckerPiece createPiece(PieceColor color, int xCoordinate, int yCoordinate) {
 		CheckerPiece piece = new CheckerPiece(color, xCoordinate, yCoordinate);
+		
+		piece.setOnMousePressed(e -> {//need to know where the mouse is when clicked
+			piece.setMouseX(e.getSceneX());
+			piece.setMouseY(e.getSceneY());
+			int xLocation = toBoardCoordinates(piece.getLayoutX());
+			int yLocation= toBoardCoordinates(piece.getLayoutY());
+			CheckersGui.movement = gameBoard[xLocation][yLocation].getChessLocation();
+		});
+		
+		piece.setOnMouseDragged(e -> {//move the piece with the mouse
+			piece.relocate(e.getSceneX() - piece.getMouseX() + piece.getOldXCoordinate(), e.getSceneY() - piece.getMouseY() + piece.getOldYCoordinate());
+		});
 
 		piece.setOnMouseReleased(e -> {// back in the piece we can pick up the piece by clicking now we need to set
 										// them down
 			int newX = toBoardCoordinates(piece.getLayoutX());
 			int newY = toBoardCoordinates(piece.getLayoutY());
+			
+			CheckersGui.movement += " " + gameBoard[newX][newY].getChessLocation();
 
 			MoveResult result = tryMove(piece, newX, newY);// find out what kind of move we are attempting to do
 			int x0 = toBoardCoordinates(piece.getOldXCoordinate());
@@ -152,73 +205,71 @@ public class CheckersGui extends Application {
 		primaryStage.show();
 
 	}
-	
+
 	private Parent createStartScreen() {
 		GridPane startScreen = new GridPane();
-		startScreen.setPrefSize(500,500);
+		startScreen.setPrefSize(500, 500);
 		Label title = new Label("\t\t    Checkers \n By James Lanska and Matthias Flath");
 		Button onePlayerButton = new Button("One Player V.S. AI");
 		Button twoPlayerButton = new Button("Two Player");
 		Label ipLabel = new Label("IP Address");
 		TextField ipTextField = new TextField();
-		
+
 		DropShadow shadow = new DropShadow();
-		
-		 
-        // Adding the shadow when the mouse cursor is on
-        onePlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                onePlayerButton.setEffect(shadow);
-            }
-        });
-        
-        twoPlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                twoPlayerButton.setEffect(shadow);
-            }
-        });
- 
-        // Removing the shadow when the mouse cursor is off
-        onePlayerButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                onePlayerButton.setEffect(null);
-            }
-        });
-        
-        twoPlayerButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                twoPlayerButton.setEffect(null);
-            }
-        });
-		
-		onePlayerButton.setOnAction(value ->  {
+
+		// Adding the shadow when the mouse cursor is on
+		onePlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				onePlayerButton.setEffect(shadow);
+			}
+		});
+
+		twoPlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				twoPlayerButton.setEffect(shadow);
+			}
+		});
+
+		// Removing the shadow when the mouse cursor is off
+		onePlayerButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent e) {
+				onePlayerButton.setEffect(null);
+			}
+		});
+
+		twoPlayerButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent e) {
+				twoPlayerButton.setEffect(null);
+			}
+		});
+
+		onePlayerButton.setOnAction(value -> {
 			ipTextField.clear();
-			ipTextField.setText("You clicked one player");;
-			  Stage game = new Stage();
-			  Scene board = new Scene(createBoard());
-			  game.setTitle("Checkers");
-			  game.setScene(board);
-			  game.show();
-	        });
-		
-		twoPlayerButton.setOnAction(value ->  {
+			ipTextField.setText("You clicked one player");
+			;
+			Stage game = new Stage();
+			Scene board = new Scene(createBoard());
+			game.setTitle("Checkers");
+			game.setScene(board);
+			game.show();
+		});
+
+		twoPlayerButton.setOnAction(value -> {
 			ipTextField.clear();
 			ipTextField.setText("You clicked two players but right now it's the same as one player");
 			Stage game = new Stage();
-			  Scene board = new Scene(createBoard());
-			  game.setTitle("Checkers");
-			  game.setScene(board);
-			  game.show();
+			Scene board = new Scene(createBoard());
+			game.setTitle("Checkers");
+			game.setScene(board);
+			game.show();
 //	           
-			/* 
-			 * Multiplayer.setIpAdress(ipTextField.getText();
-			 * createGameBoard(twoPlayers);
-			 * show GameBoard
-			 * hide this
+			/*
+			 * Multiplayer.setIpAdress(ipTextField.getText(); createGameBoard(twoPlayers);
+			 * show GameBoard hide this
 			 */
-	        });
+		});
 		startScreen.setVgap(15);
 		startScreen.add(title, 2, 1);
 		startScreen.add(onePlayerButton, 1, 2);
@@ -227,8 +278,6 @@ public class CheckersGui extends Application {
 		startScreen.add(ipTextField, 2, 3);
 		return startScreen;
 	}
-	
-	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -237,61 +286,44 @@ public class CheckersGui extends Application {
 }
 
 /*
- * 8*4 array to represent board states
- * if the board states have an instance of checkers Gui but it is declared null does it take space?
- * When turn changes check current board state and redraw
- * Maybe Expand Board size to display whose turn and a button to end turn
+ * 8*4 array to represent board states if the board states have an instance of
+ * checkers Gui but it is declared null does it take space? When turn changes
+ * check current board state and redraw Maybe Expand Board size to display whose
+ * turn and a button to end turn
  * 
- * Button endTurnButton = new Button(End Turn) 
+ * Button endTurnButton = new Button(End Turn)
  * 
- * endTurnButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
- *           @Override
- *          public void handle(MouseEvent e) {
- *               endTurnButton.setEffect(shadow);
- *           }
- *       });
+ * endTurnButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new
+ * EventHandler<MouseEvent>() {
+ * 
+ * @Override public void handle(MouseEvent e) { endTurnButton.setEffect(shadow);
+ * } });
  *
- *       // Removing the shadow when the mouse cursor is off
- *      endTurnButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
- *           public void handle(MouseEvent e) {
- *               endTurnButton.setEffect(null);
- *           }
- *       });
- *       
- * endTurnButton.setOnAction(value ->  {
- * 		if(movesLeft ==0){
- *		computerTurn();
- *		}
- *        });
- *        
- *  Move Logic needs an update if it is not your turn it is illegal move. a moveCounter variable that will also prevent you from 
- *  ending the turn when you have not moved
- *  Label turnLabel = new Label();
- *	turnLabel.setText();
- *			use this to tell you whose turn it is or a victory notification\
- *	Gonna need an update method that checks the current board state possibly attached to a button but hopefully not;
+ * // Removing the shadow when the mouse cursor is off
+ * endTurnButton.addEventHandler(MouseEvent.MOUSE_EXITED, new
+ * EventHandler<MouseEvent>() { public void handle(MouseEvent e) {
+ * endTurnButton.setEffect(null); } });
+ * 
+ * endTurnButton.setOnAction(value -> { if(movesLeft ==0){ computerTurn(); } });
+ * 
+ * Move Logic needs an update if it is not your turn it is illegal move. a
+ * moveCounter variable that will also prevent you from ending the turn when you
+ * have not moved Label turnLabel = new Label(); turnLabel.setText(); use this
+ * to tell you whose turn it is or a victory notification\ Gonna need an update
+ * method that checks the current board state possibly attached to a button but
+ * hopefully not;
  * 
  */
 
 /*
- * Receipt Paper Notes
- * 	Note 1
- * 		give each square a string
- * 		mouse click and release adds together then passes new combo string to james version
- * 			addendum: if square has piece
- * 		make sure to clear string afterwards
- * Note 2
- * 		Square2.setPiece(Square1.getPiece());
- * 		Square1.getPiece().move(Square2);
- * 		Square1.setPiece(null);
- * Note 3
- * 		After Piece moves if it is king redraw it as one
- * Note 4
- * 		Will we have to Thread?
- * 		Regardless need to make sure it updates when Computer Moves as well
- * Note 5
- * 		Rather than a loop use signal and response
- * 		Means we may not have to thread hopefully
+ * Receipt Paper Notes Note 1 give each square a string mouse click and release
+ * adds together then passes new combo string to james version addendum: if
+ * square has piece make sure to clear string afterwards Note 2
+ * Square2.setPiece(Square1.getPiece()); Square1.getPiece().move(Square2);
+ * Square1.setPiece(null); Note 3 After Piece moves if it is king redraw it as
+ * one Note 4 Will we have to Thread? Regardless need to make sure it updates
+ * when Computer Moves as well Note 5 Rather than a loop use signal and response
+ * Means we may not have to thread hopefully
  */
- 
+
 //--module-path "C:\Users\Matthias Laptop\Desktop\javafx-sdk-11.0.2\lib" --add-modules javafx.controls,javafx.fxml

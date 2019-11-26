@@ -1,5 +1,6 @@
 package checkers_project;
 
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -9,21 +10,33 @@ on each position.
 
 */
 //a tile on our board
-public class Square extends Rectangle {
+public class Square extends StackPane {
 
 	private CheckerPiece piece;//tiles can have pieces
 	private String chessLocation;
 	
-	public Square(boolean color, int xCoordinate, int yCoordinate) {//creates our squares
-		setWidth(CheckersGui.SQUARE_SIZE);
-		setHeight(CheckersGui.SQUARE_SIZE);
-		//this.setChessLocation(chessLocation);
+	public Square(boolean color, int xCoordinate, int yCoordinate, String chessLocation) {//creates our squares
+//		setWidth(CheckersGui.SQUARE_SIZE);
+//		setHeight(CheckersGui.SQUARE_SIZE);
+		this.setChessLocation(chessLocation);
 		relocate(xCoordinate * CheckersGui.SQUARE_SIZE, yCoordinate * CheckersGui.SQUARE_SIZE);
+		Rectangle squareSprite = new Rectangle(CheckersGui.SQUARE_SIZE, CheckersGui.SQUARE_SIZE);
+		
 		if(color == false) {
-			setFill(Color.LIGHTYELLOW);
+			squareSprite.setFill(Color.LIGHTYELLOW);
 		} else {
-			setFill(Color.GREEN);
+			squareSprite.setFill(Color.GREEN);
 		}
+		
+		getChildren().add(squareSprite);
+		
+		setOnMouseClicked(e -> {
+			if(CheckersGui.movement.length() > 5) {
+				CheckersGui.movement = "";
+			}
+			CheckersGui.movement += this.getChessLocation() + " ";
+		});
+		
 	}
 	
 	public boolean hasPiece() {// does this tile have a piece?
@@ -49,4 +62,6 @@ public class Square extends Rectangle {
 	public void setChessLocation(String chessLocation) {
 		this.chessLocation = chessLocation;
 	}
+	
+	
 }
