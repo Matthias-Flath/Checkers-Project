@@ -13,13 +13,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
- // git staging please
 /*
 Renders the GUI for the checkers game
 */
- 
 public class CheckersGui extends Application {
 
+	private BoardState boardState;
 	public static final int SQUARE_SIZE = 80;// tiles are 100 pixels wide
 	public static final int SQUARES_WIDE = 8;// 8 tiles wide
 	public static final int SQUARES_HIGH = 8;// 8 tiles high
@@ -29,8 +28,8 @@ public class CheckersGui extends Application {
 	private Group checkerPieceGroup = new Group();// keep track of all our pieces
 
 	private Square[][] gameBoard = new Square[SQUARES_WIDE][SQUARES_HIGH];// keep track of where all our squares are
-
 	// creates the game board
+	
 	private Parent createBoard() {
 		Pane board = new Pane();
 		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE + 200, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
