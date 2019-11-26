@@ -16,7 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+ // git staging please
 /*
 Renders the GUI for the checkers game
 */
