@@ -278,7 +278,7 @@ public class Test {
 		}
 		
 		String s = in.nextLine();
-		s.strip();
+		s.replace(" ","");
 
 		return s;
 	}

@@ -2,7 +2,6 @@ package checkers_project;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,14 +12,12 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
  // git staging please
 /*
 Renders the GUI for the checkers game
 */
-
+ 
 public class CheckersGui extends Application {
 
 	public static final int SQUARE_SIZE = 80;// tiles are 100 pixels wide

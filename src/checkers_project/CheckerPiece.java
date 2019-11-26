@@ -3,7 +3,7 @@ package checkers_project;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.text.Text;
+
 
 /*
 Abstract Data Type for the Checkers Piece.
