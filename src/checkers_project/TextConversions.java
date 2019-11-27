@@ -79,6 +79,7 @@ public class TextConversions {
 		}		
 	}
 	
+	
 	/**
 	 * Find the column letter at a given position
 	 * @precondition
@@ -235,7 +236,7 @@ public class TextConversions {
 	 * 		Array of strings [piece, destination]
 	 */
 	public static String[] convertMoveStringToStringArray(String move) {
-		move = move.replaceAll(" ","");
+		move = move.strip();
 		String[] returnArray = move.split(" ");
 		return returnArray;
 	}

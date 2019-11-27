@@ -1,5 +1,4 @@
 package checkers_project;
-
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
@@ -7,7 +6,7 @@ import javafx.scene.shape.Ellipse;
 
 /*
 Abstract Data Type for the Checkers Piece.
-Descrives the set of actions that a checkers piece can make, and all of the
+Describes the set of actions that a checkers piece can make, and all of the
 various information it can hold. 
 */
 
@@ -38,12 +37,11 @@ public class CheckerPiece extends StackPane {
  	 * @param xCoordinate - the starting x-coordinate location of the piece
 	 * @param yCoordinate - the starting y-coordinate locatiopn of the piece
 	 * @param game - a reference to a ChecersGui object that the piece resides in
-	 * @param boardState - a reference to a BoardState the piece has a theoretical location in
 	 * @postcondition a CheckerPiece object is created moved to a location and a given a sprite
 	 */
 	
 	
-	public CheckerPiece(PieceColor color, int xCoordinate, int yCoordinate, CheckersGui game, BoardState boardState) {
+	public CheckerPiece(PieceColor color, int xCoordinate, int yCoordinate, CheckersGui game) {
 		this.color = color;// set whether it is a black or red piece
 
 		move(xCoordinate, yCoordinate);// move the piece to the starting coordinates

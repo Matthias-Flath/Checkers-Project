@@ -50,10 +50,11 @@ public class Square extends StackPane {
 		getChildren().add(squareSprite);
 
 		setOnMouseClicked(e -> {
-			if (CheckersGui.movement.length() > 5) {
-				CheckersGui.movement = "";
+			if(this.hasPiece()) {
+				CheckersGui.movement += this.chessLocation + " has a piece";
+			} else {
+				CheckersGui.movement += this.chessLocation + " does not have a piece";
 			}
-			CheckersGui.movement += this.getChessLocation() + " ";
 		});
 
 	}

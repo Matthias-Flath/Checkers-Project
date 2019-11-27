@@ -33,8 +33,11 @@ public class CheckersGui extends Application {
 
 	private Parent createBoard() {
 		Pane board = new Pane();
+		// Set preferred size
 		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE + 200, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
+		
 		board.getChildren().addAll(squareGroup, checkerPieceGroup);
+		//A panel that holds some testing equipment
 		GridPane labelHolder = new GridPane();
 		Label moveLabel = new Label("Movement Label");
 		Button moveButton = new Button("Movement Button");
@@ -46,8 +49,8 @@ public class CheckersGui extends Application {
 		labelHolder.relocate(700, 0);
 		moveButton.setOnAction(value -> {
 			moveLabel.setText(CheckersGui.movement);
-			helperLabel.setText(boardState.toString());
-			CheckersGui.movement = "";
+			this.refresh(boardState);
+			movement = "";
 		});
 
 		for (int y = 0; y < SQUARES_HIGH; y++) {// creating the squares and pieces
@@ -57,6 +60,7 @@ public class CheckersGui extends Application {
 				gameBoard[x][y] = square;// add them to our board
 				squareGroup.getChildren().add(square);
 
+				
 				CheckerPiece piece = null;
 
 				if (y <= 2 && (x + y) % 2 != 0) {// the top ones are black the bottom ones are red
@@ -128,13 +132,19 @@ public class CheckersGui extends Application {
 		return new MoveResult(MoveType.Illegal);// otherwise illegal move
 	}
 
-	private int toBoardCoordinates(double pixel) {// helps translate pixel coordinates into our 8x8 grid
+	/**
+	 * 
+	 * @param pixel
+	 * @return
+	 */
+	private int toBoardCoordinates(double pixel) {
+		// helps translate pixel coordinates into our 8x8 grid
 		return (int) (pixel + SQUARE_SIZE / 2) / SQUARE_SIZE;
 	}
 
 	// creates a checkers piece
 	private CheckerPiece createPiece(PieceColor color, int xCoordinate, int yCoordinate) {
-		CheckerPiece piece = new CheckerPiece(color, xCoordinate, yCoordinate, this, this.boardState);
+		CheckerPiece piece = new CheckerPiece(color, xCoordinate, yCoordinate, this);
 
 		piece.setOnMousePressed(e -> {// need to know where the mouse is when clicked
 			piece.setMouseX(e.getSceneX());
@@ -145,47 +155,69 @@ public class CheckersGui extends Application {
 
 		});
 
-		piece.setOnMouseDragged(e -> {// move the piece with the mouse
+		piece.setOnMouseDragged(e -> {
+			// move the piece with the mouse
 			piece.relocate(e.getSceneX() - piece.getMouseX() + piece.getOldXCoordinate(),
 					e.getSceneY() - piece.getMouseY() + piece.getOldYCoordinate());
 		});
 
-		piece.setOnMouseReleased(e -> {// back in the piece we can pick up the piece by clicking now we need to set
-										// them down
+		piece.setOnMouseReleased(e -> {
+			// back in the piece we can pick up the piece by clicking now we need to set
+			// them down
 			int newX = toBoardCoordinates(piece.getLayoutX());
 			int newY = toBoardCoordinates(piece.getLayoutY());
 			CheckersGui.movement += " " + gameBoard[newX][newY].getChessLocation();
-//			if(boardState.isLegalMove(CheckersGui.movement)){
-//				System.out.println("Step 1");
-//			}
-			MoveResult result = tryMove(piece, newX, newY);// find out what kind of move we are attempting to do
+			boolean result;
+			
+			if(boardState.isSecondMovePossible()){
+				String previousMove = Controller.getPreviousMove();
+				result = boardState.isLegalMove(movement, previousMove);
+			}else {
+				result = boardState.isLegalMove(movement);
+			}
+			
+			if(result) {
+				Controller.moveStringHistory.push(movement);
+				Controller.boardStateHistory.push(boardState);
+				boardState.setSecondMove(BoardStateJumps.canJumpAtDestination(boardState, movement));
+				boardState.preCheckedMove(movement);
+				//test.nextGameTurn();
+//				this.refresh(boardState);
+				this.boardState = Controller.getOpponentMove(this.boardState);
+				this.refresh(boardState);
+				
+			} else {
+				//test.UserTurn();
+			}
+//			MoveResult result = tryMove(piece, newX, newY);// find out what kind of move we are attempting to do
 			int x0 = toBoardCoordinates(piece.getOldXCoordinate());
 			int y0 = toBoardCoordinates(piece.getOldYCoordinate());
-
-			switch (result.getType()) {// moves piece based on what we are attempting to do
-			case Illegal:
-				piece.cancelMove();// returns piece to old coordinates
-				break;
-			case Normal:
-				piece.move(newX, newY);// moves piece
-				gameBoard[x0][y0].setPiece(null);// changes its location in our grid
-				gameBoard[newX][newY].setPiece(piece);
-				break;
-			case Jump:
-				piece.move(newX, newY);// moves piece
-				gameBoard[x0][y0].setPiece(null);// changes its location in our grid
-				gameBoard[newX][newY].setPiece(piece);
-
-				CheckerPiece otherPiece = result.getPiece();// need to delete the piece we jumped over
-				gameBoard[toBoardCoordinates(otherPiece.getOldXCoordinate())][toBoardCoordinates(
-						otherPiece.getOldYCoordinate())].setPiece(null);
-				checkerPieceGroup.getChildren().remove(otherPiece);
-				break;
-
-			default:
-				break;
-
-			}
+//
+//			
+//			switch (result.getType()) {// moves piece based on what we are attempting to do
+//			case Illegal:
+//				piece.cancelMove();// returns piece to old coordinates
+//				break;
+//			case Normal:
+//				piece.move(newX, newY);// moves piece
+//				gameBoard[x0][y0].setPiece(null);// changes its location in our grid
+//				gameBoard[newX][newY].setPiece(piece);
+//				break;
+//			case Jump:
+//				piece.move(newX, newY);// moves piece
+//				gameBoard[x0][y0].setPiece(null);// changes its location in our grid
+//				gameBoard[newX][newY].setPiece(piece);
+//
+//				CheckerPiece otherPiece = result.getPiece();// need to delete the piece we jumped over
+//				gameBoard[toBoardCoordinates(otherPiece.getOldXCoordinate())][toBoardCoordinates(
+//						otherPiece.getOldYCoordinate())].setPiece(null);
+//				checkerPieceGroup.getChildren().remove(otherPiece);
+//				break;
+//
+//			default:
+//				break;
+//
+//			}
 		});
 
 		return piece;
@@ -261,6 +293,7 @@ public class CheckersGui extends Application {
 			game.setTitle("Checkers");
 			game.setScene(board);
 			game.show();
+			
 //	           
 			/*
 			 * Multiplayer.setIpAdress(ipTextField.getText(); createGameBoard(twoPlayers);
@@ -276,6 +309,61 @@ public class CheckersGui extends Application {
 		return startScreen;
 	}
 
+	/*
+	 * trying to figure out 8x4 to 8x8 arrays if(x % 2 == 1) y = y*2
+	 * 
+	 * if(x % 2 == 0) y = y
+	 */
+
+	public void refresh(BoardState boardState) {
+		
+		for (int x = 0; x < CheckersGui.SQUARES_WIDE; x++) {
+			for (int y = 0; y < CheckersGui.SQUARES_HIGH; y++) {
+				checkerPieceGroup.getChildren().remove(this.gameBoard[x][y].getPiece());
+				this.gameBoard[x][y].setPiece(null);
+			}
+		}
+		
+		
+		for (int y = 0; y < Game.ROWS; y++) {
+			for (int x = 0; x < Game.COLUMNS; x++) {
+				int myX = 7-y;
+				int myY;
+				if(myX%2==1) {
+					myY = 2*x;
+				} else {
+					myY = 2*x+1;
+				}
+				
+				CheckerPiece piece = null;
+				if(this.boardState.positions[y][x] == 0) {
+					
+				} else if(this.boardState.positions[y][x] == 1) {//black
+					piece = createPiece(PieceColor.Red,myY,myX);
+					this.gameBoard[myX][myY].setPiece(piece);
+					checkerPieceGroup.getChildren().add(piece);
+					
+				} else if(this.boardState.positions[y][x] == 2) {//red
+					piece = createPiece(PieceColor.Black,myY,myX);
+					this.gameBoard[myX][myY].setPiece(piece);
+					checkerPieceGroup.getChildren().add(piece);
+					
+				} else if(this.boardState.positions[y][x] == 3) {//black king
+					piece = createPiece(PieceColor.Red,myY,myX);
+					this.gameBoard[myX][myY].setPiece(piece);
+					checkerPieceGroup.getChildren().add(piece);
+					
+				} else {// red king
+					piece = createPiece(PieceColor.Black,myY,myX);
+					this.gameBoard[myX][myY].setPiece(piece);
+					checkerPieceGroup.getChildren().add(piece);
+					
+					
+				}
+			}
+		}
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
