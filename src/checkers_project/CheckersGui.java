@@ -1,5 +1,15 @@
 package checkers_project;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -27,7 +37,7 @@ public class CheckersGui extends Application {
 	public static boolean canMove = true;
 	private Group squareGroup = new Group();// keep track of all our squares
 	private Group checkerPieceGroup = new Group();// keep track of all our pieces
-
+	private byte gameTurn;
 	private Square[][] gameBoard = new Square[SQUARES_WIDE][SQUARES_HIGH];// keep track of where all our squares are
 	// creates the game board
 
@@ -35,22 +45,53 @@ public class CheckersGui extends Application {
 		Pane board = new Pane();
 		// Set preferred size
 		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE + 200, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
-		
+
 		board.getChildren().addAll(squareGroup, checkerPieceGroup);
-		//A panel that holds some testing equipment
+		// A panel that holds some testing equipment
 		GridPane labelHolder = new GridPane();
-		Label moveLabel = new Label("Movement Label");
-		Button moveButton = new Button("Movement Button");
-		Label helperLabel = new Label("Use me for testing!");
-		labelHolder.add(moveButton, 0, 0);
-		labelHolder.add(moveLabel, 0, 1);
-		labelHolder.add(helperLabel, 0, 3);
+
+		Button refreshButton = new Button("Refresh");
+		Button backButton = new Button("Take back turn");
+		labelHolder.add(refreshButton, 0, 0);
+		labelHolder.add(backButton, 0, 3);
 		board.getChildren().add(labelHolder);
 		labelHolder.relocate(700, 0);
-		moveButton.setOnAction(value -> {
-			moveLabel.setText(CheckersGui.movement);
+
+		DropShadow shadow = new DropShadow();
+
+		refreshButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				refreshButton.setEffect(shadow);
+			}
+		});
+
+		refreshButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent e) {
+				refreshButton.setEffect(null);
+			}
+		});
+
+		backButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				backButton.setEffect(shadow);
+			}
+		});
+
+		backButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent e) {
+				backButton.setEffect(null);
+			}
+		});
+
+		refreshButton.setOnAction(value -> {
 			this.refresh(boardState);
 			movement = "";
+		});
+		backButton.setOnAction(value -> {
+			this.boardState = Controller.boardStateHistory.pop();
+			this.refresh(boardState);
 		});
 
 		for (int y = 0; y < SQUARES_HIGH; y++) {// creating the squares and pieces
@@ -60,7 +101,6 @@ public class CheckersGui extends Application {
 				gameBoard[x][y] = square;// add them to our board
 				squareGroup.getChildren().add(square);
 
-				
 				CheckerPiece piece = null;
 
 				if (y <= 2 && (x + y) % 2 != 0) {// the top ones are black the bottom ones are red
@@ -105,33 +145,6 @@ public class CheckersGui extends Application {
 		}
 	}
 
-	/*
-	 * x0, x1, y0, y1 are math terms for calculating differences usually
-	 */
-	private MoveResult tryMove(CheckerPiece piece, int newX, int newY) {
-		if (gameBoard[newX][newY].hasPiece() || (newX + newY) % 2 == 0) {// if the square you are moving to is occupied
-																			// illegal
-			return new MoveResult(MoveType.Illegal);
-		}
-
-		int x0 = toBoardCoordinates(piece.getOldXCoordinate());// starting positions
-		int y0 = toBoardCoordinates(piece.getOldYCoordinate());
-
-		if (Math.abs(newX - x0) == 1 && newY - y0 == piece.getColor().moveDir) {// if it is the right direction for the
-																				// piece normal move
-			return new MoveResult(MoveType.Normal);
-		} else if (Math.abs(newX - x0) == 2 && newY - y0 == piece.getColor().moveDir * 2) {// if it is a double move
-			int x1 = x0 + (newX - x0) / 2;
-			int y1 = y0 + (newY - y0) / 2;
-
-			if (gameBoard[x1][y1].hasPiece() && gameBoard[x1][y1].getPiece().getColor() != piece.getColor()) {
-				return new MoveResult(MoveType.Jump, gameBoard[x1][y1].getPiece());// move and delete
-			}
-		}
-
-		return new MoveResult(MoveType.Illegal);// otherwise illegal move
-	}
-
 	/**
 	 * 
 	 * @param pixel
@@ -168,66 +181,55 @@ public class CheckersGui extends Application {
 			int newY = toBoardCoordinates(piece.getLayoutY());
 			CheckersGui.movement += " " + gameBoard[newX][newY].getChessLocation();
 			boolean result;
-			
-			if(boardState.isSecondMovePossible()){
+			boolean computerTurn = false;
+			if (!boardState.isLegalMove(movement)) {
+				piece.cancelMove();
+				CheckersGui.movement = "";
+			}
+			if (boardState.isSecondMovePossible()) {
 				String previousMove = Controller.getPreviousMove();
 				result = boardState.isLegalMove(movement, previousMove);
-			}else {
+			} else {
 				result = boardState.isLegalMove(movement);
 			}
-			
-			if(result) {
-				Controller.moveStringHistory.push(movement);
+
+			if (result) {
 				Controller.boardStateHistory.push(boardState);
+				Controller.moveStringHistory.push(movement);
 				boardState.setSecondMove(BoardStateJumps.canJumpAtDestination(boardState, movement));
 				boardState.preCheckedMove(movement);
-				//test.nextGameTurn();
-//				this.refresh(boardState);
-				this.boardState = Controller.getOpponentMove(this.boardState);
 				this.refresh(boardState);
-				
-			} else {
-				//test.UserTurn();
+				Controller.checkVictory(boardState);
+				computerTurn = true;
+				if (boardState.isSecondMovePossible()) {
+					computerTurn = false;
+				} else {
+					// Move to the next turn
+					this.gameTurn = (byte) ((this.gameTurn == 1) ? 2 : 1);
+					this.boardState.nextTurn();
+				}
+				if (computerTurn) {
+					this.boardState = Controller.getOpponentMove(this.boardState);
+					this.gameTurn = boardState.getTurn();
+					Controller.checkVictory(boardState);
+					this.refresh(boardState);
+					Controller.boardStateHistory.push(boardState);
+					Controller.checkVictory(boardState);
+				} else {
+					CheckersGui.movement = "";
+					this.refresh(boardState);
+				}
 			}
-//			MoveResult result = tryMove(piece, newX, newY);// find out what kind of move we are attempting to do
-			int x0 = toBoardCoordinates(piece.getOldXCoordinate());
-			int y0 = toBoardCoordinates(piece.getOldYCoordinate());
-//
-//			
-//			switch (result.getType()) {// moves piece based on what we are attempting to do
-//			case Illegal:
-//				piece.cancelMove();// returns piece to old coordinates
-//				break;
-//			case Normal:
-//				piece.move(newX, newY);// moves piece
-//				gameBoard[x0][y0].setPiece(null);// changes its location in our grid
-//				gameBoard[newX][newY].setPiece(piece);
-//				break;
-//			case Jump:
-//				piece.move(newX, newY);// moves piece
-//				gameBoard[x0][y0].setPiece(null);// changes its location in our grid
-//				gameBoard[newX][newY].setPiece(piece);
-//
-//				CheckerPiece otherPiece = result.getPiece();// need to delete the piece we jumped over
-//				gameBoard[toBoardCoordinates(otherPiece.getOldXCoordinate())][toBoardCoordinates(
-//						otherPiece.getOldYCoordinate())].setPiece(null);
-//				checkerPieceGroup.getChildren().remove(otherPiece);
-//				break;
-//
-//			default:
-//				break;
-//
-//			}
 		});
-
 		return piece;
-
 	}
 
 	// used to launch
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		boardState = new BoardState();
+		Controller.boardStateHistory.push(boardState);
+		this.gameTurn = boardState.getTurn();
 		Scene startScreen = new Scene(createStartScreen());
 		primaryStage.setTitle("Checkers");
 		primaryStage.setScene(startScreen);
@@ -293,7 +295,7 @@ public class CheckersGui extends Application {
 			game.setTitle("Checkers");
 			game.setScene(board);
 			game.show();
-			
+
 //	           
 			/*
 			 * Multiplayer.setIpAdress(ipTextField.getText(); createGameBoard(twoPlayers);
@@ -309,106 +311,58 @@ public class CheckersGui extends Application {
 		return startScreen;
 	}
 
-	/*
-	 * trying to figure out 8x4 to 8x8 arrays if(x % 2 == 1) y = y*2
-	 * 
-	 * if(x % 2 == 0) y = y
-	 */
-
 	public void refresh(BoardState boardState) {
-		
+
 		for (int x = 0; x < CheckersGui.SQUARES_WIDE; x++) {
 			for (int y = 0; y < CheckersGui.SQUARES_HIGH; y++) {
 				checkerPieceGroup.getChildren().remove(this.gameBoard[x][y].getPiece());
 				this.gameBoard[x][y].setPiece(null);
 			}
 		}
-		
-		
+
 		for (int y = 0; y < Game.ROWS; y++) {
 			for (int x = 0; x < Game.COLUMNS; x++) {
-				int myX = 7-y;
+				int myX = 7 - y;
 				int myY;
-				if(myX%2==1) {
-					myY = 2*x;
+				if (myX % 2 == 1) {
+					myY = 2 * x;
 				} else {
-					myY = 2*x+1;
+					myY = 2 * x + 1;
 				}
-				
+
 				CheckerPiece piece = null;
-				if(this.boardState.positions[y][x] == 0) {
-					
-				} else if(this.boardState.positions[y][x] == 1) {//black
-					piece = createPiece(PieceColor.Red,myY,myX);
+				if (this.boardState.positions[y][x] == 0) {
+
+				} else if (this.boardState.positions[y][x] == 1) {// black
+					piece = createPiece(PieceColor.Red, myY, myX);
 					this.gameBoard[myX][myY].setPiece(piece);
 					checkerPieceGroup.getChildren().add(piece);
-					
-				} else if(this.boardState.positions[y][x] == 2) {//red
-					piece = createPiece(PieceColor.Black,myY,myX);
+
+				} else if (this.boardState.positions[y][x] == 2) {// red
+					piece = createPiece(PieceColor.Black, myY, myX);
 					this.gameBoard[myX][myY].setPiece(piece);
 					checkerPieceGroup.getChildren().add(piece);
-					
-				} else if(this.boardState.positions[y][x] == 3) {//black king
-					piece = createPiece(PieceColor.Red,myY,myX);
+
+				} else if (this.boardState.positions[y][x] == 3) {// black king
+					piece = createPiece(PieceColor.Red, myY, myX);
 					this.gameBoard[myX][myY].setPiece(piece);
 					checkerPieceGroup.getChildren().add(piece);
-					
+
 				} else {// red king
-					piece = createPiece(PieceColor.Black,myY,myX);
+					piece = createPiece(PieceColor.Black, myY, myX);
 					this.gameBoard[myX][myY].setPiece(piece);
 					checkerPieceGroup.getChildren().add(piece);
-					
-					
+
 				}
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 }
 
-/*
- * 8*4 array to represent board states if the board states have an instance of
- * checkers Gui but it is declared null does it take space? When turn changes
- * check current board state and redraw Maybe Expand Board size to display whose
- * turn and a button to end turn
- * 
- * Button endTurnButton = new Button(End Turn)
- * 
- * endTurnButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new
- * EventHandler<MouseEvent>() {
- * 
- * @Override public void handle(MouseEvent e) { endTurnButton.setEffect(shadow);
- * } });
- *
- * // Removing the shadow when the mouse cursor is off
- * endTurnButton.addEventHandler(MouseEvent.MOUSE_EXITED, new
- * EventHandler<MouseEvent>() { public void handle(MouseEvent e) {
- * endTurnButton.setEffect(null); } });
- * 
- * endTurnButton.setOnAction(value -> { if(movesLeft ==0){ computerTurn(); } });
- * 
- * Move Logic needs an update if it is not your turn it is illegal move. a
- * moveCounter variable that will also prevent you from ending the turn when you
- * have not moved Label turnLabel = new Label(); turnLabel.setText(); use this
- * to tell you whose turn it is or a victory notification\ Gonna need an update
- * method that checks the current board state possibly attached to a button but
- * hopefully not;
- * 
- */
-
-/*
- * Receipt Paper Notes Note 1 give each square a string mouse click and release
- * adds together then passes new combo string to james version addendum: if
- * square has piece make sure to clear string afterwards Note 2
- * Square2.setPiece(Square1.getPiece()); Square1.getPiece().move(Square2);
- * Square1.setPiece(null); Note 3 After Piece moves if it is king redraw it as
- * one Note 4 Will we have to Thread? Regardless need to make sure it updates
- * when Computer Moves as well Note 5 Rather than a loop use signal and response
- * Means we may not have to thread hopefully
- */
 // --module-path "C:\Users\Matthias Laptop\Desktop\openjfx-13.0.1_windows-x64_bin-sdk\javafx-sdk-13.0.1\lib" --add-modules javafx.controls,javafx.fxml
 //--module-path "C:\Users\Matthias Laptop\Desktop\javafx-sdk-11.0.2\lib" --add-modules javafx.controls,javafx.fxml
