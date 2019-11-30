@@ -91,6 +91,7 @@ public class CheckersGui extends Application {
 		});
 		backButton.setOnAction(value -> {
 			this.boardState = Controller.boardStateHistory.pop();
+			Controller.moveStringHistory.pop();
 			this.refresh(boardState);
 		});
 
