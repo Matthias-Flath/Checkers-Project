@@ -91,7 +91,6 @@ public class CheckersGui extends Application {
 		});
 		backButton.setOnAction(value -> {
 			this.boardState = Controller.boardStateHistory.pop();
-			Controller.moveStringHistory.pop();
 			this.refresh(boardState);
 		});
 
@@ -242,45 +241,76 @@ public class CheckersGui extends Application {
 		GridPane startScreen = new GridPane();
 		startScreen.setPrefSize(500, 500);
 		Label title = new Label("\t\t    Checkers \n By James Lanska and Matthias Flath");
-		Button onePlayerButton = new Button("One Player V.S. AI");
-		Button twoPlayerButton = new Button("Two Player");
-		Label ipLabel = new Label("IP Address");
-		TextField ipTextField = new TextField();
+		Label difficultyLabel = new Label("Choose your difficulty! Harder difficulties take longer to compute.");
+		Button easyButton = new Button("Easy");
+		Button mediumButton = new Button("Medium");
+		Button hardButton = new Button("Hard");
+		Button legendaryButton = new Button("Legendary");
+		
 
 		DropShadow shadow = new DropShadow();
-
-		// Adding the shadow when the mouse cursor is on
-		onePlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+		
+		
+		easyButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				onePlayerButton.setEffect(shadow);
-			}
-		});
-
-		twoPlayerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				twoPlayerButton.setEffect(shadow);
+				easyButton.setEffect(shadow);
 			}
 		});
 
 		// Removing the shadow when the mouse cursor is off
-		onePlayerButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+		easyButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
-				onePlayerButton.setEffect(null);
+				easyButton.setEffect(null);
 			}
 		});
 
-		twoPlayerButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+	
+		mediumButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
 			public void handle(MouseEvent e) {
-				twoPlayerButton.setEffect(null);
+				mediumButton.setEffect(shadow);
+			}
+		});
+		
+		hardButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				hardButton.setEffect(shadow);
 			}
 		});
 
-		onePlayerButton.setOnAction(value -> {
-			ipTextField.clear();
-			ipTextField.setText("You clicked one player");
-			;
+		// Removing the shadow when the mouse cursor is off
+		hardButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent e) {
+				hardButton.setEffect(null);
+			}
+		});
+
+		legendaryButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				legendaryButton.setEffect(shadow);
+			}
+		});
+
+		// Removing the shadow when the mouse cursor is off
+		legendaryButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent e) {
+				legendaryButton.setEffect(null);
+			}
+		});
+		
+		
+		// Removing the shadow when the mouse cursor is off
+		mediumButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent e) {
+				mediumButton.setEffect(null);
+			}
+		});
+
+		easyButton.setOnAction(value -> {
+			CheckersEngine.depth = 2;
 			Stage game = new Stage();
 			Scene board = new Scene(createBoard());
 			game.setTitle("Checkers");
@@ -288,27 +318,39 @@ public class CheckersGui extends Application {
 			game.show();
 		});
 
-		twoPlayerButton.setOnAction(value -> {
-			ipTextField.clear();
-			ipTextField.setText("You clicked two players but right now it's the same as one player");
+		mediumButton.setOnAction(value -> {
+			CheckersEngine.depth = 4;
 			Stage game = new Stage();
 			Scene board = new Scene(createBoard());
 			game.setTitle("Checkers");
 			game.setScene(board);
 			game.show();
-
-//	           
-			/*
-			 * Multiplayer.setIpAdress(ipTextField.getText(); createGameBoard(twoPlayers);
-			 * show GameBoard hide this
-			 */
+		});
+		
+		hardButton.setOnAction(value -> {
+			CheckersEngine.depth = 6;
+			Stage game = new Stage();
+			Scene board = new Scene(createBoard());
+			game.setTitle("Checkers");
+			game.setScene(board);
+			game.show();
+		});
+		
+		legendaryButton.setOnAction(value -> {
+			CheckersEngine.depth = 8;
+			Stage game = new Stage();
+			Scene board = new Scene(createBoard());
+			game.setTitle("Checkers");
+			game.setScene(board);
+			game.show();
 		});
 		startScreen.setVgap(15);
-		startScreen.add(title, 2, 1);
-		startScreen.add(onePlayerButton, 1, 2);
-		startScreen.add(twoPlayerButton, 3, 2);
-		startScreen.add(ipLabel, 1, 3);
-		startScreen.add(ipTextField, 2, 3);
+		startScreen.add(title, 1, 1);
+		startScreen.add(easyButton, 1, 2);
+		startScreen.add(mediumButton, 2, 2);
+		startScreen.add(hardButton, 1, 3);
+		startScreen.add(legendaryButton, 2, 3);
+		startScreen.add(difficultyLabel, 1, 4);
 		return startScreen;
 	}
 
@@ -345,12 +387,12 @@ public class CheckersGui extends Application {
 					checkerPieceGroup.getChildren().add(piece);
 
 				} else if (this.boardState.positions[y][x] == 3) {// black king
-					piece = createPiece(PieceColor.Red, myY, myX);
+					piece = createPiece(PieceColor.BlackKing, myY, myX);
 					this.gameBoard[myX][myY].setPiece(piece);
 					checkerPieceGroup.getChildren().add(piece);
 
 				} else {// red king
-					piece = createPiece(PieceColor.Black, myY, myX);
+					piece = createPiece(PieceColor.RedKing, myY, myX);
 					this.gameBoard[myX][myY].setPiece(piece);
 					checkerPieceGroup.getChildren().add(piece);
 

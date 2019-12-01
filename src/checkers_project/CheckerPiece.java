@@ -2,6 +2,7 @@ package checkers_project;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
 
 
 /*
@@ -26,7 +27,7 @@ public class CheckerPiece extends StackPane {
 	private double mouseX, mouseY;// mouse coordinates for when you pick things up
 	private double oldXCoordinate, oldYCoordinate;// so it can remember where it used to be
 	private Ellipse pieceSprite;
-
+	private Rectangle kingSprite;
 	// a piece needs a color which also determines which direction it can move
 	// it also needs starting coordinates
 
@@ -47,32 +48,36 @@ public class CheckerPiece extends StackPane {
 		move(xCoordinate, yCoordinate);// move the piece to the starting coordinates
 
 		this.pieceSprite = new Ellipse(CheckersGui.SQUARE_SIZE * 0.35, CheckersGui.SQUARE_SIZE * 0.35);// need to draw
-																										// the piece
+		this.kingSprite = new Rectangle(CheckersGui.SQUARE_SIZE *0.35, CheckersGui.SQUARE_SIZE * 0.35);																								// the piece
 
 		if (color == PieceColor.Red) {// depending on if it is red or black fill it with that color
 			pieceSprite.setFill(Color.RED);
-		} else {
+		} else if(color == PieceColor.Black) {
 			pieceSprite.setFill(Color.BLACK);
+		} else if(color == PieceColor.RedKing) {
+			this.kingSprite.setFill(Color.BLACK);	
+		} else {
+			this.kingSprite.setFill(Color.RED);	
 		}
+		
 
+		this.kingSprite.setStroke(Color.BLACK);
+		this.kingSprite.setStrokeWidth(CheckersGui.SQUARE_SIZE * 0.03);
+		this.kingSprite.setTranslateX((CheckersGui.SQUARE_SIZE - (CheckersGui.SQUARE_SIZE * 0.35 * 2)) / 2);
+		this.kingSprite.setTranslateY((CheckersGui.SQUARE_SIZE - (CheckersGui.SQUARE_SIZE * 0.35 * 2)) / 2);// make sure it
+		
 		pieceSprite.setStroke(Color.BLACK);
 		pieceSprite.setStrokeWidth(CheckersGui.SQUARE_SIZE * 0.03);
-
 		pieceSprite.setTranslateX((CheckersGui.SQUARE_SIZE - (CheckersGui.SQUARE_SIZE * 0.35 * 2)) / 2);
 		pieceSprite.setTranslateY((CheckersGui.SQUARE_SIZE - (CheckersGui.SQUARE_SIZE * 0.35 * 2)) / 2);// make sure it
 																										// is in middle
 																										// of square
-
+		getChildren().add(kingSprite);
 		getChildren().add(pieceSprite);
 
-//		setOnMousePressed(e -> {//need to know where the mouse is when clicked
-//			mouseX = e.getSceneX();
-//			mouseY = e.getSceneY();
-//		});
-//		
-//		setOnMouseDragged(e -> {//move the piece with the mouse
-//			relocate(e.getSceneX() - mouseX + oldXCoordinate, e.getSceneY() - mouseY + oldYCoordinate);
-//		});
+		if(this.color == PieceColor.RedKing || this.color == PieceColor.BlackKing) {
+			getChildren().remove(pieceSprite);
+		}
 	}
 
 	/**

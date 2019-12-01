@@ -5,11 +5,7 @@ package checkers_project;
  */
 public enum PieceColor {
 
-	Red(1), Black(-1), RedKing(1), BlackKing(-1);
+	Red, Black, RedKing, BlackKing;
 
-	final int moveDir;
-
-	PieceColor(int moveDir) {
-		this.moveDir = moveDir;
-	}
+	
 }

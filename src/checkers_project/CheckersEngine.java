@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class CheckersEngine {
 
-	public static final int depth = 8;
+	public static int depth = 8;
 	
 	/**
 	 * 
