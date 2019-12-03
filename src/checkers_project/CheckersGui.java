@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -202,7 +203,12 @@ public class CheckersGui extends Application {
 				boardState.setSecondMove(BoardStateJumps.canJumpAtDestination(boardState, movement));
 				boardState.preCheckedMove(movement);
 				this.refresh(boardState);
-				Controller.checkVictory(boardState);
+				if(Controller.checkVictory(boardState)) {
+					Scene endScreen = new Scene(endScreen());
+					Stage endStage = new Stage();
+					endStage.setScene(endScreen);
+					endStage.show();
+				}
 				computerTurn = true;
 				if (boardState.isSecondMovePossible()) {
 					computerTurn = false;
@@ -217,7 +223,12 @@ public class CheckersGui extends Application {
 					Controller.checkVictory(boardState);
 					this.refresh(boardState);
 					Controller.boardStateHistory.push(boardState);
-					Controller.checkVictory(boardState);
+					if(Controller.checkVictory(boardState)) {
+						Scene endScreen = new Scene(endScreen());
+						Stage endStage = new Stage();
+						endStage.setScene(endScreen);
+						endStage.show();
+					}
 				} else {
 					CheckersGui.movement = "";
 					this.refresh(boardState);
@@ -379,6 +390,7 @@ public class CheckersGui extends Application {
 		startScreen.add(difficultyLabel, 1, 5);
 		return startScreen;
 	}
+	
 
 	public void refresh(BoardState boardState) {
 
@@ -427,6 +439,36 @@ public class CheckersGui extends Application {
 		}
 	}
 
+	
+	public Parent endScreen() {
+		BorderPane endScreen = new BorderPane();
+		// Set preferred size
+		endScreen.setPrefSize(SQUARES_WIDE * SQUARE_SIZE + 200, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
+		Label endLabel = new Label();
+		String difficulty;
+		if(CheckersEngine.depth == 2) {
+			difficulty = "easy";
+		} else if(CheckersEngine.depth == 4) {
+			difficulty = "medium";
+		}else if(CheckersEngine.depth == 6) {
+			difficulty = "hard";
+		}else if(CheckersEngine.depth == 8) {
+			difficulty = "legendary";
+		}else {
+			difficulty = "super legendary";
+		}
+		if(boardState.checkBlackVictory()) {
+			endLabel.setText("Congratulations!\nYou have defeated the Computer on " + difficulty + " mode. \nWhat a champ!");
+		} else if(boardState.checkRedVictory()) {
+			endLabel.setText("I'm Sorry.\nBut the Computer has defeated you on " + difficulty + " mode.");
+		} else {
+			endLabel.setText("A draw! What a performance!");
+		}
+			
+		endScreen.setCenter(endLabel);
+		return endScreen;
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
