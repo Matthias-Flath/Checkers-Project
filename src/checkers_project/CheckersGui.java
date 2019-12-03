@@ -42,6 +42,9 @@ public class CheckersGui extends Application {
 	// creates the game board
 
 	private Parent createBoard() {
+		this.boardState = new BoardState();
+		Controller.boardStateHistory.push(boardState);
+		this.gameTurn = boardState.getTurn();
 		Pane board = new Pane();
 		// Set preferred size
 		board.setPrefSize(SQUARES_WIDE * SQUARE_SIZE + 200, SQUARES_HIGH * SQUARE_SIZE);// 8*8 squares 100 size each
@@ -227,9 +230,6 @@ public class CheckersGui extends Application {
 	// used to launch
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		boardState = new BoardState();
-		Controller.boardStateHistory.push(boardState);
-		this.gameTurn = boardState.getTurn();
 		Scene startScreen = new Scene(createStartScreen());
 		primaryStage.setTitle("Checkers");
 		primaryStage.setScene(startScreen);
@@ -241,12 +241,12 @@ public class CheckersGui extends Application {
 		GridPane startScreen = new GridPane();
 		startScreen.setPrefSize(500, 500);
 		Label title = new Label("\t\t    Checkers \n By James Lanska and Matthias Flath");
-		Label difficultyLabel = new Label("Choose your difficulty! Harder difficulties take longer to compute.");
+		Label difficultyLabel = new Label("Choose your difficulty! Harder difficulties take longer to compute.\nAlso legendary and higher might crash my laptop because it is so bad.");
 		Button easyButton = new Button("Easy");
 		Button mediumButton = new Button("Medium");
 		Button hardButton = new Button("Hard");
 		Button legendaryButton = new Button("Legendary");
-		
+		Button superLegendaryButton = new Button("Super Legendary!");
 
 		DropShadow shadow = new DropShadow();
 		
@@ -301,6 +301,21 @@ public class CheckersGui extends Application {
 			}
 		});
 		
+		superLegendaryButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				superLegendaryButton.setEffect(shadow);
+			}
+		});
+
+		// Removing the shadow when the mouse cursor is off
+		superLegendaryButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent e) {
+				superLegendaryButton.setEffect(null);
+			}
+		});
+		
+		
 		
 		// Removing the shadow when the mouse cursor is off
 		mediumButton.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
@@ -344,13 +359,24 @@ public class CheckersGui extends Application {
 			game.setScene(board);
 			game.show();
 		});
+		
+		superLegendaryButton.setOnAction(value -> {
+			CheckersEngine.depth = 15;
+			
+			Stage game = new Stage();
+			Scene board = new Scene(createBoard());
+			game.setTitle("Checkers");
+			game.setScene(board);
+			game.show();
+		});
 		startScreen.setVgap(15);
 		startScreen.add(title, 1, 1);
 		startScreen.add(easyButton, 1, 2);
 		startScreen.add(mediumButton, 2, 2);
 		startScreen.add(hardButton, 1, 3);
 		startScreen.add(legendaryButton, 2, 3);
-		startScreen.add(difficultyLabel, 1, 4);
+		startScreen.add(superLegendaryButton, 1, 4);
+		startScreen.add(difficultyLabel, 1, 5);
 		return startScreen;
 	}
 
