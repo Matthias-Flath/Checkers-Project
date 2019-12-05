@@ -1,6 +1,9 @@
-package checkers_project;
+package checkers_project.helpers;
 
 import java.util.LinkedList;
+
+import checkers_project.BoardState;
+import checkers_project.engine.CheckersEngine;
 
 public class Controller {
 

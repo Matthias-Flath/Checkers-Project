@@ -1,4 +1,6 @@
-package checkers_project;
+package checkers_project.engine;
+
+import checkers_project.BoardState;
 
 public class TreeNode {
 

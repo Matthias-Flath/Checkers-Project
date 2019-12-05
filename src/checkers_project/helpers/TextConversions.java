@@ -1,4 +1,4 @@
-package checkers_project;
+package checkers_project.helpers;
 
 import java.util.Arrays;
 

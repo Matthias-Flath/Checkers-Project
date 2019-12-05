@@ -1,10 +1,14 @@
-package checkers_project;
+package checkers_project.engine;
 /*
  * Takes a BoardState object and determines the optimal next move using the 
  * minmax search algorithm. 
 */
 
 import java.util.Random;
+
+import checkers_project.BoardState;
+import checkers_project.BoardStateArrays;
+
 import java.util.Arrays;
 
 public class CheckersEngine {

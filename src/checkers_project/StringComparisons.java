@@ -1,5 +1,7 @@
 package checkers_project;
 
+import checkers_project.helpers.TextConversions;
+
 public class StringComparisons {
 	
 	public static void main(String[] args) {

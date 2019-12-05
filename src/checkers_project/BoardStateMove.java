@@ -1,5 +1,7 @@
 package checkers_project;
 
+import checkers_project.helpers.TextConversions;
+
 /*
  * Check the legality of moves
  */

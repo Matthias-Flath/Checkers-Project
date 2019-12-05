@@ -1,5 +1,8 @@
 package checkers_project;
 
+import checkers_project.helpers.Game;
+import checkers_project.helpers.TextConversions;
+
 /**
  * 
  * 

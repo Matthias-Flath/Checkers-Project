@@ -1,4 +1,4 @@
-package checkers_project;
+package checkers_project.gui;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +10,11 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import checkers_project.BoardState;
+import checkers_project.BoardStateJumps;
+import checkers_project.engine.CheckersEngine;
+import checkers_project.helpers.Controller;
+import checkers_project.helpers.Game;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;

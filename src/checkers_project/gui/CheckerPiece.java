@@ -1,4 +1,5 @@
-package checkers_project;
+package checkers_project.gui;
+import checkers_project.BoardState;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;

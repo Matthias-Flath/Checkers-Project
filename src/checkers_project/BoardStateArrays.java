@@ -3,6 +3,9 @@ package checkers_project;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import checkers_project.helpers.Game;
+import checkers_project.helpers.TextConversions;
+
 public class BoardStateArrays {
 	
 	

@@ -1,6 +1,12 @@
-package checkers_project;
+package checkers_project.helpers;
 
 import java.util.Scanner;
+
+import checkers_project.BoardState;
+import checkers_project.BoardStateArrays;
+import checkers_project.BoardStateJumps;
+import checkers_project.engine.CheckersEngine;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;

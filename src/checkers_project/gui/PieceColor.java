@@ -1,4 +1,4 @@
-package checkers_project;
+package checkers_project.gui;
 
 /*
  * what color the piece is determines which direction it can move
