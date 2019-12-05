@@ -1,6 +1,6 @@
 package checkers_project.helpers;
 
-import java.util.Scanner;
+
 
 public class Game {
 	

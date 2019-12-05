@@ -25,7 +25,7 @@ public class BoardState {
 	
 	private byte turn;
 	private boolean secondMove = false;
-	byte[][] positions = new byte[Game.ROWS][Game.COLUMNS];
+	public byte[][] positions = new byte[Game.ROWS][Game.COLUMNS];
 	
 	/**
 	 * Create a board state for the beginning of the game.

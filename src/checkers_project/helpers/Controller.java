@@ -7,8 +7,8 @@ import checkers_project.engine.CheckersEngine;
 
 public class Controller {
 
-	static LinkedList<String> moveStringHistory = new LinkedList();
-	static LinkedList<BoardState> boardStateHistory = new LinkedList();
+	public static LinkedList<String> moveStringHistory = new LinkedList();
+	public static LinkedList<BoardState> boardStateHistory = new LinkedList();
 	private BoardState board;
 
 	public static String getPreviousMove() {
@@ -33,17 +33,17 @@ public class Controller {
 		boolean end = false;
 		if (board.checkBlackVictory()) {
 			end = true;
-			player1Victory();
+			
 		}
 	
 		if (board.checkRedVictory()) {
 			end = true;
-			player2Victory();
+			
 		}
 	 
 		if (board.checkDraw()) {
 			end = true;
-			draw();
+			
 
 		}
 		return end;
@@ -53,14 +53,14 @@ public class Controller {
 	 * 
 	 */
 	public static void draw() {
-		System.out.println("Draw!");
+	//	System.out.println("Draw!");
 	}
 	
 	/**
 	 * 
 	 */
 	public static void player1Victory() {
-		System.out.println("Player 1 Wins!");
+	//	System.out.println("Player 1 Wins!");
 		
 	}
 	
@@ -68,7 +68,7 @@ public class Controller {
 	 * 
 	 */
 	public static void player2Victory() {
-		System.out.println("Player 2 Wins!");
+	//	System.out.println("Player 2 Wins!");
 	}
 	
 }
