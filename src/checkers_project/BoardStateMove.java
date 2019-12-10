@@ -78,12 +78,12 @@ public class BoardStateMove {
 			
 			// Enforcing the jump rule.
 			if (TextConversions.isJump(py, px, dy, dx) != true) {
-				System.out.println(py);
-				System.out.println(px);
-				System.out.println(dy);
-				System.out.println(dx);
-
-				System.out.println("Failed the jump rule.");
+//				System.out.println(py);
+//				System.out.println(px);
+//				System.out.println(dy);
+//				System.out.println(dx);
+//
+//				System.out.println("Failed the jump rule.");
 				return false;
 			}
 		}
